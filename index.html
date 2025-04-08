@@ -36,6 +36,14 @@
     <button onclick="fetchExchangeRates()">Load Exchange Rates</button>
     <ul id="exchange-rate-list"></ul>
 
+    <h2>View Currency Details</h2>
+    <form id="currency-details-form">
+        <label for="currency-code">Currency Code:</label>
+        <input type="text" id="currency-code" name="currency-code" required><br>
+        <button type="submit">Get Details</button>
+    </form>
+    <p id="currency-details"></p>
+
     <script>
         function fetchCurrencies() {
             fetch('/currencies')
@@ -52,7 +60,7 @@
         }
 
         function fetchExchangeRates() {
-            fetch('/exchange_rates')
+            fetch('/exchange_rates') // Исправлен маршрут на корректный
                 .then(response => response.json())
                 .then(data => {
                     const list = document.getElementById('exchange-rate-list');
@@ -90,7 +98,7 @@
             const formData = new FormData(event.target);
             const data = Object.fromEntries(formData.entries());
 
-            fetch('/exchange_rates', {
+            fetch('/exchangeRates', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -103,6 +111,27 @@
                     alert('Failed to add exchange rate.');
                 }
             });
+        });
+
+        document.getElementById('currency-details-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const code = document.getElementById('currency-code').value;
+
+            fetch(`/currency/${code}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Currency not found');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const details = document.getElementById('currency-details');
+                    details.textContent = `Name: ${data.name}, Code: ${data.code}, Sign: ${data.sign}`;
+                })
+                .catch(error => {
+                    const details = document.getElementById('currency-details');
+                    details.textContent = error.message;
+                });
         });
     </script>
 </body>

@@ -1,5 +1,6 @@
 import sqlite3
 from sign_code import currency_sign
+
 class CurrencyModel:
     def __init__(self, db_path='currency.db'):
         self.db_path = db_path
@@ -21,6 +22,18 @@ class CurrencyModel:
         conn.commit()
         conn.close()
 
+    def get_currency_by_code(self, code):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        print(f"Fetching currency with code: {code}")
+        cursor.execute('SELECT code, name, sign FROM currencies WHERE code = ?', (code,))
+        result = cursor.fetchone()
+        conn.close()
+        if result:
+            return {'code': result[0], 'name': result[1], 'sign': result[2] }
+        else:
+            return None
+    
     def get_currencies(self):
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
