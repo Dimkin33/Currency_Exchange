@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Currency Management</title>
+</head>
+<body>
+    <h1>Currency Management</h1>
+
+    <h2>Add Currency</h2>
+    <form id="currency-form">
+        <label for="code">Currency Code:</label>
+        <input type="text" id="code" name="code" required><br>
+        <label for="name">Currency Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        <button type="submit">Add Currency</button>
+    </form>
+
+    <h2>View Currencies</h2>
+    <button onclick="fetchCurrencies()">Load Currencies</button>
+    <ul id="currency-list"></ul>
+
+    <h2>Add Exchange Rate</h2>
+    <form id="exchange-rate-form">
+        <label for="from">From Currency:</label>
+        <input type="text" id="from" name="from" required><br>
+        <label for="to">To Currency:</label>
+        <input type="text" id="to" name="to" required><br>
+        <label for="rate">Rate:</label>
+        <input type="number" id="rate" name="rate" step="0.01" required><br>
+        <button type="submit">Add Rate</button>
+    </form>
+
+    <h2>View Exchange Rates</h2>
+    <button onclick="fetchExchangeRates()">Load Exchange Rates</button>
+    <ul id="exchange-rate-list"></ul>
+
+    <script>
+        function fetchCurrencies() {
+            fetch('/currencies')
+                .then(response => response.json())
+                .then(data => {
+                    const list = document.getElementById('currency-list');
+                    list.innerHTML = '';
+                    data.forEach(currency => {
+                        const li = document.createElement('li');
+                        li.textContent = `${currency.code}: ${currency.name}, ${currency.sign}`; // Используем ключи "code" и "name"
+                        list.appendChild(li);
+                    });
+                });
+        }
+
+        function fetchExchangeRates() {
+            fetch('/exchange_rates')
+                .then(response => response.json())
+                .then(data => {
+                    const list = document.getElementById('exchange-rate-list');
+                    list.innerHTML = '';
+                    data.forEach(rate => {
+                        const li = document.createElement('li');
+                        li.textContent = `${rate.from_currency} -> ${rate.to_currency}: ${rate.rate}`;
+                        list.appendChild(li);
+                    });
+                });
+        }
+
+        document.getElementById('currency-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+
+            fetch('/currencies', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok) {
+                    alert('Currency added successfully!');
+                } else {
+                    alert('Failed to add currency.');
+                }
+            });
+        });
+
+        document.getElementById('exchange-rate-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+
+            fetch('/exchange_rates', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok) {
+                    alert('Exchange rate added successfully!');
+                } else {
+                    alert('Failed to add exchange rate.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
