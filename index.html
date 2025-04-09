@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Currency Management</title>
 </head>
 <body>
     <h1>Currency Management</h1>
 
     <h2>Add Currency</h2>
-    <form id="currency-form">
+    <form action="/currencies" method="post">
         <label for="code">Currency Code:</label>
         <input type="text" id="code" name="code" required><br>
         <label for="name">Currency Name:</label>
@@ -18,11 +18,19 @@
     </form>
 
     <h2>View Currencies</h2>
-    <button onclick="fetchCurrencies()">Load Currencies</button>
-    <ul id="currency-list"></ul>
+    <form action="/currencies" method="get">
+        <button type="submit">Load Currencies</button>
+    </form>
+
+    <h2>View Currency Details</h2>
+    <form action="/currency" method="get">
+        <label for="currency-code">Currency Code:</label>
+        <input type="text" id="currency-code" name="code" required><br>
+        <button type="submit">Get Details</button>
+    </form>
 
     <h2>Add Exchange Rate</h2>
-    <form id="exchange-rate-form">
+    <form action="/exchangeRates" method="post">
         <label for="from">From Currency:</label>
         <input type="text" id="from" name="from" required><br>
         <label for="to">To Currency:</label>
@@ -33,106 +41,21 @@
     </form>
 
     <h2>View Exchange Rates</h2>
-    <button onclick="fetchExchangeRates()">Load Exchange Rates</button>
-    <ul id="exchange-rate-list"></ul>
-
-    <h2>View Currency Details</h2>
-    <form id="currency-details-form">
-        <label for="currency-code">Currency Code:</label>
-        <input type="text" id="currency-code" name="currency-code" required><br>
-        <button type="submit">Get Details</button>
+    <form action="/exchangeRates" method="get">
+        <button type="submit">Load Exchange Rates</button>
     </form>
-    <p id="currency-details"></p>
 
-    <script>
-        function fetchCurrencies() {
-            fetch('/currencies')
-                .then(response => response.json())
-                .then(data => {
-                    const list = document.getElementById('currency-list');
-                    list.innerHTML = '';
-                    data.forEach(currency => {
-                        const li = document.createElement('li');
-                        li.textContent = `${currency.code}: ${currency.name}, ${currency.sign}`; // Используем ключи "code" и "name"
-                        list.appendChild(li);
-                    });
-                });
-        }
 
-        function fetchExchangeRates() {
-            fetch('/exchange_rates') // Исправлен маршрут на корректный
-                .then(response => response.json())
-                .then(data => {
-                    const list = document.getElementById('exchange-rate-list');
-                    list.innerHTML = '';
-                    data.forEach(rate => {
-                        const li = document.createElement('li');
-                        li.textContent = `${rate.from_currency} -> ${rate.to_currency}: ${rate.rate}`;
-                        list.appendChild(li);
-                    });
-                });
-        }
 
-        document.getElementById('currency-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            const data = Object.fromEntries(formData.entries());
-
-            fetch('/currencies', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }).then(response => {
-                if (response.ok) {
-                    alert('Currency added successfully!');
-                } else {
-                    alert('Failed to add currency.');
-                }
-            });
-        });
-
-        document.getElementById('exchange-rate-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            const data = Object.fromEntries(formData.entries());
-
-            fetch('/exchangeRates', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            }).then(response => {
-                if (response.ok) {
-                    alert('Exchange rate added successfully!');
-                } else {
-                    alert('Failed to add exchange rate.');
-                }
-            });
-        });
-
-        document.getElementById('currency-details-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const code = document.getElementById('currency-code').value;
-
-            fetch(`/currency/${code}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Currency not found');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const details = document.getElementById('currency-details');
-                    details.textContent = `Name: ${data.name}, Code: ${data.code}, Sign: ${data.sign}`;
-                })
-                .catch(error => {
-                    const details = document.getElementById('currency-details');
-                    details.textContent = error.message;
-                });
-        });
-    </script>
+    <h2>Convert Currency</h2>
+    <form action="/convert" method="get">
+        <label for="from-currency">From Currency:</label>
+        <input type="text" id="from-currency" name="from" required><br>
+        <label for="to-currency">To Currency:</label>
+        <input type="text" id="to-currency" name="to" required><br>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" step="0.01" required><br>
+        <button type="submit">Convert</button>
+    </form>
 </body>
 </html>
