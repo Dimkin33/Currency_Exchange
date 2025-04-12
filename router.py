@@ -1,18 +1,22 @@
-from dto import requestDTO
 from controller import Controller
-#from app_server import RequestHandler
+
 class Router:
-    
-    
-    def __init__(self, obj):
-        self.obj = obj
-        self.route_path = {'/'              : Controller().handle_html_page,
-                            '/currencies'   : Controller().get_currencies
-                            
-                        }
-    
-    def resolve(self):
-        self.obj.controller = self.route_path.get(self.obj.url, None)
-        return None
-        
-    
+    def __init__(self):
+        self.routes = {
+            '/currencies': Controller().get_currencies,
+            '/currency': Controller().get_currency_by_code,
+            '/exchangeRates': Controller().get_exchange_rates,
+            '/addCurrency': Controller().add_currency,
+            '/addExchangeRate': Controller().add_exchange_rate,
+            '/': Controller().handle_html_page,
+        }
+
+    def resolve(self, dto):
+        # Используем dto.url для определения маршрута
+        handler = self.routes.get(dto.url, None)
+        if handler:
+            handler(dto)
+        else:
+            dto.response = {"error": "Route not found"}
+
+
