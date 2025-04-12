@@ -13,10 +13,11 @@ class Controller:
         pass
     
     def handle_html_page(self, obj):
-        
+        print('Hello')
         obj.send_response(200)
         obj.send_header('Content-Type', 'text/html')
         obj.end_headers()
         with open('index.html', 'r', encoding='utf-8') as file:
             html_content = file.read()
         obj.wfile.write(html_content.encode())
+        

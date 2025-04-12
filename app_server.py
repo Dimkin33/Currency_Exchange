@@ -41,33 +41,33 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         print('do_GET method called')
         request_ = self.request_to_DTO()
-        request_.controller
+        #request_.controller 
         # Получаем объект Router и вызываем метод resolve
-        router = Router(request_)
-        router.resolve()
+        Router(request_).resolve()
         print(request_.controller)
-       
+        request_.controller(self)
         
-        parsed_path = urlparse(self.path)
-        query_params = parse_qs(parsed_path.query)
-        print(f'get query_params =  {query_params},  path = {parsed_path.path}')
         
-        if self.path.startswith('/convert?'):  # Проверяем, начинается ли путь с /convert?
-            self.convert_currency_get()  # Обработчик для GET-запроса на конвертацию валют
-        elif self.path.startswith('/exchangeRates'):  # Проверяем, начинается ли путь с /exchangeRate/
-            self.get_exchange_rates(query_params, parsed_path.path)  # Обработчик для получения обменных курсов)  # Обработчик для получения конкретного обменного курса
-        elif self.path.startswith('/currency'):  # Проверяем, начинается ли путь с /currency/
-            self.get_currency_by_code(query_params.get('code', [''])[0])  # Обработчик для получения конкретной валюты
-        elif self.path == '/currencies?':
+        # parsed_path = urlparse(self.path)
+        # query_params = parse_qs(parsed_path.query)
+        # print(f'get query_params =  {query_params},  path = {parsed_path.path}')
+        
+        # if self.path.startswith('/convert?'):  # Проверяем, начинается ли путь с /convert?
+        #     self.convert_currency_get()  # Обработчик для GET-запроса на конвертацию валют
+        # elif self.path.startswith('/exchangeRates'):  # Проверяем, начинается ли путь с /exchangeRate/
+        #     self.get_exchange_rates(query_params, parsed_path.path)  # Обработчик для получения обменных курсов)  # Обработчик для получения конкретного обменного курса
+        # elif self.path.startswith('/currency'):  # Проверяем, начинается ли путь с /currency/
+        #     self.get_currency_by_code(query_params.get('code', [''])[0])  # Обработчик для получения конкретной валюты
+        # elif self.path == '/currencies?':
             
-            self.get_currencies()
-        elif self.path.startswith('/exchangeRate/'):
-            self.get_exchange_rate(parsed_path.path)
-        #elif self.path == '/':
-            #self.handle_html_page()
-        else:
-            self.send_response(404)
-            self.end_headers()
+        #     self.get_currencies()
+        # elif self.path.startswith('/exchangeRate/'):
+        #     self.get_exchange_rate(parsed_path.path)
+        # #elif self.path == '/':
+        #     #self.handle_html_page()
+        # else:
+        #     self.send_response(404)
+        #     self.end_headers()
 
     def do_POST(self):
         print('do_POST method called')
