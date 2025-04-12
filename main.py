@@ -1,6 +1,6 @@
 import threading
 from model import CurrencyModel
-from view import start_server
+from app_server import start_server
 
 def run_server():
     start_server()

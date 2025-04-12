@@ -3,12 +3,19 @@ import json
 from model import CurrencyModel
 import os
 from urllib.parse import urlparse, parse_qs
+from viewer import Viewer
+from dto import requestDTO
+from router import Router
+
 
 class RequestHandler(BaseHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         self.model = CurrencyModel()
         super().__init__(*args, **kwargs)
 
+    def transfer_object(self, obj):
+        return json.dumps(obj, indent=4, ensure_ascii=False).encode('utf-8')
+    
     def send_json_response(self, status_code, data):
         """Отправляет форматированный JSON-ответ с указанным статусом и данными."""
         self.send_response(status_code)
@@ -22,7 +29,25 @@ class RequestHandler(BaseHTTPRequestHandler):
         post_data = self.rfile.read(content_length)
         return json.loads(post_data)
 
+    def request_to_DTO(self):
+        """Создает объект DTO из запроса."""
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length).decode('utf-8')
+        method = self.command
+        url = self.path
+        headers = dict(self.headers) # Получаем объект Router и вызываем метод resolve
+        return  requestDTO(method, url, headers, body)  # Возвращаем объект DTO с методом, URL и заголовками запроса
+    
     def do_GET(self):
+        print('do_GET method called')
+        request_ = self.request_to_DTO()
+        request_.controller
+        # Получаем объект Router и вызываем метод resolve
+        router = Router(request_)
+        router.resolve()
+        print(request_.controller)
+       
+        
         parsed_path = urlparse(self.path)
         query_params = parse_qs(parsed_path.query)
         print(f'get query_params =  {query_params},  path = {parsed_path.path}')
@@ -34,21 +59,26 @@ class RequestHandler(BaseHTTPRequestHandler):
         elif self.path.startswith('/currency'):  # Проверяем, начинается ли путь с /currency/
             self.get_currency_by_code(query_params.get('code', [''])[0])  # Обработчик для получения конкретной валюты
         elif self.path == '/currencies?':
+            
             self.get_currencies()
         elif self.path.startswith('/exchangeRate/'):
             self.get_exchange_rate(parsed_path.path)
-        elif self.path == '/':
-            self.handle_html_page()
+        #elif self.path == '/':
+            #self.handle_html_page()
         else:
             self.send_response(404)
             self.end_headers()
 
     def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(content_length).decode('utf-8')
+        print('do_POST method called')
+        res = self.request_to_DTO()
+        print(f'request_DTO = {res.to_dict()}')
+          
+
+        post_data = res.body
         form_data = dict(x.split('=') for x in post_data.split('&'))
         
-        print(f'form_data = {form_data}')
+
         
         
         if self.path == '/currencies':  
