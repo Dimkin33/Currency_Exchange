@@ -16,6 +16,18 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps(data, indent=4, ensure_ascii=False).encode('utf-8'))
 
     def do_GET(self):
+        if self.path == '/favicon.ico':
+            self.send_response(200)
+            self.send_header('Content-Type', 'image/x-icon')
+            self.end_headers()
+            try:
+                with open('favicon.ico', 'rb') as f:
+                    self.wfile.write(f.read())
+            except FileNotFoundError:
+                self.send_response(404)
+                self.end_headers()
+            return
+
         logger.info("Обработка GET-запроса")
         router = Router()
         viewer = Viewer()

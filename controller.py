@@ -56,6 +56,25 @@ class Controller:
         else:
             logger.warning(f"Валюта с кодом {code} не найдена")
             dto.response = {"error": "Currency not found"}
+            
+    def get_exchange_rates_dynamic(self, dto):
+        logger.info("Получение пары валют по коду (динамический метод)")
+        logger.debug(f"Данные запроса: {dto.query_params}")
+        pair = dto.query_params.get('pair')
+        logger.debug(f"Коды валют из запроса: {pair}")
+        if not pair:
+            logger.warning("Код валюты отсутствует в запросе")
+            dto.response = {"error": "Currency code is required"}
+            return
+        else:
+            dto.body['from'] = pair[:3].upper()
+            dto.body['to'] = pair[3:].upper()
+            dto.query_params['from'] = pair[:3].upper()
+            dto.query_params['to'] = pair[3:].upper()
+        logger.debug(f"Коды валют из запроса: {dto.body['from']}, {dto.body['to']}")
+        self.get_exchange_rate(dto)
+        
+        
 
     def add_currency(self, dto):
         logger.info("Добавление новой валюты")
@@ -98,14 +117,50 @@ class Controller:
         from_currency = dto.body.get('from')
         to_currency = dto.body.get('to')
         rate = dto.body.get('rate')
-        if not from_currency or not to_currency or not rate:
+        if not from_currency or not to_currency:
             logger.warning("Отсутствуют обязательные поля для добавления курса обмена")
             dto.response = {"error": "Missing required fields"}
             return
         try:
-            self.model.add_exchange_rate(from_currency, to_currency, float(rate))
+            result = self.model.add_exchange_rate(from_currency, to_currency, float(rate))
             logger.info(f"Курс обмена {from_currency} -> {to_currency} успешно добавлен")
-            dto.response = dto.body
+            result = self.model.get_exchange_rate(from_currency, to_currency)
+            logger.debug(f"Курс обмена {from_currency} -> {to_currency}: {result}")
+            logger.info(f"Курс обмена {from_currency} -> {to_currency} успешно получен result = {result}")
+            dto.response = {'id' : result['id'],
+                            'baseCurrency' : self.model.get_currency_by_code(from_currency), 
+                            'targetCurrency' : self.model.get_currency_by_code(to_currency),
+                            'rate' : result['rate']
+                            }
+                            
+        except ValueError as e:
+            logger.error(f"Ошибка при добавлении курса обмена: {e}")
+            dto.response = {"error": str(e)}
+            
+            
+    def get_exchange_rate(self, dto):
+        logger.info("Просмотр курса обмена")
+        logger.debug(f"Данные запроса: {dto.query_params}")
+        from_currency = dto.query_params.get('from')
+        to_currency = dto.query_params.get('to')
+        #rate = dto.body.get('rate
+        if not from_currency or not to_currency:
+            logger.warning("Отсутствуют обязательные поля для просмотра курса обмена")
+            dto.response = {"error": "Missing required fields"}
+            return
+        try:
+            result = self.model.get_exchange_rate(from_currency, to_currency)
+            if result:
+                logger.debug(f"Курс обмена {from_currency} -> {to_currency}: {result}")
+                logger.info(f"Курс обмена {from_currency} -> {to_currency} успешно получен result = {result}")
+                dto.response = {'id' : result['id'],
+                                'baseCurrency' : self.model.get_currency_by_code(from_currency), 
+                                'targetCurrency' : self.model.get_currency_by_code(to_currency),
+                                'rate' : result['rate']
+                                }
+            else:
+                logger.debug(f"Курс обмена {from_currency} -> {to_currency}: {result}")
+                dto.response = {"error": "Exchange rate not found"}
         except ValueError as e:
             logger.error(f"Ошибка при добавлении курса обмена: {e}")
             dto.response = {"error": str(e)}

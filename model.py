@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 class CurrencyModel:
     def __init__(self, db_path='currency.db'):
         self.db_path = db_path
-        logger.info(f"Инициализация CurrencyModel с базой данных: {db_path}")
+        #logger.info(f"Инициализация CurrencyModel с базой данных: {db_path}")
 
     def init_db(self):
         logger.info("Инициализация базы данных")
@@ -93,6 +93,7 @@ class CurrencyModel:
             cursor.execute('INSERT INTO exchange_rates (from_currency, to_currency, rate) VALUES (?, ?, ?)', (from_currency, to_currency, rate))
             conn.commit()
             logger.debug(f"Курс обмена {from_currency} -> {to_currency} успешно добавлен")
+            
         except sqlite3.IntegrityError:
             logger.warning(f"Курс обмена {from_currency} -> {to_currency} уже существует")
             raise ValueError("Exchange rate already exists")
@@ -113,8 +114,8 @@ class CurrencyModel:
             return [
                 {
                     "id": row[0],
-                    "from": row[1],
-                    "to": row[2],
+                    "from": self.get_currency_by_code(row[1]),
+                    "to":   self.get_currency_by_code(row[2]),
                     "rate": row[3]
                 } for row in rows
             ]
@@ -144,11 +145,11 @@ class CurrencyModel:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         try:
-            cursor.execute('SELECT rate FROM exchange_rates WHERE from_currency = ? AND to_currency = ?', (from_currency, to_currency))
+            cursor.execute('SELECT id, rate FROM exchange_rates WHERE from_currency = ? AND to_currency = ?', (from_currency, to_currency))
             result = cursor.fetchone()
             if result:
                 logger.debug(f"Курс обмена найден: {result[0]}")
-                return {"from": from_currency, "to": to_currency, "rate": result[0]}
+                return {"from": from_currency, "to": to_currency, "rate": result[1], 'id': result[0]}
             logger.warning(f"Курс обмена {from_currency} -> {to_currency} не найден")
             return None
         except Exception as e:

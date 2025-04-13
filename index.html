@@ -40,12 +40,19 @@
         <button type="submit">Add Rate</button>
     </form>
 
+    <h2>Get Exchange Rate</h2>
+    <form action="/exchangeRate" method="get">
+        <label for="from-get">From Currency:</label>
+        <input type="text" id="from-get" name="from" required><br>
+        <label for="to-get">To Currency:</label>
+        <input type="text" id="to-get" name="to" required><br>
+        <button type="submit">Get Rate</button>
+    </form>
+
     <h2>View Exchange Rates</h2>
     <form action="/exchangeRates" method="get">
         <button type="submit">Load Exchange Rates</button>
     </form>
-
-
 
     <h2>Convert Currency</h2>
     <form action="/convert" method="get">
