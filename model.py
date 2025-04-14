@@ -103,6 +103,31 @@ class CurrencyModel:
         finally:
             conn.close()
 
+    def patch_exchange_rate(self, from_currency, to_currency, rate):
+        """
+        Обновляет курс обмена между двумя валютами.
+        """
+        logger.info(f"Обновление курса обмена: {from_currency} -> {to_currency} = {rate}")
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        try:
+            # Проверяем, существует ли запись для обновления
+            cursor.execute('SELECT id FROM exchange_rates WHERE from_currency = ? AND to_currency = ?', (from_currency, to_currency))
+            result = cursor.fetchone()
+            if not result:
+                logger.warning(f"Курс обмена {from_currency} -> {to_currency} не найден")
+                raise ValueError("Exchange rate not found")
+
+            # Обновляем курс обмена
+            cursor.execute('UPDATE exchange_rates SET rate = ? WHERE from_currency = ? AND to_currency = ?', (rate, from_currency, to_currency))
+            conn.commit()
+            logger.info(f"Курс обмена {from_currency} -> {to_currency} успешно обновлен")
+        except Exception as e:
+            logger.error(f"Ошибка при обновлении курса обмена {from_currency} -> {to_currency}: {e}")
+            raise
+        finally:
+            conn.close()
+
     def get_exchange_rates(self):
         logger.info("Получение курсов обмена валют")
         conn = sqlite3.connect(self.db_path)

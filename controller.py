@@ -23,7 +23,7 @@ class Controller:
 
     def get_currency_by_code(self, dto):
         logger.info("Получение валюты по коду")
-        code = dto.query_params.get('code', [None])[0]
+        code = dto.query_params.get('code', [None])
         logger.debug(f"Код валюты из запроса: {code}")
         if not code:
             logger.warning("Код валюты отсутствует в запросе")
@@ -117,27 +117,50 @@ class Controller:
         from_currency = dto.body.get('from')
         to_currency = dto.body.get('to')
         rate = dto.body.get('rate')
-        if not from_currency or not to_currency:
+
+        # Проверка обязательных полей
+        if not from_currency or not to_currency or not rate:
             logger.warning("Отсутствуют обязательные поля для добавления курса обмена")
             dto.response = {"error": "Missing required fields"}
+            dto.status_code = 400  # Bad Request
             return
+
         try:
-            result = self.model.add_exchange_rate(from_currency, to_currency, float(rate))
+            # Проверяем, существуют ли валюты в базе данных
+            base_currency = self.model.get_currency_by_code(from_currency)
+            target_currency = self.model.get_currency_by_code(to_currency)
+            if not base_currency or not target_currency:
+                logger.warning(f"Одна или обе валюты не найдены: {from_currency}, {to_currency}")
+                dto.response = {"error": "One or both currencies not found"}
+                dto.status_code = 404  # Not Found
+                return
+
+            # Добавляем курс обмена
+            self.model.add_exchange_rate(from_currency, to_currency, float(rate))
             logger.info(f"Курс обмена {from_currency} -> {to_currency} успешно добавлен")
+
+            # Получаем добавленный курс для ответа
             result = self.model.get_exchange_rate(from_currency, to_currency)
-            logger.debug(f"Курс обмена {from_currency} -> {to_currency}: {result}")
-            logger.info(f"Курс обмена {from_currency} -> {to_currency} успешно получен result = {result}")
-            dto.response = {'id' : result['id'],
-                            'baseCurrency' : self.model.get_currency_by_code(from_currency), 
-                            'targetCurrency' : self.model.get_currency_by_code(to_currency),
-                            'rate' : result['rate']
-                            }
-                            
+            dto.response = {
+                'id': result['id'],
+                'baseCurrency': base_currency,
+                'targetCurrency': target_currency,
+                'rate': result['rate']
+            }
+            dto.status_code = 201  # Created
+
         except ValueError as e:
+            # Если курс обмена уже существует
             logger.error(f"Ошибка при добавлении курса обмена: {e}")
             dto.response = {"error": str(e)}
-            
-            
+            dto.status_code = 409  # Conflict
+
+        except Exception as e:
+            # Общая ошибка
+            logger.critical(f"Неизвестная ошибка при добавлении курса обмена: {e}")
+            dto.response = {"error": "Failed to add exchange rate"}
+            dto.status_code = 500  # Internal Server Error
+
     def get_exchange_rate(self, dto):
         logger.info("Просмотр курса обмена")
         logger.debug(f"Данные запроса: {dto.query_params}")
@@ -151,7 +174,6 @@ class Controller:
         try:
             result = self.model.get_exchange_rate(from_currency, to_currency)
             if result:
-                logger.debug(f"Курс обмена {from_currency} -> {to_currency}: {result}")
                 logger.info(f"Курс обмена {from_currency} -> {to_currency} успешно получен result = {result}")
                 dto.response = {'id' : result['id'],
                                 'baseCurrency' : self.model.get_currency_by_code(from_currency), 
@@ -164,6 +186,60 @@ class Controller:
         except ValueError as e:
             logger.error(f"Ошибка при добавлении курса обмена: {e}")
             dto.response = {"error": str(e)}
+            
+    def update_exchange_rate(self, dto):
+        logger.info("Добавление нового курса обмена")
+        logger.debug(f"Данные запроса: {dto.body}")
+        from_currency = dto.body.get('from')
+        to_currency = dto.body.get('to')
+        rate = dto.body.get('rate')
+        if not from_currency or not to_currency:
+            logger.warning("Отсутствуют обязательные поля для добавления курса обмена")
+            dto.response = {"error": "Missing required fields"}
+            return
+        try:
+            result = self.model.patch_exchange_rate(from_currency, to_currency, float(rate))
+            logger.info(f"Курс обмена {from_currency} -> {to_currency} успешно добавлен")
+            result = self.model.get_exchange_rate(from_currency, to_currency)
+            logger.debug(f"Курс обмена {from_currency} -> {to_currency}: {result}")
+            logger.info(f"Курс обмена {from_currency} -> {to_currency} успешно получен result = {result}")
+            dto.response = {'id' : result['id'],
+                            'baseCurrency' : self.model.get_currency_by_code(from_currency), 
+                            'targetCurrency' : self.model.get_currency_by_code(to_currency),
+                            'rate' : result['rate']
+                            }
+                            
+        except ValueError as e:
+            logger.error(f"Ошибка при добавлении курса обмена: {e}")
+            dto.response = {"error": str(e)}
+
+    def update_exchange_rate_by_pair(self, dto):
+        logger.info("Обновление курса обмена по валютной паре")
+        logger.debug(f"Данные запроса: {dto.body}, параметры: {dto.query_params}")
+
+        pair = dto.query_params.get('pair')
+        rate = dto.body.get('rate')
+
+        if not pair or not rate:
+            logger.warning("Отсутствуют обязательные поля для обновления курса обмена")
+            dto.response = {"error": "Missing required fields"}
+            dto.status_code = 400  # Bad Request
+            return
+
+        try:
+            from_currency, to_currency = pair[:3], pair[3:]  # Разделяем пару на две валюты
+            self.model.patch_exchange_rate(from_currency, to_currency, float(rate))
+            logger.info(f"Курс обмена {from_currency} -> {to_currency} успешно обновлен")
+            dto.response = {"message": f"Exchange rate {from_currency} -> {to_currency} updated successfully"}
+            dto.status_code = 200  # OK
+        except ValueError as e:
+            logger.error(f"Ошибка при обновлении курса обмена: {e}")
+            dto.response = {"error": str(e)}
+            dto.status_code = 404  # Not Found
+        except Exception as e:
+            logger.critical(f"Неизвестная ошибка при обновлении курса обмена: {e}")
+            dto.response = {"error": "Failed to update exchange rate"}
+            dto.status_code = 500  # Internal Server Error
 
     def convert_currency(self, dto):
         logger.info("Конвертация валюты")

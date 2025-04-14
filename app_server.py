@@ -31,20 +31,34 @@ class RequestHandler(BaseHTTPRequestHandler):
         logger.info("Обработка GET-запроса")
         router = Router()
         viewer = Viewer()
-        response = router.handle_request(self)
-        if isinstance(response, str):  # Если это HTML-страница
-            self.send_response(200)
+        dto = router.handle_request(self)
+
+        # Получаем статус ответа из dto
+        status_code = getattr(dto, 'status_code', 200)  # По умолчанию 200, если статус не задан
+
+        if isinstance(dto.response, str):  # Если это HTML-страница
+            self.send_response(status_code)
             self.send_header('Content-Type', 'text/html')
             self.end_headers()
-            self.wfile.write(viewer.render_html(response).encode())
+            self.wfile.write(viewer.render_html(dto.response).encode())
         else:  # Если это JSON-ответ
-            self.send_json_response(200, viewer.render_json(response))
+            self.send_json_response(status_code, viewer.render_json(dto.response))
 
     def do_POST(self):
         logger.info("Обработка POST-запроса")
         router = Router()
-        response = router.handle_request(self)
-        self.send_json_response(200, response)
+        logger.debug(f"Экземпляр класса Router - {router.__dict__}")
+        dto = router.handle_request(self)
+        status_code = getattr(dto, 'status_code', 200)  # По умолчанию 200, если статус не задан
+        self.send_json_response(status_code, dto.response)
+
+    def do_PATCH(self):
+        logger.info("Обработка PATCH-запроса")
+        router = Router()
+        logger.debug(f"Экземпляр класса Router - {router.__dict__}")
+        dto = router.handle_request(self)
+        status_code = getattr(dto, 'status_code', 200)  # По умолчанию 200, если статус не задан
+        self.send_json_response(status_code, dto.response)
 
 def start_server():
     logger.info("Запуск HTTP-сервера на http://localhost:8000")

@@ -1,5 +1,6 @@
 import logging
 from controller import Controller
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,9 @@ class Router:
             ('GET', '/convert'): Controller().convert_currency,
             ('GET', '/'): Controller().handle_html_page,
             ('GET', '/currency/:code'): Controller().get_currency_by_code_dynamic,  # Динамический маршрут
-            ("GET", "/exchangeRates/:pair") : Controller().get_exchange_rates_dynamic
+            ("GET", "/exchangeRates/:pair") : Controller().get_exchange_rates_dynamic,
+            ('PATCH', '/exchangeRate') : Controller().update_exchange_rate,
+            ('PATCH', '/exchangeRate/:pair'): Controller().update_exchange_rate_by_pair,
         }
         logger.debug(f"Список маршрутов: {self.routes.keys()}")
 
@@ -27,6 +30,7 @@ class Router:
         """
         # Проверяем точное совпадение маршрута
         handler = self.routes.get((dto.method, dto.url), None)
+        logger.debug(f"обработчик: {handler}")
         logger.debug(f"Обработчик для маршрута {dto.method} {dto.url}: {handler.__name__ if handler else None}")
         if handler:
             logger.info(f"Маршрут найден: {dto.method} {dto.url}")
@@ -97,19 +101,39 @@ class Router:
 
         # Возвращаем ответ
         logger.debug(f"Ответ DTO: {dto.response}")
-        return dto.response
+        return dto
 
     def _parse_body(self, handler):
         """
-        Парсит тело запроса для POST-запросов.
+        Парсит тело запроса для POST и PATCH-запросов.
         """
         logger.info("Парсинг тела запроса")
         content_length = int(handler.headers.get('Content-Length', 0))
         if content_length > 0:
             body = handler.rfile.read(content_length).decode('utf-8')
-            parsed_body = dict(x.split('=') for x in body.split('&'))
-            logger.debug(f"Тело запроса: {parsed_body}")
-            return parsed_body
+            logger.debug(f"Тело запроса (сырое): {body}")
+
+            # Если заголовок Content-Type указывает на JSON
+            if handler.headers.get('Content-Type') == 'application/json':
+                try:
+                    parsed_body = json.loads(body)
+                    logger.debug(f"Тело запроса (JSON): {parsed_body}")
+                    return parsed_body
+                except json.JSONDecodeError:
+                    logger.error("Ошибка декодирования JSON")
+                    return {"error": "Invalid JSON"}
+
+            # Если Content-Type указывает на form-urlencoded
+            elif handler.headers.get('Content-Type') == 'application/x-www-form-urlencoded':
+                parsed_body = dict(x.split('=') for x in body.split('&'))
+                logger.debug(f"Тело запроса (form-urlencoded): {parsed_body}")
+                return parsed_body
+
+            # Если Content-Type неизвестен
+            else:
+                logger.warning("Неизвестный Content-Type")
+                return {"error": "Unsupported Content-Type"}
+
         logger.debug("Тело запроса пустое")
         return {}
 
