@@ -1,6 +1,8 @@
 import sqlite3
 import logging
 from sign_code import currency_sign
+from dto import currencyDTO, currencyExchangeDTO
+from errors import CurrencyNotFoundError, CurrencyAlreadyExistsError, ExchangeRateNotFoundError, ExchangeRateAlreadyExistsError
 
 logger = logging.getLogger(__name__)
 
@@ -35,24 +37,22 @@ class CurrencyModel:
         finally:
             conn.close()
 
-    def add_currency(self, code, name, sign):
-        logger.info(f"Добавление валюты: {code}, {name}, {sign}")
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        try:
-            cursor.execute('INSERT INTO currencies (code, name, sign) VALUES (?, ?, ?)', (code, name, sign))
-            conn.commit()
-            logger.debug(f"Валюта {code} успешно добавлена в базу данных")
-        except sqlite3.IntegrityError:
-            logger.warning(f"Валюта {code} уже существует в базе данных")
-            raise ValueError("Currency already exists")
-        except Exception as e:
-            logger.error(f"Ошибка при добавлении валюты {code}: {e}")
-            raise
-        finally:
-            conn.close()
 
-    def get_currency_by_code(self, code):
+
+    def add_currency(self, code: str, name: str, sign: str):
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    'INSERT INTO currencies (code, name, sign) VALUES (?, ?, ?)',
+                    (code.upper(), name, sign)
+                )
+                conn.commit()
+        except sqlite3.IntegrityError:
+            raise CurrencyAlreadyExistsError(code=code.upper())
+
+
+    def get_currency_by_code(self, code : str) -> dict:
         logger.info(f"Получение валюты по коду: {code}")
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
@@ -63,7 +63,7 @@ class CurrencyModel:
                 logger.debug(f"Результат запроса: {result}")
                 return {"id": result[0], "code": result[1], "name": result[2], "sign": result[3]}
             logger.warning(f"Валюта с кодом {code} не найдена")
-            return None
+            raise CurrencyNotFoundError(code)
         except Exception as e:
             logger.error(f"Ошибка при получении валюты по коду {code}: {e}")
             raise
@@ -114,6 +114,7 @@ class CurrencyModel:
             # Проверяем, существует ли запись для обновления
             cursor.execute('SELECT id FROM exchange_rates WHERE from_currency = ? AND to_currency = ?', (from_currency, to_currency))
             result = cursor.fetchone()
+            logger.debug(f"result: {result}")
             if not result:
                 logger.warning(f"Курс обмена {from_currency} -> {to_currency} не найден")
                 raise ValueError("Exchange rate not found")
@@ -122,6 +123,7 @@ class CurrencyModel:
             cursor.execute('UPDATE exchange_rates SET rate = ? WHERE from_currency = ? AND to_currency = ?', (rate, from_currency, to_currency))
             conn.commit()
             logger.info(f"Курс обмена {from_currency} -> {to_currency} успешно обновлен")
+            return self.get_exchange_rate(from_currency, to_currency)
         except Exception as e:
             logger.error(f"Ошибка при обновлении курса обмена {from_currency} -> {to_currency}: {e}")
             raise

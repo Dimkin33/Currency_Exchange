@@ -1,7 +1,8 @@
 import logging
 from model import CurrencyModel
 from sign_code import currency_sign
-
+from dto import currencyDTO, currencyExchangeDTO, requestDTO
+from errors import APIError, CurrencyNotFoundError, InvalidCurrencyPairError, CurrencyAlreadyExistsError
 logger = logging.getLogger(__name__)
 
 # Логирование настроено в main.py, здесь используется существующая конфигурация
@@ -26,20 +27,19 @@ class Controller:
         code = dto.query_params.get('code', [None])
         logger.debug(f"Код валюты из запроса: {code}")
         if not code:
-            logger.warning("Код валюты отсутствует в запросе")
-            dto.response = {"error": "Currency code is required"}
-            return
+            raise InvalidCurrencyPairError("Currency code is required")
         try:
             currency = self.model.get_currency_by_code(code)
-            if currency:
-                logger.info(f"Валюта найдена: {currency}")
-                dto.response = currency
-            else:
-                logger.warning(f"Валюта с кодом {code} не найдена")
-                dto.response = {"error": "Currency not found"}
+            logger.info(f"Валюта найдена: {currency}")
+            dto.response = currency
+            dto.status_code = 200  # Устанавливаем статус 200
+            return currency
+        except CurrencyNotFoundError as e:
+            logger.warning(f"CurrencyNotFoundError: {e.message}")
+            raise e
         except Exception as e:
             logger.error(f"Ошибка при получении валюты по коду {code}: {e}")
-            dto.response = {"error": "Failed to retrieve currency"}
+            raise APIError("Failed to retrieve currency")
 
     def get_currency_by_code_dynamic(self, dto):
         logger.info("Получение валюты по коду (динамический метод)")
@@ -53,9 +53,11 @@ class Controller:
         if currency:
             logger.info(f"Валюта найдена: {currency}")
             dto.response = currency
+            dto.status_code = 200  # Устанавливаем статус 200
         else:
             logger.warning(f"Валюта с кодом {code} не найдена")
             dto.response = {"error": "Currency not found"}
+            dto.status_code = 404
             
     def get_exchange_rates_dynamic(self, dto):
         logger.info("Получение пары валют по коду (динамический метод)")
@@ -85,21 +87,22 @@ class Controller:
         name = currency_sign[code][0]
         sign = currency_sign[code][1]
         
+        currency_DTO = currencyDTO(code=code, name=name, sign=sign)
         
         if not code:
             logger.warning("Отсутствуют обязательные поля для добавления валюты")
-            dto.response = {"error": "Missing required fields"}
+            raise Missing_required_fields("Missing required fields")
             return
         try:
-            self.model.add_currency(code, name, sign)
+            self.model.add_currency(currency_DTO.code, currency_DTO.name, currency_DTO.sign)
             logger.info(f"Валюта {code} успешно добавлена")
-            dto.response = self.model.get_currency_by_code(code)
-        except ValueError as e:
-            logger.error(f"Ошибка при добавлении валюты {code}: {e}")
-            dto.response = {"error": str(e)}
+            dto.response = curency_DTO.to_dict()
+            dto.status_code = 201  # Created
+        except CurrencyAlreadyExistsError as e:
+            raise e  # пробрасываем дальше в router для централизованной обработки
         except Exception as e:
-            logger.critical(f"Неизвестная ошибка при добавлении валюты {code}: {e}")
             dto.response = {"error": "Failed to add currency"}
+            dto.status_code = 500
 
     def get_exchange_rates(self, dto):
         logger.info("Получение курсов обмена валют")
@@ -229,9 +232,9 @@ class Controller:
         try:
             from_currency, to_currency = pair[:3], pair[3:]  # Разделяем пару на две валюты
             self.model.patch_exchange_rate(from_currency, to_currency, float(rate))
-            logger.info(f"Курс обмена {from_currency} -> {to_currency} успешно обновлен")
-            dto.response = {"message": f"Exchange rate {from_currency} -> {to_currency} updated successfully"}
-            dto.status_code = 200  # OK
+            self.model.get_exchange_rate(from_currency, to_currency)
+            #dto.response = {"message": f"Exchange rate {from_currency} -> {to_currency} updated successfully"}
+            #dto.status_code = 200  # OK
         except ValueError as e:
             logger.error(f"Ошибка при обновлении курса обмена: {e}")
             dto.response = {"error": str(e)}
