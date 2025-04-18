@@ -58,6 +58,7 @@ class Router:
     def _safe_call(self, handler, dto):
         try:
             handler(dto)
+            logger.debug(f"Обработчик {handler.__name__} завершил выполнение без ошибок")
         except APIError as e:
             logger.error(f"API ошибка: {e.message}")
             dto.response = e.to_dict()
@@ -67,7 +68,7 @@ class Router:
             dto.response = {"error": "Internal server error"}
             dto.status_code = 500
 
-        logger.debug(f"Обработчик {handler.__name__} завершил выполнение без ошибок")
+        
 
     def match_dynamic_route(self, route, url, dto):
         logger.debug(f"Сопоставление динамического маршрута: {route} с {url}")

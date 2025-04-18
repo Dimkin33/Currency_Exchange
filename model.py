@@ -57,7 +57,7 @@ class CurrencyModel:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         try:
-            cursor.execute('SELECT id, code, name, sign FROM currencies WHERE code = ?', (code,))
+            cursor.execute('SELECT id, code, name, sign FROM currencies WHERE code = ?', (code.upper(),))
             result = cursor.fetchone()
             if result:
                 logger.debug(f"Результат запроса: {result}")
@@ -175,7 +175,7 @@ class CurrencyModel:
             cursor.execute('SELECT id, rate FROM exchange_rates WHERE from_currency = ? AND to_currency = ?', (from_currency, to_currency))
             result = cursor.fetchone()
             if result:
-                logger.debug(f"Курс обмена найден: {result[0]}")
+                logger.debug(f"Курс обмена найден: {result}")
                 return {"from": from_currency, "to": to_currency, "rate": result[1], 'id': result[0]}
             logger.warning(f"Курс обмена {from_currency} -> {to_currency} не найден")
             return None

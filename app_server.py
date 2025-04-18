@@ -17,10 +17,10 @@ class RequestHandler(BaseHTTPRequestHandler):
 
     def send_response_content(self, status_code, data, content_type=None):
         if status_code is None:
-            logger.warning("status_code не указан, используется 500")
-            status_code = 500
+            logger.warning("status_code не указан, используется 200")
+            status_code = 200
 
-        if isinstance(data, dict):
+        if isinstance(data, dict) or isinstance(data, list):
             response_body = json.dumps(data, indent=4, ensure_ascii=False)
             content_type = content_type or 'application/json; charset=utf-8'
         elif isinstance(data, str):
@@ -30,7 +30,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             response_body = str(data)
             content_type = content_type or 'text/plain; charset=utf-8'
 
-        logger.debug(f"Отправка ответа [{status_code}] с типом: {content_type}")
+        logger.debug(f"Отправка ответа [{status_code}] с типом: {content_type}, тип содержимого: {type(data)}")
         self.send_response(status_code)
         self.send_header('Content-Type', content_type)
         self.end_headers()
@@ -68,7 +68,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         try:
             dto = self.router.handle_request(self)
             status_code = dto.status_code or 200
-            self.send_json_response(status_code, dto.response)
+            self.send_response_content(status_code, dto.response)
         except APIError as e:
             logger.warning(f"APIError: {e.message}")
             self.send_response_content(e.status_code, e.to_dict())
@@ -81,7 +81,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         try:
             dto = self.router.handle_request(self)
             status_code = dto.status_code or 200
-            self.send_json_response(status_code, dto.response)
+            self.send_response_content(status_code, dto.response)
         except APIError as e:
             logger.warning(f"APIError: {e.message}")
             self.send_response_content(e.status_code, e.to_dict())
