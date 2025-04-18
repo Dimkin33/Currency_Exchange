@@ -1,7 +1,7 @@
 import logging
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from router import Router
-from viewer import Viewer
+
 from errors import APIError
 import json
 
@@ -11,14 +11,11 @@ logger = logging.getLogger(__name__)
 class RequestHandler(BaseHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         self.router = Router()
-        self.viewer = Viewer()
+
         logger.info("Инициализация RequestHandler")
         super().__init__(*args, **kwargs)
 
-    def send_response_content(self, status_code, data, content_type=None):
-        if status_code is None:
-            logger.warning("status_code не указан, используется 200")
-            status_code = 200
+    def send_response_content(self, status_code : int, data : any, content_type : str = None) -> None:# функция отправки ответа на запрос
 
         if isinstance(data, dict) or isinstance(data, list):
             response_body = json.dumps(data, indent=4, ensure_ascii=False)
@@ -30,8 +27,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             response_body = str(data)
             content_type = content_type or 'text/plain; charset=utf-8'
 
-        logger.debug(f"Отправка ответа [{status_code}] с типом: {content_type}, тип содержимого: {type(data)}")
-        self.send_response(status_code)
+        logger.debug(f"Отправка ответа 200 с типом: {content_type}, тип содержимого: {type(data).__name__}")
+        self.send_response(status_code) # устанавливаем код состояния ответа
         self.send_header('Content-Type', content_type)
         self.end_headers()
         self.wfile.write(response_body.encode('utf-8'))
@@ -53,9 +50,8 @@ class RequestHandler(BaseHTTPRequestHandler):
         logger.info("Обработка GET-запроса")
 
         try:
-            dto = self.router.handle_request(self)
-            status_code = dto.status_code or 200
-            self.send_response_content(status_code, dto.response)
+            result, status_code = self.router.handle_request(self) # обработка запроса
+            self.send_response_content(status_code, result)
         except APIError as e:
             logger.warning(f"APIError: {e.message}")
             self.send_response_content(e.status_code, e.to_dict())
@@ -66,9 +62,8 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         logger.info("Обработка POST-запроса")
         try:
-            dto = self.router.handle_request(self)
-            status_code = dto.status_code or 200
-            self.send_response_content(status_code, dto.response)
+            result, status_code= self.router.handle_request(self)
+            self.send_response_content(status_code, result)
         except APIError as e:
             logger.warning(f"APIError: {e.message}")
             self.send_response_content(e.status_code, e.to_dict())

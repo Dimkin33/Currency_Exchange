@@ -36446,3 +36446,2252 @@ TypeError: APIError.__init__() takes 1 positional argument but 2 were given
 2025-04-18 09:34:29,646 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
 2025-04-18 09:34:29,676 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
 2025-04-18 09:34:29,708 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 09:36:06,546 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 09:52:07,880 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 09:52:08,098 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 09:52:08,098 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 09:52:08,098 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 09:52:08,099 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 09:52:08,099 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 09:52:08,100 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 09:52:08,100 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 09:52:11,065 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 09:52:11,095 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 09:52:11,126 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 09:52:11,156 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 09:52:11,203 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 09:52:11,233 - router       -handle_request      - INFO     - Обработка запроса:  GET /
+2025-04-18 09:52:11,264 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/', params='', query='', fragment='')
+2025-04-18 09:52:11,294 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 09:52:11,326 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 09:52:11,356 - router       -handle_request      - DEBUG    - Путь запроса: /, параметры: {}
+2025-04-18 09:52:11,388 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 09:52:11,418 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 09:52:11,450 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 09:52:11,480 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /
+2025-04-18 09:52:11,512 - router       -resolve             - INFO     - Найден статический маршрут: GET /
+2025-04-18 09:52:11,542 - controller   -handle_html_page    - INFO     - Обработка HTML-страницы
+2025-04-18 09:52:11,680 - router       -_safe_call          - DEBUG    - Обработчик handle_html_page завершил выполнение без ошибок
+2025-04-18 09:52:11,710 - router       -handle_request      - DEBUG    - Ответ DTO: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Management</title>
+</head>
+<body>
+    <h1>Currency Management</h1>
+
+    <h2>Add Currency</h2>
+    <form action="/currencies" method="post">
+        <label for="code">Currency Code:</label>
+        <input type="text" id="code" name="code" required><br>
+        <label for="name">Currency Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        <button type="submit">Add Currency</button>
+    </form>
+
+    <h2>View Currencies</h2>
+    <form action="/currencies" method="get">
+        <button type="submit">Load Currencies</button>
+    </form>
+
+    <h2>View Currency Details</h2>
+    <form action="/currency" method="get">
+        <label for="currency-code">Currency Code:</label>
+        <input type="text" id="currency-code" name="code" required><br>
+        <button type="submit">Get Details</button>
+    </form>
+
+    <h2>Add Exchange Rate</h2>
+    <form action="/exchangeRates" method="post">
+        <label for="from">From Currency:</label>
+        <input type="text" id="from" name="from" required><br>
+        <label for="to">To Currency:</label>
+        <input type="text" id="to" name="to" required><br>
+        <label for="rate">Rate:</label>
+        <input type="number" id="rate" name="rate" step="0.01" required><br>
+        <button type="submit">Add Rate</button>
+    </form>
+
+    <h2>Get Exchange Rate</h2>
+    <form action="/exchangeRate" method="get">
+        <label for="from-get">From Currency:</label>
+        <input type="text" id="from-get" name="from" required><br>
+        <label for="to-get">To Currency:</label>
+        <input type="text" id="to-get" name="to" required><br>
+        <button type="submit">Get Rate</button>
+    </form>
+
+    <h2>Обновление курса валют</h2>
+
+    <form id="updateForm">
+      <label>
+        Валютная пара (6 символов, например USDRUB):
+        <input type="text" name="pair" required pattern="[A-Za-z]{6}" />
+      </label><br><br>
+  
+      <label>
+        Новый курс:
+        <input type="number" name="rate" step="0.01" required />
+      </label><br><br>
+  
+      <button type="submit">Обновить</button>
+    </form>
+  
+    <pre id="result"></pre>
+  
+    <script>
+      const form = document.getElementById("updateForm");
+      const result = document.getElementById("result");
+  
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+  
+        const pair = form.pair.value.toUpperCase();
+        const rate = form.rate.value;
+  
+        const body = new URLSearchParams({ rate });
+  
+        const response = await fetch(`http://localhost:8000/exchangeRate/${pair}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: body.toString(),
+        });
+  
+        const data = await response.json();
+        result.textContent = JSON.stringify(data, null, 2);
+      });
+    </script>
+
+    <h2>View Exchange Rates</h2>
+    <form action="/exchangeRates" method="get">
+        <button type="submit">Load Exchange Rates</button>
+    </form>
+
+    <h2>Convert Currency</h2>
+    <form action="/convert" method="get">
+        <label for="from-currency">From Currency:</label>
+        <input type="text" id="from-currency" name="from" required><br>
+        <label for="to-currency">To Currency:</label>
+        <input type="text" id="to-currency" name="to" required><br>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" step="0.01" required><br>
+        <button type="submit">Convert</button>
+    </form>
+</body>
+</html> None
+2025-04-18 09:52:11,741 - app_server   -do_GET              - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 57, in do_GET
+    status_code = dto.status_code or 200
+                  ^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'status_code'
+2025-04-18 09:52:11,864 - app_server   -send_response_content- DEBUG    - Отправка ответа [500] с типом: application/json; charset=utf-8, тип содержимого: <class 'dict'>
+2025-04-18 09:52:12,001 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 09:52:12,033 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 09:52:12,063 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 09:52:12,095 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:02:21,619 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 10:02:23,289 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 10:02:23,350 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 10:02:23,350 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 10:02:23,350 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 10:02:23,351 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 10:02:23,351 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 10:02:23,351 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 10:02:23,351 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 10:02:28,154 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:02:28,185 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:02:28,215 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:02:28,246 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:02:28,292 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 10:02:28,321 - router       -handle_request      - INFO     - Обработка запроса:  GET /
+2025-04-18 10:02:28,352 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/', params='', query='', fragment='')
+2025-04-18 10:02:28,382 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:02:28,413 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:02:28,444 - router       -handle_request      - DEBUG    - Путь запроса: /, параметры: {}
+2025-04-18 10:02:28,475 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:02:28,507 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:02:28,537 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 10:02:28,568 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /
+2025-04-18 10:02:28,598 - router       -resolve             - INFO     - Найден статический маршрут: GET /
+2025-04-18 10:02:28,644 - controller   -handle_html_page    - INFO     - Обработка HTML-страницы
+2025-04-18 10:02:28,781 - router       -_safe_call          - DEBUG    - Обработчик handle_html_page завершил выполнение без ошибок
+2025-04-18 10:02:28,811 - router       -handle_request      - DEBUG    - Ответ DTO: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Management</title>
+</head>
+<body>
+    <h1>Currency Management</h1>
+
+    <h2>Add Currency</h2>
+    <form action="/currencies" method="post">
+        <label for="code">Currency Code:</label>
+        <input type="text" id="code" name="code" required><br>
+        <label for="name">Currency Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        <button type="submit">Add Currency</button>
+    </form>
+
+    <h2>View Currencies</h2>
+    <form action="/currencies" method="get">
+        <button type="submit">Load Currencies</button>
+    </form>
+
+    <h2>View Currency Details</h2>
+    <form action="/currency" method="get">
+        <label for="currency-code">Currency Code:</label>
+        <input type="text" id="currency-code" name="code" required><br>
+        <button type="submit">Get Details</button>
+    </form>
+
+    <h2>Add Exchange Rate</h2>
+    <form action="/exchangeRates" method="post">
+        <label for="from">From Currency:</label>
+        <input type="text" id="from" name="from" required><br>
+        <label for="to">To Currency:</label>
+        <input type="text" id="to" name="to" required><br>
+        <label for="rate">Rate:</label>
+        <input type="number" id="rate" name="rate" step="0.01" required><br>
+        <button type="submit">Add Rate</button>
+    </form>
+
+    <h2>Get Exchange Rate</h2>
+    <form action="/exchangeRate" method="get">
+        <label for="from-get">From Currency:</label>
+        <input type="text" id="from-get" name="from" required><br>
+        <label for="to-get">To Currency:</label>
+        <input type="text" id="to-get" name="to" required><br>
+        <button type="submit">Get Rate</button>
+    </form>
+
+    <h2>Обновление курса валют</h2>
+
+    <form id="updateForm">
+      <label>
+        Валютная пара (6 символов, например USDRUB):
+        <input type="text" name="pair" required pattern="[A-Za-z]{6}" />
+      </label><br><br>
+  
+      <label>
+        Новый курс:
+        <input type="number" name="rate" step="0.01" required />
+      </label><br><br>
+  
+      <button type="submit">Обновить</button>
+    </form>
+  
+    <pre id="result"></pre>
+  
+    <script>
+      const form = document.getElementById("updateForm");
+      const result = document.getElementById("result");
+  
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+  
+        const pair = form.pair.value.toUpperCase();
+        const rate = form.rate.value;
+  
+        const body = new URLSearchParams({ rate });
+  
+        const response = await fetch(`http://localhost:8000/exchangeRate/${pair}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: body.toString(),
+        });
+  
+        const data = await response.json();
+        result.textContent = JSON.stringify(data, null, 2);
+      });
+    </script>
+
+    <h2>View Exchange Rates</h2>
+    <form action="/exchangeRates" method="get">
+        <button type="submit">Load Exchange Rates</button>
+    </form>
+
+    <h2>Convert Currency</h2>
+    <form action="/convert" method="get">
+        <label for="from-currency">From Currency:</label>
+        <input type="text" id="from-currency" name="from" required><br>
+        <label for="to-currency">To Currency:</label>
+        <input type="text" id="to-currency" name="to" required><br>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" step="0.01" required><br>
+        <button type="submit">Convert</button>
+    </form>
+</body>
+</html> None
+2025-04-18 10:02:28,841 - app_server   -do_GET              - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 57, in do_GET
+    status_code = dto.status_code or 200
+                  ^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'status_code'
+2025-04-18 10:02:28,964 - app_server   -send_response_content- DEBUG    - Отправка ответа [500] с типом: application/json; charset=utf-8, тип содержимого: <class 'dict'>
+2025-04-18 10:02:29,104 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:02:29,134 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:02:29,164 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:02:29,196 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:05:54,465 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 10:05:56,022 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 10:05:56,083 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 10:05:56,083 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 10:05:56,083 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 10:05:56,084 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 10:05:56,084 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 10:05:56,085 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 10:05:56,085 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 10:05:59,565 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:05:59,596 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:05:59,626 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:05:59,656 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:05:59,703 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 10:05:59,734 - router       -handle_request      - INFO     - Обработка запроса:  GET /
+2025-04-18 10:05:59,765 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/', params='', query='', fragment='')
+2025-04-18 10:05:59,795 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:05:59,826 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:05:59,857 - router       -handle_request      - DEBUG    - Путь запроса: /, параметры: {}
+2025-04-18 10:05:59,888 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:05:59,918 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:05:59,949 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 10:05:59,979 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /
+2025-04-18 10:06:00,010 - router       -resolve             - INFO     - Найден статический маршрут: GET /
+2025-04-18 10:06:00,041 - controller   -handle_html_page    - INFO     - Обработка HTML-страницы
+2025-04-18 10:06:00,178 - router       -_safe_call          - DEBUG    - Обработчик handle_html_page завершил выполнение без ошибок
+2025-04-18 10:06:00,208 - router       -handle_request      - DEBUG    - Ответ DTO: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Management</title>
+</head>
+<body>
+    <h1>Currency Management</h1>
+
+    <h2>Add Currency</h2>
+    <form action="/currencies" method="post">
+        <label for="code">Currency Code:</label>
+        <input type="text" id="code" name="code" required><br>
+        <label for="name">Currency Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        <button type="submit">Add Currency</button>
+    </form>
+
+    <h2>View Currencies</h2>
+    <form action="/currencies" method="get">
+        <button type="submit">Load Currencies</button>
+    </form>
+
+    <h2>View Currency Details</h2>
+    <form action="/currency" method="get">
+        <label for="currency-code">Currency Code:</label>
+        <input type="text" id="currency-code" name="code" required><br>
+        <button type="submit">Get Details</button>
+    </form>
+
+    <h2>Add Exchange Rate</h2>
+    <form action="/exchangeRates" method="post">
+        <label for="from">From Currency:</label>
+        <input type="text" id="from" name="from" required><br>
+        <label for="to">To Currency:</label>
+        <input type="text" id="to" name="to" required><br>
+        <label for="rate">Rate:</label>
+        <input type="number" id="rate" name="rate" step="0.01" required><br>
+        <button type="submit">Add Rate</button>
+    </form>
+
+    <h2>Get Exchange Rate</h2>
+    <form action="/exchangeRate" method="get">
+        <label for="from-get">From Currency:</label>
+        <input type="text" id="from-get" name="from" required><br>
+        <label for="to-get">To Currency:</label>
+        <input type="text" id="to-get" name="to" required><br>
+        <button type="submit">Get Rate</button>
+    </form>
+
+    <h2>Обновление курса валют</h2>
+
+    <form id="updateForm">
+      <label>
+        Валютная пара (6 символов, например USDRUB):
+        <input type="text" name="pair" required pattern="[A-Za-z]{6}" />
+      </label><br><br>
+  
+      <label>
+        Новый курс:
+        <input type="number" name="rate" step="0.01" required />
+      </label><br><br>
+  
+      <button type="submit">Обновить</button>
+    </form>
+  
+    <pre id="result"></pre>
+  
+    <script>
+      const form = document.getElementById("updateForm");
+      const result = document.getElementById("result");
+  
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+  
+        const pair = form.pair.value.toUpperCase();
+        const rate = form.rate.value;
+  
+        const body = new URLSearchParams({ rate });
+  
+        const response = await fetch(`http://localhost:8000/exchangeRate/${pair}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: body.toString(),
+        });
+  
+        const data = await response.json();
+        result.textContent = JSON.stringify(data, null, 2);
+      });
+    </script>
+
+    <h2>View Exchange Rates</h2>
+    <form action="/exchangeRates" method="get">
+        <button type="submit">Load Exchange Rates</button>
+    </form>
+
+    <h2>Convert Currency</h2>
+    <form action="/convert" method="get">
+        <label for="from-currency">From Currency:</label>
+        <input type="text" id="from-currency" name="from" required><br>
+        <label for="to-currency">To Currency:</label>
+        <input type="text" id="to-currency" name="to" required><br>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" step="0.01" required><br>
+        <button type="submit">Convert</button>
+    </form>
+</body>
+</html> None
+2025-04-18 10:06:00,240 - app_server   -send_response_content- DEBUG    - Отправка ответа [200] с типом: text/html; charset=utf-8, тип содержимого: <class 'str'>
+2025-04-18 10:06:00,379 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:06:00,410 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:06:00,440 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:06:00,471 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:13:15,016 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 10:13:17,407 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 10:13:17,467 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 10:13:17,467 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 10:13:17,468 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 10:13:17,468 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 10:13:17,468 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 10:13:17,469 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 10:13:17,469 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 10:13:20,610 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:13:20,640 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:13:20,670 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:13:20,700 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:13:20,748 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 10:13:20,777 - router       -handle_request      - INFO     - Обработка запроса:  GET /
+2025-04-18 10:13:20,808 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/', params='', query='', fragment='')
+2025-04-18 10:13:20,839 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:13:20,870 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:13:20,902 - router       -handle_request      - DEBUG    - Путь запроса: /, параметры: {}
+2025-04-18 10:13:20,932 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:13:20,962 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:13:20,992 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 10:13:21,024 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /
+2025-04-18 10:13:21,054 - router       -resolve             - INFO     - Найден статический маршрут: GET /
+2025-04-18 10:13:21,085 - controller   -handle_html_page    - INFO     - Обработка HTML-страницы
+2025-04-18 10:13:21,209 - router       -_safe_call          - DEBUG    - Обработчик handle_html_page завершил выполнение без ошибок
+2025-04-18 10:13:21,241 - router       -handle_request      - DEBUG    - Ответ DTO: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Management</title>
+</head>
+<body>
+    <h1>Currency Management</h1>
+
+    <h2>Add Currency</h2>
+    <form action="/currencies" method="post">
+        <label for="code">Currency Code:</label>
+        <input type="text" id="code" name="code" required><br>
+        <label for="name">Currency Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        <button type="submit">Add Currency</button>
+    </form>
+
+    <h2>View Currencies</h2>
+    <form action="/currencies" method="get">
+        <button type="submit">Load Currencies</button>
+    </form>
+
+    <h2>View Currency Details</h2>
+    <form action="/currency" method="get">
+        <label for="currency-code">Currency Code:</label>
+        <input type="text" id="currency-code" name="code" required><br>
+        <button type="submit">Get Details</button>
+    </form>
+
+    <h2>Add Exchange Rate</h2>
+    <form action="/exchangeRates" method="post">
+        <label for="from">From Currency:</label>
+        <input type="text" id="from" name="from" required><br>
+        <label for="to">To Currency:</label>
+        <input type="text" id="to" name="to" required><br>
+        <label for="rate">Rate:</label>
+        <input type="number" id="rate" name="rate" step="0.01" required><br>
+        <button type="submit">Add Rate</button>
+    </form>
+
+    <h2>Get Exchange Rate</h2>
+    <form action="/exchangeRate" method="get">
+        <label for="from-get">From Currency:</label>
+        <input type="text" id="from-get" name="from" required><br>
+        <label for="to-get">To Currency:</label>
+        <input type="text" id="to-get" name="to" required><br>
+        <button type="submit">Get Rate</button>
+    </form>
+
+    <h2>Обновление курса валют</h2>
+
+    <form id="updateForm">
+      <label>
+        Валютная пара (6 символов, например USDRUB):
+        <input type="text" name="pair" required pattern="[A-Za-z]{6}" />
+      </label><br><br>
+  
+      <label>
+        Новый курс:
+        <input type="number" name="rate" step="0.01" required />
+      </label><br><br>
+  
+      <button type="submit">Обновить</button>
+    </form>
+  
+    <pre id="result"></pre>
+  
+    <script>
+      const form = document.getElementById("updateForm");
+      const result = document.getElementById("result");
+  
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+  
+        const pair = form.pair.value.toUpperCase();
+        const rate = form.rate.value;
+  
+        const body = new URLSearchParams({ rate });
+  
+        const response = await fetch(`http://localhost:8000/exchangeRate/${pair}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: body.toString(),
+        });
+  
+        const data = await response.json();
+        result.textContent = JSON.stringify(data, null, 2);
+      });
+    </script>
+
+    <h2>View Exchange Rates</h2>
+    <form action="/exchangeRates" method="get">
+        <button type="submit">Load Exchange Rates</button>
+    </form>
+
+    <h2>Convert Currency</h2>
+    <form action="/convert" method="get">
+        <label for="from-currency">From Currency:</label>
+        <input type="text" id="from-currency" name="from" required><br>
+        <label for="to-currency">To Currency:</label>
+        <input type="text" id="to-currency" name="to" required><br>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" step="0.01" required><br>
+        <button type="submit">Convert</button>
+    </form>
+</body>
+</html> None
+2025-04-18 10:13:21,271 - app_server   -do_GET              - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 55, in do_GET
+    self.send_response_content(status_code, result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 30, in send_response_content
+    logger.debug(f"Отправка ответа [{status_code}] с типом: {content_type}, тип содержимого: {type(data)}")
+                                     ^^^^^^^^^^^
+NameError: name 'status_code' is not defined
+2025-04-18 10:13:22,116 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:13:22,146 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:13:22,177 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:13:22,208 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:13:23,106 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 10:13:23,136 - router       -handle_request      - INFO     - Обработка запроса:  GET /
+2025-04-18 10:13:23,167 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/', params='', query='', fragment='')
+2025-04-18 10:13:23,197 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:13:23,228 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:13:23,258 - router       -handle_request      - DEBUG    - Путь запроса: /, параметры: {}
+2025-04-18 10:13:23,290 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:13:23,320 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:13:23,352 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 10:13:23,382 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /
+2025-04-18 10:13:23,414 - router       -resolve             - INFO     - Найден статический маршрут: GET /
+2025-04-18 10:13:23,446 - controller   -handle_html_page    - INFO     - Обработка HTML-страницы
+2025-04-18 10:13:23,568 - router       -_safe_call          - DEBUG    - Обработчик handle_html_page завершил выполнение без ошибок
+2025-04-18 10:13:23,600 - router       -handle_request      - DEBUG    - Ответ DTO: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Management</title>
+</head>
+<body>
+    <h1>Currency Management</h1>
+
+    <h2>Add Currency</h2>
+    <form action="/currencies" method="post">
+        <label for="code">Currency Code:</label>
+        <input type="text" id="code" name="code" required><br>
+        <label for="name">Currency Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        <button type="submit">Add Currency</button>
+    </form>
+
+    <h2>View Currencies</h2>
+    <form action="/currencies" method="get">
+        <button type="submit">Load Currencies</button>
+    </form>
+
+    <h2>View Currency Details</h2>
+    <form action="/currency" method="get">
+        <label for="currency-code">Currency Code:</label>
+        <input type="text" id="currency-code" name="code" required><br>
+        <button type="submit">Get Details</button>
+    </form>
+
+    <h2>Add Exchange Rate</h2>
+    <form action="/exchangeRates" method="post">
+        <label for="from">From Currency:</label>
+        <input type="text" id="from" name="from" required><br>
+        <label for="to">To Currency:</label>
+        <input type="text" id="to" name="to" required><br>
+        <label for="rate">Rate:</label>
+        <input type="number" id="rate" name="rate" step="0.01" required><br>
+        <button type="submit">Add Rate</button>
+    </form>
+
+    <h2>Get Exchange Rate</h2>
+    <form action="/exchangeRate" method="get">
+        <label for="from-get">From Currency:</label>
+        <input type="text" id="from-get" name="from" required><br>
+        <label for="to-get">To Currency:</label>
+        <input type="text" id="to-get" name="to" required><br>
+        <button type="submit">Get Rate</button>
+    </form>
+
+    <h2>Обновление курса валют</h2>
+
+    <form id="updateForm">
+      <label>
+        Валютная пара (6 символов, например USDRUB):
+        <input type="text" name="pair" required pattern="[A-Za-z]{6}" />
+      </label><br><br>
+  
+      <label>
+        Новый курс:
+        <input type="number" name="rate" step="0.01" required />
+      </label><br><br>
+  
+      <button type="submit">Обновить</button>
+    </form>
+  
+    <pre id="result"></pre>
+  
+    <script>
+      const form = document.getElementById("updateForm");
+      const result = document.getElementById("result");
+  
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+  
+        const pair = form.pair.value.toUpperCase();
+        const rate = form.rate.value;
+  
+        const body = new URLSearchParams({ rate });
+  
+        const response = await fetch(`http://localhost:8000/exchangeRate/${pair}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: body.toString(),
+        });
+  
+        const data = await response.json();
+        result.textContent = JSON.stringify(data, null, 2);
+      });
+    </script>
+
+    <h2>View Exchange Rates</h2>
+    <form action="/exchangeRates" method="get">
+        <button type="submit">Load Exchange Rates</button>
+    </form>
+
+    <h2>Convert Currency</h2>
+    <form action="/convert" method="get">
+        <label for="from-currency">From Currency:</label>
+        <input type="text" id="from-currency" name="from" required><br>
+        <label for="to-currency">To Currency:</label>
+        <input type="text" id="to-currency" name="to" required><br>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" step="0.01" required><br>
+        <button type="submit">Convert</button>
+    </form>
+</body>
+</html> None
+2025-04-18 10:13:23,630 - app_server   -do_GET              - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 55, in do_GET
+    self.send_response_content(status_code, result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 30, in send_response_content
+    logger.debug(f"Отправка ответа [{status_code}] с типом: {content_type}, тип содержимого: {type(data)}")
+                                     ^^^^^^^^^^^
+NameError: name 'status_code' is not defined
+2025-04-18 10:13:24,365 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:13:24,397 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:13:24,428 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:13:24,458 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:13:24,505 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 10:13:24,535 - router       -handle_request      - INFO     - Обработка запроса:  GET /
+2025-04-18 10:13:24,566 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/', params='', query='', fragment='')
+2025-04-18 10:13:24,597 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:13:24,628 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:13:24,659 - router       -handle_request      - DEBUG    - Путь запроса: /, параметры: {}
+2025-04-18 10:13:24,690 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:13:24,721 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:13:24,752 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 10:13:24,783 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /
+2025-04-18 10:13:24,814 - router       -resolve             - INFO     - Найден статический маршрут: GET /
+2025-04-18 10:13:24,844 - controller   -handle_html_page    - INFO     - Обработка HTML-страницы
+2025-04-18 10:13:24,997 - router       -_safe_call          - DEBUG    - Обработчик handle_html_page завершил выполнение без ошибок
+2025-04-18 10:13:25,028 - router       -handle_request      - DEBUG    - Ответ DTO: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Management</title>
+</head>
+<body>
+    <h1>Currency Management</h1>
+
+    <h2>Add Currency</h2>
+    <form action="/currencies" method="post">
+        <label for="code">Currency Code:</label>
+        <input type="text" id="code" name="code" required><br>
+        <label for="name">Currency Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        <button type="submit">Add Currency</button>
+    </form>
+
+    <h2>View Currencies</h2>
+    <form action="/currencies" method="get">
+        <button type="submit">Load Currencies</button>
+    </form>
+
+    <h2>View Currency Details</h2>
+    <form action="/currency" method="get">
+        <label for="currency-code">Currency Code:</label>
+        <input type="text" id="currency-code" name="code" required><br>
+        <button type="submit">Get Details</button>
+    </form>
+
+    <h2>Add Exchange Rate</h2>
+    <form action="/exchangeRates" method="post">
+        <label for="from">From Currency:</label>
+        <input type="text" id="from" name="from" required><br>
+        <label for="to">To Currency:</label>
+        <input type="text" id="to" name="to" required><br>
+        <label for="rate">Rate:</label>
+        <input type="number" id="rate" name="rate" step="0.01" required><br>
+        <button type="submit">Add Rate</button>
+    </form>
+
+    <h2>Get Exchange Rate</h2>
+    <form action="/exchangeRate" method="get">
+        <label for="from-get">From Currency:</label>
+        <input type="text" id="from-get" name="from" required><br>
+        <label for="to-get">To Currency:</label>
+        <input type="text" id="to-get" name="to" required><br>
+        <button type="submit">Get Rate</button>
+    </form>
+
+    <h2>Обновление курса валют</h2>
+
+    <form id="updateForm">
+      <label>
+        Валютная пара (6 символов, например USDRUB):
+        <input type="text" name="pair" required pattern="[A-Za-z]{6}" />
+      </label><br><br>
+  
+      <label>
+        Новый курс:
+        <input type="number" name="rate" step="0.01" required />
+      </label><br><br>
+  
+      <button type="submit">Обновить</button>
+    </form>
+  
+    <pre id="result"></pre>
+  
+    <script>
+      const form = document.getElementById("updateForm");
+      const result = document.getElementById("result");
+  
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+  
+        const pair = form.pair.value.toUpperCase();
+        const rate = form.rate.value;
+  
+        const body = new URLSearchParams({ rate });
+  
+        const response = await fetch(`http://localhost:8000/exchangeRate/${pair}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: body.toString(),
+        });
+  
+        const data = await response.json();
+        result.textContent = JSON.stringify(data, null, 2);
+      });
+    </script>
+
+    <h2>View Exchange Rates</h2>
+    <form action="/exchangeRates" method="get">
+        <button type="submit">Load Exchange Rates</button>
+    </form>
+
+    <h2>Convert Currency</h2>
+    <form action="/convert" method="get">
+        <label for="from-currency">From Currency:</label>
+        <input type="text" id="from-currency" name="from" required><br>
+        <label for="to-currency">To Currency:</label>
+        <input type="text" id="to-currency" name="to" required><br>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" step="0.01" required><br>
+        <button type="submit">Convert</button>
+    </form>
+</body>
+</html> None
+2025-04-18 10:13:25,059 - app_server   -do_GET              - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 55, in do_GET
+    self.send_response_content(status_code, result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 30, in send_response_content
+    logger.debug(f"Отправка ответа [{status_code}] с типом: {content_type}, тип содержимого: {type(data)}")
+                                     ^^^^^^^^^^^
+NameError: name 'status_code' is not defined
+2025-04-18 10:13:25,534 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:13:25,564 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:13:25,596 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:13:25,626 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:13:26,013 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 10:13:53,376 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 10:13:53,436 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 10:13:53,436 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 10:13:53,436 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 10:13:53,437 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 10:13:53,437 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 10:13:53,438 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 10:13:53,438 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 10:13:55,939 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:13:55,968 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:13:56,000 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:13:56,030 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:13:56,077 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 10:13:56,108 - router       -handle_request      - INFO     - Обработка запроса:  GET /
+2025-04-18 10:13:56,140 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/', params='', query='', fragment='')
+2025-04-18 10:13:56,171 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:13:56,202 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:13:56,232 - router       -handle_request      - DEBUG    - Путь запроса: /, параметры: {}
+2025-04-18 10:13:56,263 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:13:56,293 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:13:56,324 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 10:13:56,354 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /
+2025-04-18 10:13:56,385 - router       -resolve             - INFO     - Найден статический маршрут: GET /
+2025-04-18 10:13:56,416 - controller   -handle_html_page    - INFO     - Обработка HTML-страницы
+2025-04-18 10:13:56,553 - router       -_safe_call          - DEBUG    - Обработчик handle_html_page завершил выполнение без ошибок
+2025-04-18 10:13:56,584 - router       -handle_request      - DEBUG    - Ответ DTO: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Management</title>
+</head>
+<body>
+    <h1>Currency Management</h1>
+
+    <h2>Add Currency</h2>
+    <form action="/currencies" method="post">
+        <label for="code">Currency Code:</label>
+        <input type="text" id="code" name="code" required><br>
+        <label for="name">Currency Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        <button type="submit">Add Currency</button>
+    </form>
+
+    <h2>View Currencies</h2>
+    <form action="/currencies" method="get">
+        <button type="submit">Load Currencies</button>
+    </form>
+
+    <h2>View Currency Details</h2>
+    <form action="/currency" method="get">
+        <label for="currency-code">Currency Code:</label>
+        <input type="text" id="currency-code" name="code" required><br>
+        <button type="submit">Get Details</button>
+    </form>
+
+    <h2>Add Exchange Rate</h2>
+    <form action="/exchangeRates" method="post">
+        <label for="from">From Currency:</label>
+        <input type="text" id="from" name="from" required><br>
+        <label for="to">To Currency:</label>
+        <input type="text" id="to" name="to" required><br>
+        <label for="rate">Rate:</label>
+        <input type="number" id="rate" name="rate" step="0.01" required><br>
+        <button type="submit">Add Rate</button>
+    </form>
+
+    <h2>Get Exchange Rate</h2>
+    <form action="/exchangeRate" method="get">
+        <label for="from-get">From Currency:</label>
+        <input type="text" id="from-get" name="from" required><br>
+        <label for="to-get">To Currency:</label>
+        <input type="text" id="to-get" name="to" required><br>
+        <button type="submit">Get Rate</button>
+    </form>
+
+    <h2>Обновление курса валют</h2>
+
+    <form id="updateForm">
+      <label>
+        Валютная пара (6 символов, например USDRUB):
+        <input type="text" name="pair" required pattern="[A-Za-z]{6}" />
+      </label><br><br>
+  
+      <label>
+        Новый курс:
+        <input type="number" name="rate" step="0.01" required />
+      </label><br><br>
+  
+      <button type="submit">Обновить</button>
+    </form>
+  
+    <pre id="result"></pre>
+  
+    <script>
+      const form = document.getElementById("updateForm");
+      const result = document.getElementById("result");
+  
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+  
+        const pair = form.pair.value.toUpperCase();
+        const rate = form.rate.value;
+  
+        const body = new URLSearchParams({ rate });
+  
+        const response = await fetch(`http://localhost:8000/exchangeRate/${pair}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: body.toString(),
+        });
+  
+        const data = await response.json();
+        result.textContent = JSON.stringify(data, null, 2);
+      });
+    </script>
+
+    <h2>View Exchange Rates</h2>
+    <form action="/exchangeRates" method="get">
+        <button type="submit">Load Exchange Rates</button>
+    </form>
+
+    <h2>Convert Currency</h2>
+    <form action="/convert" method="get">
+        <label for="from-currency">From Currency:</label>
+        <input type="text" id="from-currency" name="from" required><br>
+        <label for="to-currency">To Currency:</label>
+        <input type="text" id="to-currency" name="to" required><br>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" step="0.01" required><br>
+        <button type="submit">Convert</button>
+    </form>
+</body>
+</html> None
+2025-04-18 10:13:56,614 - app_server   -send_response_content- DEBUG    - Отправка ответа [200] с типом: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Management</title>
+</head>
+<body>
+    <h1>Currency Management</h1>
+
+    <h2>Add Currency</h2>
+    <form action="/currencies" method="post">
+        <label for="code">Currency Code:</label>
+        <input type="text" id="code" name="code" required><br>
+        <label for="name">Currency Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        <button type="submit">Add Currency</button>
+    </form>
+
+    <h2>View Currencies</h2>
+    <form action="/currencies" method="get">
+        <button type="submit">Load Currencies</button>
+    </form>
+
+    <h2>View Currency Details</h2>
+    <form action="/currency" method="get">
+        <label for="currency-code">Currency Code:</label>
+        <input type="text" id="currency-code" name="code" required><br>
+        <button type="submit">Get Details</button>
+    </form>
+
+    <h2>Add Exchange Rate</h2>
+    <form action="/exchangeRates" method="post">
+        <label for="from">From Currency:</label>
+        <input type="text" id="from" name="from" required><br>
+        <label for="to">To Currency:</label>
+        <input type="text" id="to" name="to" required><br>
+        <label for="rate">Rate:</label>
+        <input type="number" id="rate" name="rate" step="0.01" required><br>
+        <button type="submit">Add Rate</button>
+    </form>
+
+    <h2>Get Exchange Rate</h2>
+    <form action="/exchangeRate" method="get">
+        <label for="from-get">From Currency:</label>
+        <input type="text" id="from-get" name="from" required><br>
+        <label for="to-get">To Currency:</label>
+        <input type="text" id="to-get" name="to" required><br>
+        <button type="submit">Get Rate</button>
+    </form>
+
+    <h2>Обновление курса валют</h2>
+
+    <form id="updateForm">
+      <label>
+        Валютная пара (6 символов, например USDRUB):
+        <input type="text" name="pair" required pattern="[A-Za-z]{6}" />
+      </label><br><br>
+  
+      <label>
+        Новый курс:
+        <input type="number" name="rate" step="0.01" required />
+      </label><br><br>
+  
+      <button type="submit">Обновить</button>
+    </form>
+  
+    <pre id="result"></pre>
+  
+    <script>
+      const form = document.getElementById("updateForm");
+      const result = document.getElementById("result");
+  
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+  
+        const pair = form.pair.value.toUpperCase();
+        const rate = form.rate.value;
+  
+        const body = new URLSearchParams({ rate });
+  
+        const response = await fetch(`http://localhost:8000/exchangeRate/${pair}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: body.toString(),
+        });
+  
+        const data = await response.json();
+        result.textContent = JSON.stringify(data, null, 2);
+      });
+    </script>
+
+    <h2>View Exchange Rates</h2>
+    <form action="/exchangeRates" method="get">
+        <button type="submit">Load Exchange Rates</button>
+    </form>
+
+    <h2>Convert Currency</h2>
+    <form action="/convert" method="get">
+        <label for="from-currency">From Currency:</label>
+        <input type="text" id="from-currency" name="from" required><br>
+        <label for="to-currency">To Currency:</label>
+        <input type="text" id="to-currency" name="to" required><br>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" step="0.01" required><br>
+        <button type="submit">Convert</button>
+    </form>
+</body>
+</html>, тип содержимого: <class 'int'>
+2025-04-18 10:13:56,660 - app_server   -do_GET              - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 55, in do_GET
+    self.send_response_content(status_code, result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 32, in send_response_content
+    self.send_header('Content-Type', content_type)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 526, in send_header
+    ("%s: %s\r\n" % (keyword, value)).encode('latin-1', 'strict'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'latin-1' codec can't encode characters in position 1872-1881: ordinal not in range(256)
+2025-04-18 10:13:56,996 - app_server   -send_response_content- DEBUG    - Отправка ответа [200] с типом: {'error': 'Internal Server Error'}, тип содержимого: <class 'int'>
+2025-04-18 10:13:57,136 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:13:57,166 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:13:57,198 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:13:57,228 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:28:49,117 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 10:28:51,262 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 10:28:51,326 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 10:28:51,326 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 10:28:51,326 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 10:28:51,327 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 10:28:51,327 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 10:28:51,328 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 10:28:51,328 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 10:32:16,581 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 10:32:19,247 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 10:32:19,306 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 10:32:19,306 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 10:32:19,306 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 10:32:19,307 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 10:32:19,307 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 10:32:19,308 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 10:32:19,308 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 10:32:22,384 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:32:22,415 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:32:22,446 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:32:22,476 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:32:22,522 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 10:32:22,554 - router       -handle_request      - INFO     - Обработка запроса:  GET /
+2025-04-18 10:32:22,585 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/', params='', query='', fragment='')
+2025-04-18 10:32:22,616 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:32:22,646 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:32:22,677 - router       -handle_request      - DEBUG    - Путь запроса: /, параметры: {}
+2025-04-18 10:32:22,707 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:32:22,738 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:32:22,768 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 10:32:22,798 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /
+2025-04-18 10:32:22,830 - router       -resolve             - INFO     - Найден статический маршрут: GET /
+2025-04-18 10:32:22,860 - controller   -handle_html_page    - INFO     - Обработка HTML-страницы
+2025-04-18 10:32:23,000 - router       -_safe_call          - DEBUG    - Обработчик handle_html_page завершил выполнение без ошибок
+2025-04-18 10:32:23,031 - app_server   -send_response_content- DEBUG    - Отправка ответа [200] с типом: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Management</title>
+</head>
+<body>
+    <h1>Currency Management</h1>
+
+    <h2>Add Currency</h2>
+    <form action="/currencies" method="post">
+        <label for="code">Currency Code:</label>
+        <input type="text" id="code" name="code" required><br>
+        <label for="name">Currency Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        <button type="submit">Add Currency</button>
+    </form>
+
+    <h2>View Currencies</h2>
+    <form action="/currencies" method="get">
+        <button type="submit">Load Currencies</button>
+    </form>
+
+    <h2>View Currency Details</h2>
+    <form action="/currency" method="get">
+        <label for="currency-code">Currency Code:</label>
+        <input type="text" id="currency-code" name="code" required><br>
+        <button type="submit">Get Details</button>
+    </form>
+
+    <h2>Add Exchange Rate</h2>
+    <form action="/exchangeRates" method="post">
+        <label for="from">From Currency:</label>
+        <input type="text" id="from" name="from" required><br>
+        <label for="to">To Currency:</label>
+        <input type="text" id="to" name="to" required><br>
+        <label for="rate">Rate:</label>
+        <input type="number" id="rate" name="rate" step="0.01" required><br>
+        <button type="submit">Add Rate</button>
+    </form>
+
+    <h2>Get Exchange Rate</h2>
+    <form action="/exchangeRate" method="get">
+        <label for="from-get">From Currency:</label>
+        <input type="text" id="from-get" name="from" required><br>
+        <label for="to-get">To Currency:</label>
+        <input type="text" id="to-get" name="to" required><br>
+        <button type="submit">Get Rate</button>
+    </form>
+
+    <h2>Обновление курса валют</h2>
+
+    <form id="updateForm">
+      <label>
+        Валютная пара (6 символов, например USDRUB):
+        <input type="text" name="pair" required pattern="[A-Za-z]{6}" />
+      </label><br><br>
+  
+      <label>
+        Новый курс:
+        <input type="number" name="rate" step="0.01" required />
+      </label><br><br>
+  
+      <button type="submit">Обновить</button>
+    </form>
+  
+    <pre id="result"></pre>
+  
+    <script>
+      const form = document.getElementById("updateForm");
+      const result = document.getElementById("result");
+  
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+  
+        const pair = form.pair.value.toUpperCase();
+        const rate = form.rate.value;
+  
+        const body = new URLSearchParams({ rate });
+  
+        const response = await fetch(`http://localhost:8000/exchangeRate/${pair}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: body.toString(),
+        });
+  
+        const data = await response.json();
+        result.textContent = JSON.stringify(data, null, 2);
+      });
+    </script>
+
+    <h2>View Exchange Rates</h2>
+    <form action="/exchangeRates" method="get">
+        <button type="submit">Load Exchange Rates</button>
+    </form>
+
+    <h2>Convert Currency</h2>
+    <form action="/convert" method="get">
+        <label for="from-currency">From Currency:</label>
+        <input type="text" id="from-currency" name="from" required><br>
+        <label for="to-currency">To Currency:</label>
+        <input type="text" id="to-currency" name="to" required><br>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" step="0.01" required><br>
+        <button type="submit">Convert</button>
+    </form>
+</body>
+</html>, тип содержимого: <class 'int'>
+2025-04-18 10:32:23,077 - app_server   -do_GET              - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 54, in do_GET
+    self.send_response_content(status_code, result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 32, in send_response_content
+    self.send_header('Content-Type', content_type)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 526, in send_header
+    ("%s: %s\r\n" % (keyword, value)).encode('latin-1', 'strict'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'latin-1' codec can't encode characters in position 1872-1881: ordinal not in range(256)
+2025-04-18 10:32:23,384 - app_server   -send_response_content- DEBUG    - Отправка ответа [200] с типом: {'error': 'Internal Server Error'}, тип содержимого: <class 'int'>
+2025-04-18 10:32:23,522 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:32:23,552 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:32:23,583 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:32:23,614 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:34:25,501 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 10:34:26,536 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 10:34:26,600 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 10:34:26,600 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 10:34:26,601 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 10:34:26,601 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 10:34:26,602 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 10:34:26,602 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 10:34:26,602 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 10:34:28,894 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:34:28,925 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:34:28,955 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:34:28,986 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:34:29,033 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 10:34:29,064 - router       -handle_request      - INFO     - Обработка запроса:  GET /
+2025-04-18 10:34:29,095 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/', params='', query='', fragment='')
+2025-04-18 10:34:29,126 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:34:29,156 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:34:29,187 - router       -handle_request      - DEBUG    - Путь запроса: /, параметры: {}
+2025-04-18 10:34:29,218 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:34:29,248 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:34:29,279 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 10:34:29,310 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /
+2025-04-18 10:34:29,341 - router       -resolve             - INFO     - Найден статический маршрут: GET /
+2025-04-18 10:34:29,372 - controller   -handle_html_page    - INFO     - Обработка HTML-страницы
+2025-04-18 10:34:29,495 - router       -_safe_call          - DEBUG    - Обработчик handle_html_page завершил выполнение без ошибок
+2025-04-18 10:34:29,526 - app_server   -send_response_content- DEBUG    - Отправка ответа [200] с типом: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Management</title>
+</head>
+<body>
+    <h1>Currency Management</h1>
+
+    <h2>Add Currency</h2>
+    <form action="/currencies" method="post">
+        <label for="code">Currency Code:</label>
+        <input type="text" id="code" name="code" required><br>
+        <label for="name">Currency Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        <button type="submit">Add Currency</button>
+    </form>
+
+    <h2>View Currencies</h2>
+    <form action="/currencies" method="get">
+        <button type="submit">Load Currencies</button>
+    </form>
+
+    <h2>View Currency Details</h2>
+    <form action="/currency" method="get">
+        <label for="currency-code">Currency Code:</label>
+        <input type="text" id="currency-code" name="code" required><br>
+        <button type="submit">Get Details</button>
+    </form>
+
+    <h2>Add Exchange Rate</h2>
+    <form action="/exchangeRates" method="post">
+        <label for="from">From Currency:</label>
+        <input type="text" id="from" name="from" required><br>
+        <label for="to">To Currency:</label>
+        <input type="text" id="to" name="to" required><br>
+        <label for="rate">Rate:</label>
+        <input type="number" id="rate" name="rate" step="0.01" required><br>
+        <button type="submit">Add Rate</button>
+    </form>
+
+    <h2>Get Exchange Rate</h2>
+    <form action="/exchangeRate" method="get">
+        <label for="from-get">From Currency:</label>
+        <input type="text" id="from-get" name="from" required><br>
+        <label for="to-get">To Currency:</label>
+        <input type="text" id="to-get" name="to" required><br>
+        <button type="submit">Get Rate</button>
+    </form>
+
+    <h2>Обновление курса валют</h2>
+
+    <form id="updateForm">
+      <label>
+        Валютная пара (6 символов, например USDRUB):
+        <input type="text" name="pair" required pattern="[A-Za-z]{6}" />
+      </label><br><br>
+  
+      <label>
+        Новый курс:
+        <input type="number" name="rate" step="0.01" required />
+      </label><br><br>
+  
+      <button type="submit">Обновить</button>
+    </form>
+  
+    <pre id="result"></pre>
+  
+    <script>
+      const form = document.getElementById("updateForm");
+      const result = document.getElementById("result");
+  
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+  
+        const pair = form.pair.value.toUpperCase();
+        const rate = form.rate.value;
+  
+        const body = new URLSearchParams({ rate });
+  
+        const response = await fetch(`http://localhost:8000/exchangeRate/${pair}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: body.toString(),
+        });
+  
+        const data = await response.json();
+        result.textContent = JSON.stringify(data, null, 2);
+      });
+    </script>
+
+    <h2>View Exchange Rates</h2>
+    <form action="/exchangeRates" method="get">
+        <button type="submit">Load Exchange Rates</button>
+    </form>
+
+    <h2>Convert Currency</h2>
+    <form action="/convert" method="get">
+        <label for="from-currency">From Currency:</label>
+        <input type="text" id="from-currency" name="from" required><br>
+        <label for="to-currency">To Currency:</label>
+        <input type="text" id="to-currency" name="to" required><br>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" step="0.01" required><br>
+        <button type="submit">Convert</button>
+    </form>
+</body>
+</html>, тип содержимого: <class 'int'>
+2025-04-18 10:34:29,570 - app_server   -do_GET              - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 54, in do_GET
+    self.send_response_content(status_code, result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 32, in send_response_content
+    self.send_header('Content-Type', content_type)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\AppData\Local\Programs\Python\Python313\Lib\http\server.py", line 526, in send_header
+    ("%s: %s\r\n" % (keyword, value)).encode('latin-1', 'strict'))
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'latin-1' codec can't encode characters in position 1872-1881: ordinal not in range(256)
+2025-04-18 10:34:29,894 - app_server   -send_response_content- DEBUG    - Отправка ответа [200] с типом: {'error': 'Internal Server Error'}, тип содержимого: <class 'int'>
+2025-04-18 10:34:30,032 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:34:30,062 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:34:30,094 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:34:30,124 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:44:10,968 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 10:44:12,206 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 10:44:12,257 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 10:44:12,257 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 10:44:12,257 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 10:44:12,258 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 10:44:12,258 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 10:44:12,259 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 10:44:12,259 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 10:44:14,613 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:44:14,643 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:44:14,674 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:44:14,705 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:44:14,752 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 10:44:14,781 - router       -handle_request      - INFO     - Обработка запроса:  GET /
+2025-04-18 10:44:14,813 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/', params='', query='', fragment='')
+2025-04-18 10:44:14,844 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:44:14,876 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:44:14,906 - router       -handle_request      - DEBUG    - Путь запроса: /, параметры: {}
+2025-04-18 10:44:14,938 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:44:14,968 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:44:15,000 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 10:44:15,030 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /
+2025-04-18 10:44:15,060 - router       -resolve             - INFO     - Найден статический маршрут: GET /
+2025-04-18 10:44:15,090 - controller   -handle_html_page    - INFO     - Обработка HTML-страницы
+2025-04-18 10:44:15,214 - router       -_safe_call          - DEBUG    - Обработчик handle_html_page завершил выполнение без ошибок
+2025-04-18 10:44:15,244 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: text/html; charset=utf-8, тип содержимого: <class 'str'>
+2025-04-18 10:44:15,382 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:44:15,412 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:44:15,443 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:44:15,474 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:44:22,423 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:44:22,453 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:44:22,485 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:44:22,516 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:44:22,562 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 10:44:22,594 - router       -handle_request      - INFO     - Обработка запроса:  GET /currencies?
+2025-04-18 10:44:22,625 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currencies', params='', query='', fragment='')
+2025-04-18 10:44:22,656 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:44:22,686 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:44:22,717 - router       -handle_request      - DEBUG    - Путь запроса: /currencies, параметры: {}
+2025-04-18 10:44:22,748 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:44:22,763 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:44:22,778 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/currencies', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 10:44:22,809 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /currencies
+2025-04-18 10:44:22,841 - router       -resolve             - INFO     - Найден статический маршрут: GET /currencies
+2025-04-18 10:44:22,871 - controller   -get_currencies      - INFO     - Получение списка валют
+2025-04-18 10:44:22,902 - model        -get_currencies      - INFO     - Получение списка всех валют
+2025-04-18 10:44:23,101 - model        -get_currencies      - DEBUG    - Список валют: [(1, 'USD', 'Доллар США', '$'), (2, 'EUR', 'Евро', '€'), (3, 'ALL', 'Албанский лек', 'L'), (4, 'RUB', 'Российский рубль', '₽'), (5, 'ETB', 'Эфиопский быр', 'Br'), (6, 'IDR', 'Индонезийская рупия', 'Rp'), (7, 'ZAR', 'Южноафриканский рэнд', 'R')]
+2025-04-18 10:44:23,163 - controller   -get_currencies      - DEBUG    - Список валют: [{'id': 1, 'code': 'USD', 'name': 'Доллар США', 'sign': '$'}, {'id': 2, 'code': 'EUR', 'name': 'Евро', 'sign': '€'}, {'id': 3, 'code': 'ALL', 'name': 'Албанский лек', 'sign': 'L'}, {'id': 4, 'code': 'RUB', 'name': 'Российский рубль', 'sign': '₽'}, {'id': 5, 'code': 'ETB', 'name': 'Эфиопский быр', 'sign': 'Br'}, {'id': 6, 'code': 'IDR', 'name': 'Индонезийская рупия', 'sign': 'Rp'}, {'id': 7, 'code': 'ZAR', 'name': 'Южноафриканский рэнд', 'sign': 'R'}]
+2025-04-18 10:44:23,195 - router       -_safe_call          - DEBUG    - Обработчик get_currencies завершил выполнение без ошибок
+2025-04-18 10:44:23,225 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: <class 'list'>
+2025-04-18 10:44:23,349 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:44:23,380 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:44:23,411 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:44:23,442 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:44:29,671 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 10:44:29,702 - router       -handle_request      - INFO     - Обработка запроса:  GET /currency?code=USD
+2025-04-18 10:44:29,732 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currency', params='', query='code=USD', fragment='')
+2025-04-18 10:44:29,763 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:44:29,794 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:44:29,825 - router       -handle_request      - DEBUG    - Путь запроса: /currency, параметры: {'code': 'USD'}
+2025-04-18 10:44:29,856 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:44:29,886 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:44:29,917 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/currency', headers={}, body={}, query_params={'code': 'USD'}, response=None, status_code=None)
+2025-04-18 10:44:29,947 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /currency
+2025-04-18 10:44:29,978 - router       -resolve             - INFO     - Найден статический маршрут: GET /currency
+2025-04-18 10:44:30,009 - controller   -get_currency_by_code- INFO     - Получение валюты по коду
+2025-04-18 10:44:30,040 - controller   -get_currency_by_code- DEBUG    - Код валюты из запроса: USD
+2025-04-18 10:44:30,071 - model        -get_currency_by_code- INFO     - Получение валюты по коду: USD
+2025-04-18 10:44:30,178 - model        -get_currency_by_code- DEBUG    - Результат запроса: (1, 'USD', 'Доллар США', '$')
+2025-04-18 10:44:30,224 - controller   -get_currency_by_code- INFO     - Валюта найдена: {'id': 1, 'code': 'USD', 'name': 'Доллар США', 'sign': '$'}
+2025-04-18 10:44:30,255 - router       -_safe_call          - DEBUG    - Обработчик get_currency_by_code завершил выполнение без ошибок
+2025-04-18 10:44:30,285 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: <class 'dict'>
+2025-04-18 10:44:38,689 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:44:38,719 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:44:38,750 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:44:38,781 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:44:38,826 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 10:44:38,857 - router       -handle_request      - INFO     - Обработка запроса:  GET /
+2025-04-18 10:44:38,887 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/', params='', query='', fragment='')
+2025-04-18 10:44:38,918 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:44:38,948 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:44:38,978 - router       -handle_request      - DEBUG    - Путь запроса: /, параметры: {}
+2025-04-18 10:44:39,010 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:44:39,040 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:44:39,070 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 10:44:39,102 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /
+2025-04-18 10:44:39,134 - router       -resolve             - INFO     - Найден статический маршрут: GET /
+2025-04-18 10:44:39,164 - controller   -handle_html_page    - INFO     - Обработка HTML-страницы
+2025-04-18 10:44:39,288 - router       -_safe_call          - DEBUG    - Обработчик handle_html_page завершил выполнение без ошибок
+2025-04-18 10:44:39,320 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: text/html; charset=utf-8, тип содержимого: <class 'str'>
+2025-04-18 10:44:39,459 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:44:39,490 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:44:39,520 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:44:39,550 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:45:24,017 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 10:45:25,414 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 10:45:25,475 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 10:45:25,475 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 10:45:25,475 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 10:45:25,476 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 10:45:25,476 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 10:45:25,477 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 10:45:25,477 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 10:45:28,370 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:45:28,400 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:45:28,431 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:45:28,462 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:45:28,509 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 10:45:28,539 - router       -handle_request      - INFO     - Обработка запроса:  GET /
+2025-04-18 10:45:28,570 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/', params='', query='', fragment='')
+2025-04-18 10:45:28,600 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:45:28,631 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:45:28,660 - router       -handle_request      - DEBUG    - Путь запроса: /, параметры: {}
+2025-04-18 10:45:28,690 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:45:28,722 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:45:28,753 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 10:45:28,783 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /
+2025-04-18 10:45:28,815 - router       -resolve             - INFO     - Найден статический маршрут: GET /
+2025-04-18 10:45:28,845 - controller   -handle_html_page    - INFO     - Обработка HTML-страницы
+2025-04-18 10:45:28,966 - router       -_safe_call          - DEBUG    - Обработчик handle_html_page завершил выполнение без ошибок
+2025-04-18 10:45:28,998 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: text/html; charset=utf-8, тип содержимого: str
+2025-04-18 10:45:29,138 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:45:29,168 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:45:29,199 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:45:29,230 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:46:09,928 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:46:09,960 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:46:09,990 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:46:10,020 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:46:10,068 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 10:46:10,099 - router       -handle_request      - INFO     - Обработка запроса:  GET /currency?code=USD
+2025-04-18 10:46:10,130 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currency', params='', query='code=USD', fragment='')
+2025-04-18 10:46:10,161 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:46:10,192 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:46:10,223 - router       -handle_request      - DEBUG    - Путь запроса: /currency, параметры: {'code': 'USD'}
+2025-04-18 10:46:10,253 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:46:10,284 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:46:10,315 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/currency', headers={}, body={}, query_params={'code': 'USD'}, response=None, status_code=None)
+2025-04-18 10:46:10,346 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /currency
+2025-04-18 10:46:10,376 - router       -resolve             - INFO     - Найден статический маршрут: GET /currency
+2025-04-18 10:46:10,407 - controller   -get_currency_by_code- INFO     - Получение валюты по коду
+2025-04-18 10:46:10,438 - controller   -get_currency_by_code- DEBUG    - Код валюты из запроса: USD
+2025-04-18 10:46:10,468 - model        -get_currency_by_code- INFO     - Получение валюты по коду: USD
+2025-04-18 10:46:10,577 - model        -get_currency_by_code- DEBUG    - Результат запроса: (1, 'USD', 'Доллар США', '$')
+2025-04-18 10:46:10,623 - controller   -get_currency_by_code- INFO     - Валюта найдена: {'id': 1, 'code': 'USD', 'name': 'Доллар США', 'sign': '$'}
+2025-04-18 10:46:10,653 - router       -_safe_call          - DEBUG    - Обработчик get_currency_by_code завершил выполнение без ошибок
+2025-04-18 10:46:10,684 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 10:46:10,793 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:46:10,824 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:46:10,855 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:46:10,870 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:46:30,487 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 10:46:30,517 - router       -handle_request      - INFO     - Обработка запроса:  GET /currency?code=45
+2025-04-18 10:46:30,547 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currency', params='', query='code=45', fragment='')
+2025-04-18 10:46:30,577 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:46:30,608 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:46:30,638 - router       -handle_request      - DEBUG    - Путь запроса: /currency, параметры: {'code': '45'}
+2025-04-18 10:46:30,669 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:46:30,700 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 10:46:30,730 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/currency', headers={}, body={}, query_params={'code': '45'}, response=None, status_code=None)
+2025-04-18 10:46:30,762 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /currency
+2025-04-18 10:46:30,792 - router       -resolve             - INFO     - Найден статический маршрут: GET /currency
+2025-04-18 10:46:30,823 - controller   -get_currency_by_code- INFO     - Получение валюты по коду
+2025-04-18 10:46:30,853 - controller   -get_currency_by_code- DEBUG    - Код валюты из запроса: 45
+2025-04-18 10:46:30,883 - model        -get_currency_by_code- INFO     - Получение валюты по коду: 45
+2025-04-18 10:46:30,975 - model        -get_currency_by_code- WARNING  - Валюта с кодом 45 не найдена
+2025-04-18 10:46:31,006 - model        -get_currency_by_code- ERROR    - Ошибка при получении валюты по коду 45: Currency '45' not found
+2025-04-18 10:46:31,051 - router       -_safe_call          - ERROR    - API ошибка: Currency '45' not found
+2025-04-18 10:46:31,082 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 10:54:49,355 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:54:49,387 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:54:49,418 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:54:49,448 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 10:54:49,495 - app_server   -do_POST             - INFO     - Обработка POST-запроса
+2025-04-18 10:54:49,524 - router       -handle_request      - INFO     - Обработка запроса:  POST /currencies
+2025-04-18 10:54:49,555 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currencies', params='', query='', fragment='')
+2025-04-18 10:54:49,586 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:54:49,617 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): code=USD&name=Dollar
+2025-04-18 10:54:49,648 - router       -handle_request      - DEBUG    - Путь запроса: /currencies, параметры: {}
+2025-04-18 10:54:49,678 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 10:55:10,167 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): 
+2025-04-18 10:55:10,198 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='POST', url='/currencies', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 10:55:10,229 - router       -resolve             - DEBUG    - Маршрутизация запроса: POST /currencies
+2025-04-18 10:55:10,259 - router       -resolve             - INFO     - Найден статический маршрут: POST /currencies
+2025-04-18 10:55:10,291 - controller   -add_currency        - INFO     - Добавление новой валюты
+2025-04-18 10:55:10,321 - router       -_safe_call          - ERROR    - Необработанная ошибка в контроллере
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\router.py", line 58, in _safe_call
+    handler(dto)
+    ~~~~~~~^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\controller.py", line 63, in add_currency
+    raise MissingRequiredFieldsError()
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 3, in __init__
+  File "C:\Users\dimki\.ipython\profile_default\test\errors.py", line 35, in __post_init__
+    self.message = self.template.format(**self.__dict__)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+KeyError: 'fields'
+2025-04-18 10:55:10,658 - app_server   -do_POST             - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 66, in do_POST
+    status_code = dto.status_code or 200
+                  ^^^^^^^^^^^^^^^
+AttributeError: 'tuple' object has no attribute 'status_code'
+2025-04-18 10:55:10,782 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 10:55:11,492 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 10:55:11,523 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 10:55:11,554 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 10:55:11,584 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:02:47,954 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 11:02:49,300 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 11:02:49,517 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 11:02:49,517 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 11:02:49,517 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 11:02:49,519 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 11:02:49,519 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 11:02:49,519 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 11:02:49,519 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 11:02:53,023 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:02:53,054 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:02:53,084 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:02:53,116 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:02:53,162 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 11:02:53,192 - router       -handle_request      - INFO     - Обработка запроса:  GET /
+2025-04-18 11:02:53,223 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/', params='', query='', fragment='')
+2025-04-18 11:02:53,254 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:02:53,284 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 11:02:53,315 - router       -handle_request      - DEBUG    - Путь запроса: /, параметры: {}
+2025-04-18 11:02:53,346 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:02:53,377 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 11:02:53,407 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 11:02:53,439 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /
+2025-04-18 11:02:53,469 - router       -resolve             - INFO     - Найден статический маршрут: GET /
+2025-04-18 11:02:53,501 - controller   -handle_html_page    - INFO     - Обработка HTML-страницы
+2025-04-18 11:02:53,639 - router       -_safe_call          - DEBUG    - Обработчик handle_html_page завершил выполнение без ошибок
+2025-04-18 11:02:53,670 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: text/html; charset=utf-8, тип содержимого: str
+2025-04-18 11:02:53,809 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:02:53,840 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:02:53,871 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:02:53,901 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:03:00,004 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:03:00,034 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:03:00,066 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:03:00,095 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:03:00,143 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 11:03:00,173 - router       -handle_request      - INFO     - Обработка запроса:  GET /currency?code=USD
+2025-04-18 11:03:00,205 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currency', params='', query='code=USD', fragment='')
+2025-04-18 11:03:00,235 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:03:00,266 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 11:03:00,297 - router       -handle_request      - DEBUG    - Путь запроса: /currency, параметры: {'code': 'USD'}
+2025-04-18 11:03:00,328 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:03:00,359 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 11:03:00,390 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/currency', headers={}, body={}, query_params={'code': 'USD'}, response=None, status_code=None)
+2025-04-18 11:03:00,421 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /currency
+2025-04-18 11:03:00,452 - router       -resolve             - INFO     - Найден статический маршрут: GET /currency
+2025-04-18 11:03:00,483 - controller   -get_currency_by_code- INFO     - Получение валюты по коду
+2025-04-18 11:03:00,514 - controller   -get_currency_by_code- DEBUG    - Код валюты из запроса: USD
+2025-04-18 11:03:00,545 - model        -get_currency_by_code- INFO     - Получение валюты по коду: USD
+2025-04-18 11:03:00,685 - model        -get_currency_by_code- DEBUG    - Результат запроса: (1, 'USD', 'Доллар США', '$')
+2025-04-18 11:03:00,731 - controller   -get_currency_by_code- INFO     - Валюта найдена: {'id': 1, 'code': 'USD', 'name': 'Доллар США', 'sign': '$'}
+2025-04-18 11:03:00,762 - router       -_safe_call          - DEBUG    - Обработчик get_currency_by_code завершил выполнение без ошибок
+2025-04-18 11:03:00,792 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:03:00,915 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:03:00,946 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:03:00,977 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:03:01,008 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:03:07,861 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 11:03:07,892 - router       -handle_request      - INFO     - Обработка запроса:  GET /currency?code=4
+2025-04-18 11:03:07,923 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currency', params='', query='code=4', fragment='')
+2025-04-18 11:03:07,954 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:03:07,985 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 11:03:08,015 - router       -handle_request      - DEBUG    - Путь запроса: /currency, параметры: {'code': '4'}
+2025-04-18 11:03:08,046 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:03:08,077 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 11:03:08,109 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/currency', headers={}, body={}, query_params={'code': '4'}, response=None, status_code=None)
+2025-04-18 11:03:08,140 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /currency
+2025-04-18 11:03:08,170 - router       -resolve             - INFO     - Найден статический маршрут: GET /currency
+2025-04-18 11:03:08,201 - controller   -get_currency_by_code- INFO     - Получение валюты по коду
+2025-04-18 11:03:08,232 - controller   -get_currency_by_code- DEBUG    - Код валюты из запроса: 4
+2025-04-18 11:03:08,263 - model        -get_currency_by_code- INFO     - Получение валюты по коду: 4
+2025-04-18 11:03:08,356 - model        -get_currency_by_code- WARNING  - Валюта с кодом 4 не найдена
+2025-04-18 11:03:08,387 - model        -get_currency_by_code- ERROR    - Ошибка при получении валюты по коду 4: Currency '4' not found
+2025-04-18 11:03:08,433 - router       -_safe_call          - ERROR    - API ошибка: Currency '4' not found
+2025-04-18 11:03:08,465 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:03:17,041 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:03:17,071 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:03:17,103 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:03:17,133 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:03:17,180 - app_server   -do_POST             - INFO     - Обработка POST-запроса
+2025-04-18 11:03:17,211 - router       -handle_request      - INFO     - Обработка запроса:  POST /currencies
+2025-04-18 11:03:17,241 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currencies', params='', query='', fragment='')
+2025-04-18 11:03:17,272 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:03:17,303 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): code=USD&name=Dmitry
+2025-04-18 11:03:17,333 - router       -handle_request      - DEBUG    - Путь запроса: /currencies, параметры: {}
+2025-04-18 11:03:17,364 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:03:20,881 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 11:03:25,179 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 11:03:25,226 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 11:03:25,226 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 11:03:25,226 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 11:03:25,227 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 11:03:25,227 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 11:03:25,227 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 11:03:25,228 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 11:03:30,840 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:03:30,871 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:03:30,901 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:03:30,932 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:03:30,979 - app_server   -do_POST             - INFO     - Обработка POST-запроса
+2025-04-18 11:03:31,008 - router       -handle_request      - INFO     - Обработка запроса:  POST /currencies
+2025-04-18 11:03:31,040 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currencies', params='', query='', fragment='')
+2025-04-18 11:03:31,070 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:03:31,102 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): code=USD&name=Dmitry
+2025-04-18 11:03:31,133 - router       -handle_request      - DEBUG    - Путь запроса: /currencies, параметры: {}
+2025-04-18 11:03:31,164 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:03:35,801 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): 
+2025-04-18 11:03:35,834 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='POST', url='/currencies', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 11:03:35,863 - router       -resolve             - DEBUG    - Маршрутизация запроса: POST /currencies
+2025-04-18 11:03:35,895 - router       -resolve             - INFO     - Найден статический маршрут: POST /currencies
+2025-04-18 11:03:35,925 - controller   -add_currency        - INFO     - Добавление новой валюты
+2025-04-18 11:03:35,956 - router       -_safe_call          - ERROR    - Необработанная ошибка в контроллере
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\router.py", line 58, in _safe_call
+    handler(dto)
+    ~~~~~~~^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\controller.py", line 63, in add_currency
+    raise MissingRequiredFieldsError()
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 3, in __init__
+  File "C:\Users\dimki\.ipython\profile_default\test\errors.py", line 35, in __post_init__
+    self.message = self.template.format(**self.__dict__)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+KeyError: 'fields'
+2025-04-18 11:03:36,294 - app_server   -do_POST             - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 66, in do_POST
+    self.send_response_content(status_code, dto.response)
+                                            ^^^
+NameError: name 'dto' is not defined
+2025-04-18 11:03:36,431 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:03:37,226 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:03:37,257 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:03:37,287 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:03:37,319 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:03:39,699 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 11:04:09,808 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 11:04:09,868 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 11:04:09,868 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 11:04:09,869 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 11:04:09,869 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 11:04:09,869 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 11:04:09,870 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 11:04:09,870 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 11:04:16,776 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:04:16,806 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:04:16,852 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:04:16,883 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:04:16,930 - app_server   -do_POST             - INFO     - Обработка POST-запроса
+2025-04-18 11:04:16,961 - router       -handle_request      - INFO     - Обработка запроса:  POST /currencies
+2025-04-18 11:04:16,991 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currencies', params='', query='', fragment='')
+2025-04-18 11:04:17,021 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:04:17,053 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): code=USD&name=Dmitry
+2025-04-18 11:04:17,083 - router       -handle_request      - DEBUG    - Путь запроса: /currencies, параметры: {}
+2025-04-18 11:04:17,115 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:04:20,944 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): 
+2025-04-18 11:04:20,975 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='POST', url='/currencies', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 11:04:21,005 - router       -resolve             - DEBUG    - Маршрутизация запроса: POST /currencies
+2025-04-18 11:04:21,037 - router       -resolve             - INFO     - Найден статический маршрут: POST /currencies
+2025-04-18 11:04:21,067 - controller   -add_currency        - INFO     - Добавление новой валюты
+2025-04-18 11:04:21,098 - router       -_safe_call          - ERROR    - Необработанная ошибка в контроллере
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\router.py", line 58, in _safe_call
+    handler(dto)
+    ~~~~~~~^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\controller.py", line 63, in add_currency
+    raise MissingRequiredFieldsError()
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 3, in __init__
+  File "C:\Users\dimki\.ipython\profile_default\test\errors.py", line 35, in __post_init__
+    self.message = self.template.format(**self.__dict__)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+KeyError: 'fields'
+2025-04-18 11:04:21,453 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:04:21,530 - app_server   -do_POST             - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 66, in do_POST
+    self.send_response_content(status_code, result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 34, in send_response_content
+    self.wfile.write(response_body.encode('utf-8'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] Программа на вашем хост-компьютере разорвала установленное подключение
+2025-04-18 11:04:21,775 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:04:22,525 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:04:22,555 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:04:22,587 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:04:22,618 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:06:50,103 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 11:06:51,288 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 11:06:51,336 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 11:06:51,337 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 11:06:51,337 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 11:06:51,338 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 11:06:51,338 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 11:06:51,338 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 11:06:51,338 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 11:06:53,755 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:06:53,786 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:06:53,817 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:06:53,847 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:06:53,893 - app_server   -do_POST             - INFO     - Обработка POST-запроса
+2025-04-18 11:06:53,923 - router       -handle_request      - INFO     - Обработка запроса:  POST /currencies
+2025-04-18 11:06:53,954 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currencies', params='', query='', fragment='')
+2025-04-18 11:06:53,985 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:06:54,015 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): code=USD&name=Dmitry
+2025-04-18 11:06:54,046 - router       -handle_request      - DEBUG    - Путь запроса: /currencies, параметры: {}
+2025-04-18 11:06:54,077 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:06:56,384 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): 
+2025-04-18 11:06:56,415 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='POST', url='/currencies', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 11:06:56,445 - router       -resolve             - DEBUG    - Маршрутизация запроса: POST /currencies
+2025-04-18 11:06:56,476 - router       -resolve             - INFO     - Найден статический маршрут: POST /currencies
+2025-04-18 11:06:56,506 - controller   -add_currency        - INFO     - Добавление новой валюты
+2025-04-18 11:06:56,536 - router       -_safe_call          - ERROR    - API ошибка: Отсутствует нужное поле формы:
+2025-04-18 11:06:56,567 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:06:56,643 - app_server   -do_POST             - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 66, in do_POST
+    self.send_response_content(status_code, result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 34, in send_response_content
+    self.wfile.write(response_body.encode('utf-8'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] Программа на вашем хост-компьютере разорвала установленное подключение
+2025-04-18 11:06:56,903 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:06:57,556 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 11:08:47,677 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 11:08:47,723 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 11:08:47,724 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 11:08:47,724 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 11:08:47,725 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 11:08:47,725 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 11:08:47,726 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 11:08:47,726 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 11:08:55,457 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:08:55,489 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:08:55,519 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:08:55,549 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:08:55,595 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 11:08:55,626 - router       -handle_request      - INFO     - Обработка запроса:  GET /currencies?
+2025-04-18 11:08:55,657 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currencies', params='', query='', fragment='')
+2025-04-18 11:08:55,687 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:08:55,718 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 11:08:55,748 - router       -handle_request      - DEBUG    - Путь запроса: /currencies, параметры: {}
+2025-04-18 11:08:55,779 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:08:55,810 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 11:08:55,841 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/currencies', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 11:08:55,872 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /currencies
+2025-04-18 11:08:55,903 - router       -resolve             - INFO     - Найден статический маршрут: GET /currencies
+2025-04-18 11:08:55,934 - controller   -get_currencies      - INFO     - Получение списка валют
+2025-04-18 11:08:55,965 - model        -get_currencies      - INFO     - Получение списка всех валют
+2025-04-18 11:08:56,273 - model        -get_currencies      - DEBUG    - Список валют: [(1, 'USD', 'Доллар США', '$'), (2, 'EUR', 'Евро', '€'), (3, 'ALL', 'Албанский лек', 'L'), (4, 'RUB', 'Российский рубль', '₽'), (5, 'ETB', 'Эфиопский быр', 'Br'), (6, 'IDR', 'Индонезийская рупия', 'Rp'), (7, 'ZAR', 'Южноафриканский рэнд', 'R')]
+2025-04-18 11:08:56,318 - controller   -get_currencies      - DEBUG    - Список валют: [{'id': 1, 'code': 'USD', 'name': 'Доллар США', 'sign': '$'}, {'id': 2, 'code': 'EUR', 'name': 'Евро', 'sign': '€'}, {'id': 3, 'code': 'ALL', 'name': 'Албанский лек', 'sign': 'L'}, {'id': 4, 'code': 'RUB', 'name': 'Российский рубль', 'sign': '₽'}, {'id': 5, 'code': 'ETB', 'name': 'Эфиопский быр', 'sign': 'Br'}, {'id': 6, 'code': 'IDR', 'name': 'Индонезийская рупия', 'sign': 'Rp'}, {'id': 7, 'code': 'ZAR', 'name': 'Южноафриканский рэнд', 'sign': 'R'}]
+2025-04-18 11:08:56,348 - router       -_safe_call          - DEBUG    - Обработчик get_currencies завершил выполнение без ошибок
+2025-04-18 11:08:56,380 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: list
+2025-04-18 11:08:56,517 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:08:56,548 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:08:56,579 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:08:56,609 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:09:03,713 - app_server   -do_POST             - INFO     - Обработка POST-запроса
+2025-04-18 11:09:03,743 - router       -handle_request      - INFO     - Обработка запроса:  POST /currencies
+2025-04-18 11:09:03,773 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currencies', params='', query='', fragment='')
+2025-04-18 11:09:03,804 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:09:03,835 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): code=USD&name=Dmitry
+2025-04-18 11:09:03,866 - router       -handle_request      - DEBUG    - Путь запроса: /currencies, параметры: {}
+2025-04-18 11:09:03,896 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:09:13,712 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): 
+2025-04-18 11:09:13,743 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='POST', url='/currencies', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 11:09:13,774 - router       -resolve             - DEBUG    - Маршрутизация запроса: POST /currencies
+2025-04-18 11:09:13,805 - router       -resolve             - INFO     - Найден статический маршрут: POST /currencies
+2025-04-18 11:09:13,836 - controller   -add_currency        - INFO     - Добавление новой валюты
+2025-04-18 11:09:13,866 - router       -_safe_call          - ERROR    - Необработанная ошибка в контроллере
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\router.py", line 58, in _safe_call
+    handler(dto)
+    ~~~~~~~^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\controller.py", line 63, in add_currency
+    raise MissingRequiredFieldsError()
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 3, in __init__
+  File "C:\Users\dimki\.ipython\profile_default\test\errors.py", line 35, in __post_init__
+    self.message = self.template.format(**self.__dict__)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+KeyError: 'fields'
+2025-04-18 11:09:14,190 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:09:14,266 - app_server   -do_POST             - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 66, in do_POST
+    self.send_response_content(status_code, result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 34, in send_response_content
+    self.wfile.write(response_body.encode('utf-8'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] Программа на вашем хост-компьютере разорвала установленное подключение
+2025-04-18 11:09:14,557 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:09:16,696 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 11:16:37,395 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 11:16:37,454 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 11:16:37,454 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 11:16:37,454 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 11:16:37,455 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 11:16:37,455 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 11:16:37,456 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 11:16:37,456 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 11:16:43,897 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:16:43,927 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:16:43,958 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:16:43,989 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:16:44,035 - app_server   -do_GET              - INFO     - Обработка GET-запроса
+2025-04-18 11:16:44,066 - router       -handle_request      - INFO     - Обработка запроса:  GET /
+2025-04-18 11:16:44,096 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/', params='', query='', fragment='')
+2025-04-18 11:16:44,126 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:16:44,157 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 11:16:44,187 - router       -handle_request      - DEBUG    - Путь запроса: /, параметры: {}
+2025-04-18 11:16:44,219 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:16:44,249 - router       -_parse_body         - DEBUG    - Тело запроса пустое
+2025-04-18 11:16:44,281 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='GET', url='/', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 11:16:44,311 - router       -resolve             - DEBUG    - Маршрутизация запроса: GET /
+2025-04-18 11:16:44,341 - router       -resolve             - INFO     - Найден статический маршрут: GET /
+2025-04-18 11:16:44,371 - controller   -handle_html_page    - INFO     - Обработка HTML-страницы
+2025-04-18 11:16:44,525 - router       -_safe_call          - DEBUG    - Обработчик handle_html_page завершил выполнение без ошибок
+2025-04-18 11:16:44,555 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: text/html; charset=utf-8, тип содержимого: str
+2025-04-18 11:16:44,693 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:16:44,723 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:16:44,754 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:16:44,785 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:16:53,817 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:16:53,847 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:16:53,878 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:16:53,909 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:16:53,955 - app_server   -do_POST             - INFO     - Обработка POST-запроса
+2025-04-18 11:16:53,985 - router       -handle_request      - INFO     - Обработка запроса:  POST /currencies
+2025-04-18 11:16:54,016 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currencies', params='', query='', fragment='')
+2025-04-18 11:16:54,046 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:16:54,078 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): code=USD&name=Dollar
+2025-04-18 11:16:54,108 - router       -handle_request      - DEBUG    - Путь запроса: /currencies, параметры: {}
+2025-04-18 11:16:54,140 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:16:57,214 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): 
+2025-04-18 11:16:57,244 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='POST', url='/currencies', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 11:16:57,276 - router       -resolve             - DEBUG    - Маршрутизация запроса: POST /currencies
+2025-04-18 11:16:57,306 - router       -resolve             - INFO     - Найден статический маршрут: POST /currencies
+2025-04-18 11:16:57,338 - controller   -add_currency        - INFO     - Добавление новой валюты
+2025-04-18 11:16:57,368 - router       -_safe_call          - ERROR    - Необработанная ошибка в контроллере
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\router.py", line 58, in _safe_call
+    handler(dto)
+    ~~~~~~~^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\controller.py", line 63, in add_currency
+    raise MissingRequiredFieldsError()
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 3, in __init__
+  File "C:\Users\dimki\.ipython\profile_default\test\errors.py", line 35, in __post_init__
+    self.message = self.template.format(**self.__dict__)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+KeyError: 'fields'
+2025-04-18 11:16:57,691 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:16:57,768 - app_server   -do_POST             - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 66, in do_POST
+    self.send_response_content(status_code, result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 34, in send_response_content
+    self.wfile.write(response_body.encode('utf-8'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] Программа на вашем хост-компьютере разорвала установленное подключение
+2025-04-18 11:16:58,013 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:16:58,720 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:16:58,750 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:16:58,781 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:16:58,811 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:16:58,906 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 11:18:04,998 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 11:18:05,057 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 11:18:05,058 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 11:18:05,058 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 11:18:05,059 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 11:18:05,059 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 11:18:05,059 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 11:18:05,059 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 11:18:10,395 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:18:10,426 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:18:10,456 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:18:10,486 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:18:10,532 - app_server   -do_POST             - INFO     - Обработка POST-запроса
+2025-04-18 11:18:10,563 - router       -handle_request      - INFO     - Обработка запроса:  POST /currencies
+2025-04-18 11:18:10,594 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currencies', params='', query='', fragment='')
+2025-04-18 11:18:10,625 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:18:10,655 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): code=USD&name=Dollar, тип: <class 'str'>
+2025-04-18 11:18:10,686 - router       -handle_request      - DEBUG    - Путь запроса: /currencies, параметры: {}
+2025-04-18 11:18:10,717 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:18:12,069 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): , тип: <class 'str'>
+2025-04-18 11:18:12,099 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='POST', url='/currencies', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 11:18:12,130 - router       -resolve             - DEBUG    - Маршрутизация запроса: POST /currencies
+2025-04-18 11:18:12,161 - router       -resolve             - INFO     - Найден статический маршрут: POST /currencies
+2025-04-18 11:18:12,191 - controller   -add_currency        - INFO     - Добавление новой валюты
+2025-04-18 11:18:12,221 - router       -_safe_call          - ERROR    - Необработанная ошибка в контроллере
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\router.py", line 58, in _safe_call
+    handler(dto)
+    ~~~~~~~^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\controller.py", line 63, in add_currency
+    raise MissingRequiredFieldsError()
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 3, in __init__
+  File "C:\Users\dimki\.ipython\profile_default\test\errors.py", line 35, in __post_init__
+    self.message = self.template.format(**self.__dict__)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+KeyError: 'fields'
+2025-04-18 11:18:12,571 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:18:12,649 - app_server   -do_POST             - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 66, in do_POST
+    self.send_response_content(status_code, result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 34, in send_response_content
+    self.wfile.write(response_body.encode('utf-8'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] Программа на вашем хост-компьютере разорвала установленное подключение
+2025-04-18 11:18:12,909 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:18:13,649 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:18:13,679 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:18:13,709 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:18:13,740 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:18:45,773 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 11:18:47,309 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 11:18:47,367 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 11:18:47,367 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 11:18:47,368 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 11:18:47,368 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 11:18:47,368 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 11:18:47,369 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 11:18:47,369 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 11:18:52,472 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:18:52,502 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:18:52,533 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:18:52,563 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:18:52,609 - app_server   -do_POST             - INFO     - Обработка POST-запроса
+2025-04-18 11:18:52,640 - router       -handle_request      - INFO     - Обработка запроса:  POST /currencies
+2025-04-18 11:18:52,671 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currencies', params='', query='', fragment='')
+2025-04-18 11:18:52,701 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:18:52,731 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): code=USD&name=Dollar, тип: <class 'str'>, контент: application/x-www-form-urlencoded
+2025-04-18 11:18:52,763 - router       -handle_request      - DEBUG    - Путь запроса: /currencies, параметры: {}
+2025-04-18 11:18:52,793 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:18:54,230 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 11:19:08,286 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 11:19:08,332 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 11:19:08,333 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 11:19:08,333 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 11:19:08,333 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 11:19:08,334 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 11:19:08,334 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 11:19:08,334 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 11:19:12,976 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:19:13,006 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:19:13,036 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:19:13,067 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:19:13,112 - app_server   -do_POST             - INFO     - Обработка POST-запроса
+2025-04-18 11:19:13,142 - router       -handle_request      - INFO     - Обработка запроса:  POST /currencies
+2025-04-18 11:19:13,173 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currencies', params='', query='', fragment='')
+2025-04-18 11:19:13,203 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:19:13,235 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): code=USD&name=Dollar, тип: <class 'str'>, контент: application/x-www-form-urlencoded
+2025-04-18 11:19:13,265 - router       -handle_request      - DEBUG    - Путь запроса: /currencies, параметры: {}
+2025-04-18 11:19:13,296 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:19:15,122 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): , тип: <class 'str'>, контент: application/x-www-form-urlencoded
+2025-04-18 11:19:15,153 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='POST', url='/currencies', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 11:19:15,184 - router       -resolve             - DEBUG    - Маршрутизация запроса: POST /currencies
+2025-04-18 11:19:15,214 - router       -resolve             - INFO     - Найден статический маршрут: POST /currencies
+2025-04-18 11:19:15,246 - controller   -add_currency        - INFO     - Добавление новой валюты
+2025-04-18 11:19:15,276 - router       -_safe_call          - ERROR    - Необработанная ошибка в контроллере
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\router.py", line 58, in _safe_call
+    handler(dto)
+    ~~~~~~~^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\controller.py", line 63, in add_currency
+    raise MissingRequiredFieldsError()
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 3, in __init__
+  File "C:\Users\dimki\.ipython\profile_default\test\errors.py", line 35, in __post_init__
+    self.message = self.template.format(**self.__dict__)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+KeyError: 'fields'
+2025-04-18 11:19:15,600 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:19:15,678 - app_server   -do_POST             - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 66, in do_POST
+    self.send_response_content(status_code, result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 34, in send_response_content
+    self.wfile.write(response_body.encode('utf-8'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] Программа на вашем хост-компьютере разорвала установленное подключение
+2025-04-18 11:19:15,954 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:19:16,270 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 11:23:22,632 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 11:23:22,692 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 11:23:22,693 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 11:23:22,693 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 11:23:22,693 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 11:23:22,694 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 11:23:22,694 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 11:23:22,694 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 11:23:30,253 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:23:30,283 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:23:30,315 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:23:30,345 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:23:30,392 - app_server   -do_POST             - INFO     - Обработка POST-запроса
+2025-04-18 11:23:30,423 - router       -handle_request      - INFO     - Обработка запроса:  POST /currencies
+2025-04-18 11:23:30,454 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currencies', params='', query='', fragment='')
+2025-04-18 11:23:30,484 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:23:30,515 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): code=USD&name=Dollar, тип: <class 'str'>, content-type: application/x-www-form-urlencoded
+2025-04-18 11:23:30,545 - router       -_parse_body         - DEBUG    - Form тело запроса (обработанное): {'code': 'USD', 'name': 'Dollar'}
+2025-04-18 11:23:30,575 - router       -handle_request      - DEBUG    - Путь запроса: /currencies, параметры: {}
+2025-04-18 11:23:30,605 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:23:33,087 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): , тип: <class 'str'>, content-type: application/x-www-form-urlencoded
+2025-04-18 11:23:33,117 - router       -_parse_body         - DEBUG    - Form тело запроса (обработанное): {}
+2025-04-18 11:23:33,148 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='POST', url='/currencies', headers={}, body={}, query_params={}, response=None, status_code=None)
+2025-04-18 11:23:33,178 - router       -resolve             - DEBUG    - Маршрутизация запроса: POST /currencies
+2025-04-18 11:23:33,209 - router       -resolve             - INFO     - Найден статический маршрут: POST /currencies
+2025-04-18 11:23:33,239 - controller   -add_currency        - INFO     - Добавление новой валюты
+2025-04-18 11:23:33,269 - router       -_safe_call          - ERROR    - Необработанная ошибка в контроллере
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\router.py", line 58, in _safe_call
+    handler(dto)
+    ~~~~~~~^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\controller.py", line 63, in add_currency
+    raise MissingRequiredFieldsError()
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 3, in __init__
+  File "C:\Users\dimki\.ipython\profile_default\test\errors.py", line 35, in __post_init__
+    self.message = self.template.format(**self.__dict__)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+KeyError: 'fields'
+2025-04-18 11:23:33,634 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:23:33,711 - app_server   -do_POST             - ERROR    - Неизвестная ошибка
+Traceback (most recent call last):
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 66, in do_POST
+    self.send_response_content(status_code, result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\.ipython\profile_default\test\app_server.py", line 34, in send_response_content
+    self.wfile.write(response_body.encode('utf-8'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dimki\AppData\Local\Programs\Python\Python313\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] Программа на вашем хост-компьютере разорвала установленное подключение
+2025-04-18 11:23:33,988 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:23:34,362 - __main__     -<module>            - INFO     - Завершение работы сервера
+2025-04-18 11:29:48,004 - errors       -CurrencyNotFoundError- ERROR    - CurrencyNotFoundError
+2025-04-18 11:29:48,056 - __main__     -<module>            - DEBUG    - Тестовое сообщение уровня DEBUG
+2025-04-18 11:29:48,057 - __main__     -<module>            - INFO     - Инициализация базы данных
+2025-04-18 11:29:48,057 - model        -init_db             - INFO     - Инициализация базы данных
+2025-04-18 11:29:48,057 - model        -init_db             - INFO     - База данных успешно инициализирована
+2025-04-18 11:29:48,058 - __main__     -<module>            - INFO     - Запуск сервера в отдельном потоке
+2025-04-18 11:29:48,058 - app_server   -start_server        - INFO     - Запуск HTTP-сервера на http://localhost:8000
+2025-04-18 11:29:48,058 - __main__     -<module>            - INFO     - Сервер запущен. Ожидание запросов.
+2025-04-18 11:29:52,768 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:29:52,798 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:29:52,830 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:29:52,860 - app_server   -__init__            - INFO     - Инициализация RequestHandler
+2025-04-18 11:29:52,907 - app_server   -do_POST             - INFO     - Обработка POST-запроса
+2025-04-18 11:29:52,938 - router       -handle_request      - INFO     - Обработка запроса:  POST /currencies
+2025-04-18 11:29:52,969 - router       -handle_request      - DEBUG    - Парсинг пути запроса: ParseResult(scheme='', netloc='', path='/currencies', params='', query='', fragment='')
+2025-04-18 11:29:52,999 - router       -_parse_body         - INFO     - Парсинг тела запроса
+2025-04-18 11:29:53,030 - router       -_parse_body         - DEBUG    - Тело запроса (сырое): code=USD&name=Dollar, тип: <class 'str'>, content-type: application/x-www-form-urlencoded
+2025-04-18 11:29:53,062 - router       -_parse_body         - DEBUG    - Form тело запроса (обработанное): {'code': 'USD', 'name': 'Dollar'}
+2025-04-18 11:29:53,093 - router       -handle_request      - DEBUG    - Путь запроса: /currencies, параметры: {}, тело: {'code': 'USD', 'name': 'Dollar'}
+2025-04-18 11:29:53,124 - router       -handle_request      - DEBUG    - DTO создан: requestDTO(method='POST', url='/currencies', headers={}, body={'code': 'USD', 'name': 'Dollar'}, query_params={}, response=None, status_code=None)
+2025-04-18 11:29:53,154 - router       -resolve             - DEBUG    - Маршрутизация запроса: POST /currencies
+2025-04-18 11:29:53,185 - router       -resolve             - INFO     - Найден статический маршрут: POST /currencies
+2025-04-18 11:29:53,216 - controller   -add_currency        - INFO     - Добавление новой валюты
+2025-04-18 11:29:53,307 - router       -_safe_call          - ERROR    - API ошибка: Currency 'USD' already exists
+2025-04-18 11:29:53,338 - app_server   -send_response_content- DEBUG    - Отправка ответа 200 с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-04-18 11:29:53,476 - router       -__init__            - INFO     - Инициализация Router
+2025-04-18 11:29:53,507 - router       -_register_routes    - DEBUG    - Статические маршруты: dict_keys([('GET', '/currencies'), ('GET', '/currency'), ('GET', '/exchangeRates'), ('POST', '/currencies'), ('POST', '/exchangeRates'), ('GET', '/exchangeRate'), ('GET', '/convert'), ('GET', '/'), ('PATCH', '/exchangeRate')])
+2025-04-18 11:29:53,538 - router       -_register_routes    - DEBUG    - Динамические маршруты: ['/currency/:code', '/exchangeRates/:pair', '/exchangeRate/:pair']
+2025-04-18 11:29:53,568 - app_server   -__init__            - INFO     - Инициализация RequestHandler

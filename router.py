@@ -39,26 +39,25 @@ class Router:
     def resolve(self, dto):
         logger.debug(f"Маршрутизация запроса: {dto.method} {dto.url}")
 
-        handler = self.static_routes.get((dto.method, dto.url))
+        handler = self.static_routes.get((dto.method, dto.url)) # Проверка на статический маршрут
         if handler:
             logger.info(f"Найден статический маршрут: {dto.method} {dto.url}")
             return self._safe_call(handler, dto)
 
         for method, route, route_handler in self.dynamic_routes:
-            if method == dto.method and self.match_dynamic_route(route, dto.url, dto):
+            if method == dto.method and self.match_dynamic_route(route, dto.url, dto): # Проверка на динамический маршрут
                 logger.info(f"Найден динамический маршрут: {dto.method} {dto.url}")
                 return self._safe_call(route_handler, dto)
 
         logger.warning(f"Маршрут не найден: {dto.method} {dto.url}")
-        dto.response = {"error": "Route not found"}
-        dto.status_code = 404
-        logger.debug(f"Статус код: {dto.status_code}")
+        raise RouteNotFoundError()
         return dto
 
     def _safe_call(self, handler, dto):
         try:
             handler(dto)
             logger.debug(f"Обработчик {handler.__name__} завершил выполнение без ошибок")
+            dto.status_code = 200
         except APIError as e:
             logger.error(f"API ошибка: {e.message}")
             dto.response = e.to_dict()
@@ -67,7 +66,7 @@ class Router:
             logger.exception("Необработанная ошибка в контроллере")
             dto.response = {"error": "Internal server error"}
             dto.status_code = 500
-
+        return dto.response, dto.status_code
         
 
     def match_dynamic_route(self, route, url, dto):
@@ -97,47 +96,48 @@ class Router:
         parsed_path = urlparse(handler.path)
         logger.debug(f"Парсинг пути запроса: {parsed_path}")
         query_params = {k: v[0] for k, v in parse_qs(parsed_path.query).items()}
-
-        logger.debug(f"Путь запроса: {parsed_path.path}, параметры: {query_params}")
+        body=self._parse_body(handler)
+        logger.debug(f"Путь запроса: {parsed_path.path}, параметры: {query_params}, тело: {body}")
 
         dto = requestDTO(
             method=handler.command,
             url=parsed_path.path,
-            body=self._parse_body(handler),)
+            body= body,
+            query_params = query_params,)
         
-        dto.query_params = query_params
-
         logger.debug(f"DTO создан: {dto}")
-        self.resolve(dto)
-        if not hasattr(dto, 'status_code'):
-            logger.warning("status_code не установлен, используется значение по умолчанию 500")
-            dto.status_code = 500
 
-        #dto.status_code = 200
-        logger.debug(f"Ответ DTO: {dto.response} {dto.status_code}")
-        return dto
+        return self.resolve(dto) # Сопоставление запроса с маршрутом и вызов обработчика Возвращает ответ и статус код
 
     def _parse_body(self, handler):
         logger.info("Парсинг тела запроса")
         content_length = int(handler.headers.get('Content-Length', 0))
+
         if content_length > 0:
-            body = handler.rfile.read(content_length).decode('utf-8')
-            logger.debug(f"Тело запроса (сырое): {body}")
-            content_type = handler.headers.get('Content-Type', '')
+            body_bytes = handler.rfile.read(content_length)
+            body = body_bytes.decode('utf-8')
+            content_type = handler.headers.get('Content-Type', '').split(';')[0].strip()
+
+            logger.debug(f"Тело запроса (сырое): {body}, тип: {type(body)}, content-type: {content_type}")
 
             if content_type == 'application/json':
                 try:
-                    return json.loads(body)
+                    parsed = json.loads(body)
+                    logger.debug(f"JSON тело запроса (обработанное): {parsed}")
+                    return parsed
                 except json.JSONDecodeError:
                     logger.error("Ошибка декодирования JSON")
                     return {"error": "Invalid JSON"}
 
             elif content_type == 'application/x-www-form-urlencoded':
-                return {k: v[0] for k, v in parse_qs(body).items()}
+                parsed = {k: v[0] for k, v in parse_qs(body).items()}
+                logger.debug(f"Form тело запроса (обработанное): {parsed}")
+                return parsed
 
             else:
-                logger.warning("Неизвестный Content-Type")
+                logger.warning(f"Неподдерживаемый Content-Type: {content_type}")
                 return {"error": "Unsupported Content-Type"}
 
         logger.debug("Тело запроса пустое")
         return {}
+
