@@ -3,7 +3,7 @@ import logging
 # Настройка логирования
 logging.basicConfig(
     level=logging.DEBUG,  # Устанавливаем уровень DEBUG
-    format='%(asctime)s - %(name)-12s -%(funcName)-20s- %(levelname)-8s - %(message)-s',
+    format='%(asctime)s - %(name)-11s -%(funcName)-22s- %(levelname)-8s - %(message)-s',
     handlers=[
         logging.FileHandler("app.log", encoding="utf-8"),  # Логи в файл
         logging.StreamHandler()  # Логи в консоль

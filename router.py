@@ -17,56 +17,89 @@ class Router:
     def _register_routes(self):
         controller = Controller()
 
-        # Статические маршруты
-        self.static_routes[('GET', '/currencies')] = controller.get_currencies
-        self.static_routes[('GET', '/currency')] = controller.get_currency_by_code
-        self.static_routes[('GET', '/exchangeRates')] = controller.get_exchange_rates
-        self.static_routes[('POST', '/currencies')] = controller.add_currency
-        self.static_routes[('POST', '/exchangeRates')] = controller.add_exchange_rate
-        self.static_routes[('GET', '/exchangeRate')] = controller.get_exchange_rate
-        self.static_routes[('GET', '/convert')] = controller.convert_currency
-        self.static_routes[('GET', '/')] = controller.handle_html_page
-        self.static_routes[('PATCH', '/exchangeRate')] = controller.update_exchange_rate
+        # Обработчики контроллера
+        get_currency = (controller.get_currency_by_code, ['code'])
+        add_currency = (controller.add_currency, ['code'])
+        get_exchange_rate = (controller.get_exchange_rate, ['from', 'to'])
+        add_exchange_rate = (controller.add_exchange_rate, ['from', 'to', 'rate'])
+        convert_currency = (controller.convert_currency, ['from', 'to', 'amount'])
+        get_exchange_rates = (controller.get_exchange_rates, [])
+        handle_html = (controller.handle_html_page, [])
+        update_exchange_rate = (controller.update_exchange_rate, ['from', 'to', 'rate'])
 
-        # Динамические маршруты
-        self.dynamic_routes.append(('GET', '/currency/:code', controller.get_currency_by_code_dynamic))
-        self.dynamic_routes.append(('GET', '/exchangeRates/:pair', controller.get_exchange_rates_dynamic))
-        self.dynamic_routes.append(('PATCH', '/exchangeRate/:pair', controller.update_exchange_rate_by_pair))
+        # Статические маршруты
+        self.static_routes[('GET', '/currencies')] = (controller.get_currencies, [])
+        self.static_routes[('GET', '/currency')] = get_currency
+        self.static_routes[('POST', '/currencies')] = add_currency
+        self.static_routes[('GET', '/exchangeRate')] = get_exchange_rate
+        self.static_routes[('POST', '/exchangeRates')] = add_exchange_rate
+        self.static_routes[('GET', '/exchangeRates')] = get_exchange_rates
+        self.static_routes[('GET', '/convert')] = convert_currency
+        self.static_routes[('GET', '/')] = handle_html
+        self.static_routes[('PATCH', '/exchangeRate')] = update_exchange_rate
+
+        # Динамические маршруты → используют те же обработчики, что и статические
+        self.dynamic_routes.append(('GET', '/currency/:code', get_currency))
+        self.dynamic_routes.append(('GET', '/exchangeRate/:pair', get_exchange_rate))  # pair будет парситься в from/to заранее
+        self.dynamic_routes.append(('PATCH', '/exchangeRate/:pair', update_exchange_rate))
+
+
+
 
         logger.debug(f"Статические маршруты: {self.static_routes.keys()}")
         logger.debug(f"Динамические маршруты: {[r[1] for r in self.dynamic_routes]}")
 
-    def resolve(self, dto):
+    def resolve(self, dto: requestDTO) -> (str, int): # Маршрутизация запроса Возвращает ответ и статус код
         logger.debug(f"Маршрутизация запроса: {dto.method} {dto.url}")
 
-        handler = self.static_routes.get((dto.method, dto.url)) # Проверка на статический маршрут
-        if handler:
+        route = self.static_routes.get((dto.method, dto.url))
+        if route:
             logger.info(f"Найден статический маршрут: {dto.method} {dto.url}")
-            return self._safe_call(handler, dto)
+            handler, args = route
+            return self._safe_call(handler, dto, args)
 
-        for method, route, route_handler in self.dynamic_routes:
-            if method == dto.method and self.match_dynamic_route(route, dto.url, dto): # Проверка на динамический маршрут
+        for method, route, route_info in self.dynamic_routes:
+            if method == dto.method and self.match_dynamic_route(route, dto.url, dto):
                 logger.info(f"Найден динамический маршрут: {dto.method} {dto.url}")
-                return self._safe_call(route_handler, dto)
+                handler, args = route_info
+                logger.debug(f"Динамический маршрут: {route} с параметрами: {handler.__name__}, {args}, {dto.query_params}")
+
+                # Разбор pair → from / to, если нужно
+                if 'pair' in dto.query_params and set(args) >= {'from', 'to'}:
+                    pair = dto.query_params['pair']
+                    if isinstance(pair, str) and len(pair) == 6:
+                        dto.body['from'] = pair[:3].upper()
+                        dto.body['to'] = pair[3:].upper()
+                        logger.debug(f"Разобранная пара: from={dto.body['from']}, to={dto.body['to']}")
+                    else:
+                        logger.warning(f"Некорректный формат pair: '{pair}'")
+
+                return self._safe_call(handler, dto, args)
+
 
         logger.warning(f"Маршрут не найден: {dto.method} {dto.url}")
         raise RouteNotFoundError()
-        return dto
+        return dto 
 
-    def _safe_call(self, handler, dto):
+
+    def _safe_call(self, handler, dto: requestDTO, args: list) -> requestDTO:
         try:
-            handler(dto)
-            logger.debug(f"Обработчик {handler.__name__} завершил выполнение без ошибок")
+            # Извлекаем аргументы из dto (query + body с приоритетом у body)
+            all_params = {**dto.query_params, **dto.body}
+            logger.debug(f"Все параметры: {all_params}")
+            func_args = [all_params.get(arg) for arg in args]
+            logger.debug(f"Вызов обработчика: {handler.__name__}, аргументы: {func_args}")
+            dto.response = handler(*func_args)
             dto.status_code = 200
+
         except APIError as e:
             logger.error(f"API ошибка: {e.message}")
             dto.response = e.to_dict()
             dto.status_code = e.status_code
         except Exception as e:
             logger.exception("Необработанная ошибка в контроллере")
-            dto.response = {"error": "Internal server error"}
-            dto.status_code = 500
-        return dto.response, dto.status_code
+            raise APIError()
+        return (dto.response, dto.status_code)
         
 
     def match_dynamic_route(self, route, url, dto):

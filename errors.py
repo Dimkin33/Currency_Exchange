@@ -14,6 +14,10 @@ class APIError(Exception):
     message: str = field(init=False)
     status_code: int = field(init=False)
 
+    def __post_init__(self):
+        self.message = "Internal server error"
+        self.status_code = 500
+    
     def to_dict(self):
 
         return {"error": self.message}
@@ -43,6 +47,11 @@ class RouteNotFoundError(TemplateAPIError):
     status: int = field(init=False, default=404)
     template: str = field(init=False, default="Route not found")
 
+@dataclass
+class ExchangeRateAlreadyExistsError(APIError):
+    status: int = field(init=False, default=409, repr=False)
+    template: str = field(
+        init=False, default="Exchange rate already exists", repr=False)
 
 @dataclass
 class MissingRequiredFieldsError(TemplateAPIError):
@@ -132,3 +141,13 @@ class InvalidRateFormatError(TemplateAPIError):
 
     template: str = field(
         init=False, default="Invalid rate format: '{rate_value}' (expected a number)", repr=False)
+
+@dataclass 
+class InvalidAmountFormatError(TemplateAPIError):
+
+    amount_value: str
+
+    status: int = field(init=False, default=400, repr=False)
+
+    template: str = field(
+        init=False, default="Invalid amount format: '{amount_value}' (expected a number)", repr=False)

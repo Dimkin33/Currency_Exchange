@@ -2,7 +2,7 @@ import sqlite3
 import logging
 from sign_code import currency_sign
 from dto import currencyDTO, currencyExchangeDTO
-from errors import CurrencyNotFoundError, CurrencyAlreadyExistsError, ExchangeRateNotFoundError, ExchangeRateAlreadyExistsError
+from errors import CurrencyNotFoundError, CurrencyAlreadyExistsError, ExchangeRateNotFoundError, ExchangeRateAlreadyExistsError 
 
 logger = logging.getLogger(__name__)
 
@@ -11,10 +11,17 @@ class CurrencyModel:
         self.db_path = db_path
         #logger.info(f"Инициализация CurrencyModel с базой данных: {db_path}")
 
-    def init_db(self):
-        logger.info("Инициализация базы данных")
+    def _get_connection_and_cursor(self):
+        """
+        Вспомогательный метод для получения соединения и курсора SQLite.
+        """
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
+        return conn, cursor
+
+    def init_db(self):
+        logger.info("Инициализация базы данных")
+        conn, cursor = self._get_connection_and_cursor()
         try:
             cursor.execute('''CREATE TABLE IF NOT EXISTS currencies (
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,7 +33,7 @@ class CurrencyModel:
                                 from_currency TEXT, 
                                 to_currency TEXT,
                                 rate REAL,
-                                UNIQUE(from_currency, to_currency)
+                                UNIQUE(from_currency, to_currency),
                                 FOREIGN KEY (from_currency) REFERENCES currencies (code),
                                 FOREIGN KEY (to_currency) REFERENCES currencies (code))''')
             conn.commit()
@@ -37,25 +44,31 @@ class CurrencyModel:
         finally:
             conn.close()
 
-
-
-    def add_currency(self, code: str, name: str, sign: str):
+    def add_currency(self, code: str, name: str, sign: str) -> dict:
         try:
-            with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.cursor()
-                cursor.execute(
-                    'INSERT INTO currencies (code, name, sign) VALUES (?, ?, ?)',
-                    (code.upper(), name, sign)
-                )
-                conn.commit()
+            conn, cursor = self._get_connection_and_cursor()
+            cursor.execute(
+                'INSERT INTO currencies (code, name, sign) VALUES (?, ?, ?)',
+                (code.upper(), name, sign)
+            )
+            currency_id = cursor.lastrowid  # ← Получаем ID новой валюты
+            conn.commit()
+
+            return {
+                "id": currency_id,
+                "code": code.upper(),
+                "name": name,
+                "sign": sign
+            }
+
         except sqlite3.IntegrityError:
             raise CurrencyAlreadyExistsError(code=code.upper())
-
+        finally:
+            conn.close()
 
     def get_currency_by_code(self, code : str) -> dict:
         logger.info(f"Получение валюты по коду: {code}")
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        conn, cursor = self._get_connection_and_cursor()
         try:
             cursor.execute('SELECT id, code, name, sign FROM currencies WHERE code = ?', (code.upper(),))
             result = cursor.fetchone()
@@ -72,8 +85,7 @@ class CurrencyModel:
 
     def get_currencies(self):
         logger.info("Получение списка всех валют")
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        conn, cursor = self._get_connection_and_cursor()
         try:
             cursor.execute('SELECT id, code, name, sign FROM currencies')
             rows = cursor.fetchall()
@@ -85,21 +97,25 @@ class CurrencyModel:
         finally:
             conn.close()
 
-    def add_exchange_rate(self, from_currency, to_currency, rate):
+    def add_exchange_rate(self, from_currency: str, to_currency: str, rate: float):
         logger.info(f"Добавление курса обмена: {from_currency} -> {to_currency} = {rate}")
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        conn, cursor = self._get_connection_and_cursor()
         try:
-            cursor.execute('INSERT INTO exchange_rates (from_currency, to_currency, rate) VALUES (?, ?, ?)', (from_currency, to_currency, rate))
+            cursor.execute(
+                'INSERT INTO exchange_rates (from_currency, to_currency, rate) VALUES (?, ?, ?)',
+                (from_currency, to_currency, rate)
+            )
             conn.commit()
             logger.debug(f"Курс обмена {from_currency} -> {to_currency} успешно добавлен")
-            
+
         except sqlite3.IntegrityError:
             logger.warning(f"Курс обмена {from_currency} -> {to_currency} уже существует")
-            raise ValueError("Exchange rate already exists")
+            raise ExchangeRateAlreadyExistsError(from_currency=from_currency, to_currency=to_currency)
+
         except Exception as e:
             logger.error(f"Ошибка при добавлении курса обмена {from_currency} -> {to_currency}: {e}")
             raise
+
         finally:
             conn.close()
 
@@ -108,8 +124,7 @@ class CurrencyModel:
         Обновляет курс обмена между двумя валютами.
         """
         logger.info(f"Обновление курса обмена: {from_currency} -> {to_currency} = {rate}")
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        conn, cursor = self._get_connection_and_cursor()
         try:
             # Проверяем, существует ли запись для обновления
             cursor.execute('SELECT id FROM exchange_rates WHERE from_currency = ? AND to_currency = ?', (from_currency, to_currency))
@@ -131,46 +146,50 @@ class CurrencyModel:
             conn.close()
 
     def get_exchange_rates(self):
-        logger.info("Получение курсов обмена валют")
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        logger.info("Получение курсов обмена валют (через JOIN)")
+        conn, cursor = self._get_connection_and_cursor()
         try:
-            cursor.execute('SELECT id, from_currency, to_currency, rate FROM exchange_rates')
+            cursor.execute("""
+                SELECT 
+                    er.id,
+                    f.code, f.name, f.sign,
+                    t.code, t.name, t.sign,
+                    er.rate
+                FROM exchange_rates er
+                JOIN currencies f ON er.from_currency = f.code
+                JOIN currencies t ON er.to_currency = t.code
+            """)
             rows = cursor.fetchall()
-            logger.debug(f"Результаты запроса курсов обмена: {rows}")
-            return [
-                {
+            logger.debug(f"Результаты запроса: {rows}")
+
+            exchange_rates = []
+            for row in rows:
+                exchange_rates.append({
                     "id": row[0],
-                    "from": self.get_currency_by_code(row[1]),
-                    "to":   self.get_currency_by_code(row[2]),
-                    "rate": row[3]
-                } for row in rows
-            ]
+                    "from": {
+                        "code": row[1],
+                        "name": row[2],
+                        "sign": row[3],
+                    },
+                    "to": {
+                        "code": row[4],
+                        "name": row[5],
+                        "sign": row[6],
+                    },
+                    "rate": row[7]
+                })
+
+            return exchange_rates
+
         except Exception as e:
             logger.error(f"Ошибка при получении курсов обмена: {e}")
             raise
         finally:
             conn.close()
 
-    def convert_currency(self, from_currency, to_currency, amount):
-        logger.info(f"Конвертация валюты: {amount} {from_currency} -> {to_currency}")
-        try:
-            rates = self.get_exchange_rates()
-            rate = next((r['rate'] for r in rates if r['from'] == from_currency and r['to'] == to_currency), None)
-            if rate is None:
-                logger.warning(f"Курс обмена {from_currency} -> {to_currency} не найден")
-                raise ValueError("Exchange rate not found")
-            converted_amount = amount * rate
-            logger.info(f"Результат конвертации: {converted_amount} {to_currency}")
-            return converted_amount
-        except Exception as e:
-            logger.error(f"Ошибка при конвертации валюты: {e}")
-            raise
-
     def get_exchange_rate(self, from_currency, to_currency):
         logger.info(f"Получение курса обмена: {from_currency} -> {to_currency}")
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        conn, cursor = self._get_connection_and_cursor()
         try:
             cursor.execute('SELECT id, rate FROM exchange_rates WHERE from_currency = ? AND to_currency = ?', (from_currency, to_currency))
             result = cursor.fetchone()
@@ -181,6 +200,66 @@ class CurrencyModel:
             return None
         except Exception as e:
             logger.error(f"Ошибка при получении курса обмена {from_currency} -> {to_currency}: {e}")
+            raise
+        finally:
+            conn.close()
+
+    def get_conversion_info(self, from_currency: str, to_currency: str, amount: float, base_currency='USD') -> dict:
+        logger.info(f"Получение данных для конвертации (одним SQL-запросом): {from_currency} -> {to_currency}")
+        conn, cursor = self._get_connection_and_cursor()
+        try:
+            cursor.execute("""
+                SELECT
+                    COALESCE(
+                        (SELECT rate FROM exchange_rates WHERE from_currency = ? AND to_currency = ?),
+                        (SELECT 1.0 / rate FROM exchange_rates WHERE from_currency = ? AND to_currency = ?),
+                        (
+                            (SELECT rate FROM exchange_rates WHERE from_currency = ? AND to_currency = ?) / 
+                            (SELECT rate FROM exchange_rates WHERE from_currency = ? AND to_currency = ?)
+                        )
+                    ) AS rate,
+
+                    bc.id, bc.code, bc.name, bc.sign,
+                    tc.id, tc.code, tc.name, tc.sign
+
+                FROM currencies bc, currencies tc
+                WHERE bc.code = ? AND tc.code = ?
+            """, (
+                from_currency.upper(), to_currency.upper(),
+                to_currency.upper(), from_currency.upper(),
+                base_currency.upper(), to_currency.upper(),
+                base_currency.upper(), from_currency.upper(),
+                from_currency.upper(), to_currency.upper()
+            ))
+
+            row = cursor.fetchone()
+
+            if not row or row[0] is None:
+                raise ExchangeRateNotFoundError(from_currency=from_currency, to_currency=to_currency)
+
+            rate = row[0]
+            converted = round(amount * rate, 2)
+
+            return {
+                "baseCurrency": {
+                    "id": row[1],
+                    "code": row[2],
+                    "name": row[3],
+                    "sign": row[4]
+                },
+                "targetCurrency": {
+                    "id": row[5],
+                    "code": row[6],
+                    "name": row[7],
+                    "sign": row[8]
+                },
+                "rate": rate,
+                "amount": round(amount, 2),
+                "convertedAmount": converted
+            }
+
+        except Exception as e:
+            logger.exception("Ошибка при получении данных для конвертации")
             raise
         finally:
             conn.close()

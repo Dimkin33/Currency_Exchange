@@ -27,7 +27,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             response_body = str(data)
             content_type = content_type or 'text/plain; charset=utf-8'
 
-        logger.debug(f"Отправка ответа 200 с типом: {content_type}, тип содержимого: {type(data).__name__}")
+        logger.debug(f"Отправка ответа c кодом состояния: {status_code}: с типом: {content_type}, тип содержимого: {type(data).__name__}")
         self.send_response(status_code) # устанавливаем код состояния ответа
         self.send_header('Content-Type', content_type)
         self.end_headers()
@@ -74,9 +74,8 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_PATCH(self):
         logger.info("Обработка PATCH-запроса")
         try:
-            dto = self.router.handle_request(self)
-            status_code = dto.status_code or 200
-            self.send_response_content(status_code, dto.response)
+            result, status_code= self.router.handle_request(self)
+            self.send_response_content(status_code, result)
         except APIError as e:
             logger.warning(f"APIError: {e.message}")
             self.send_response_content(e.status_code, e.to_dict())
