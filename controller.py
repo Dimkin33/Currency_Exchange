@@ -3,50 +3,96 @@ from model import CurrencyModel
 from sign_code import currency_sign
 from dto import currencyDTO, currencyExchangeDTO, requestDTO
 from errors import *
+from typing import Any
+
 logger = logging.getLogger(__name__)
 
 class Controller:
-    def __init__(self):
+    """
+    Контроллер для обработки бизнес-логики приложения.
+    """
+
+    def __init__(self) -> None:
+        """
+        Инициализация контроллера с моделью данных.
+        """
         self.model = CurrencyModel()
 
-    def get_currencies(self):
+    def get_currencies(self, dto: requestDTO) -> None:
+        """
+        Получение списка всех валют.
+
+        :param dto: Объект DTO для передачи данных между слоями.
+        """
         logger.info("Получение списка валют")
         try:
             currencies = self.model.get_currencies()
             logger.debug(f"Список валют: {currencies}")
-            return currencies
+            dto.response = currencies
         except Exception as e:
             logger.error(f"Ошибка при получении списка валют: {e}")
-            raise APIError("Failed to retrieve currencies")
+            dto.response = {"error": "Failed to retrieve currencies"}
 
-    def get_currency_by_code(self, code):
+    def get_currency_by_code(self, dto: requestDTO) -> None:
+        """
+        Получение валюты по коду.
+
+        :param dto: Объект DTO с параметрами запроса.
+        """
         logger.info("Получение валюты по коду")
-        logger.debug(f"Код валюты из запроса: {code}")
 
+        if not isinstance(dto, requestDTO):
+            logger.error("Неверный тип объекта dto. Ожидался requestDTO.")
+            raise TypeError("Invalid type for dto. Expected requestDTO.")
+
+        code = dto.query_params.get('code', [None])
+        logger.debug(f"Код валюты из запроса: {code}")
+        if not code:
+            raise InvalidCurrencyPairError("Currency code is required")
         try:
             currency = self.model.get_currency_by_code(code)
             logger.info(f"Валюта найдена: {currency}")
-            return currency
-
+            dto.response = currency
         except CurrencyNotFoundError as e:
+            logger.warning(f"CurrencyNotFoundError: {e.message}")
             raise e
         except Exception as e:
-            raise APIError()
+            logger.error(f"Ошибка при получении валюты по коду {code}: {e}")
+            raise APIError("Failed to retrieve currency")
 
-    def add_currency(self, code):
+    def add_currency(self, dto: requestDTO) -> None:
+        """
+        Добавление новой валюты.
+
+        :param dto: Объект DTO с данными для добавления валюты.
+        """
         logger.info("Добавление новой валюты")
-        if not code:
-            raise MissingRequiredFieldsError()
-        name, sign = currency_sign[code][0], currency_sign[code][1]
-        currency_DTO = currencyDTO(code=code, name=name, sign=sign)
-        try:
-            return self.model.add_currency(currency_DTO.code, currency_DTO.name, currency_DTO.sign)
-        except CurrencyAlreadyExistsError as e:
-            raise e
-        except Exception as e:
-            raise APIError()
+        logger.debug(f"Данные запроса: {dto.body}")
+        code = dto.body.get('code')
+        name = currency_sign[code][0]
+        sign = currency_sign[code][1]
 
-    def get_exchange_rates(self):
+        if not code:
+            logger.warning("Отсутствуют обязательные поля для добавления валюты")
+            dto.response = {"error": "Missing required fields"}
+            return
+        try:
+            self.model.add_currency(code, name, sign)
+            logger.info(f"Валюта {code} успешно добавлена")
+            dto.response = self.model.get_currency_by_code(code)
+        except ValueError as e:
+            logger.error(f"Ошибка при добавлении валюты {code}: {e}")
+            dto.response = {"error": str(e)}
+        except Exception as e:
+            logger.critical(f"Неизвестная ошибка при добавлении валюты {code}: {e}")
+            dto.response = {"error": "Failed to add currency"}
+
+    def get_exchange_rates(self) -> Any:
+        """
+        Получение всех курсов обмена валют.
+
+        :return: Список курсов обмена валют.
+        """
         logger.info("Получение всех курсов обмена валют")
         try:
             rates = self.model.get_exchange_rates()
@@ -55,7 +101,15 @@ class Controller:
         except Exception as e:
             raise APIError()
 
-    def add_exchange_rate(self, from_currency, to_currency, rate):
+    def add_exchange_rate(self, from_currency: str, to_currency: str, rate: float) -> dict:
+        """
+        Добавление нового курса обмена.
+
+        :param from_currency: Код базовой валюты.
+        :param to_currency: Код целевой валюты.
+        :param rate: Курс обмена.
+        :return: Словарь с информацией о добавленном курсе обмена.
+        """
         logger.info("Добавление нового курса обмена")
 
         if not from_currency or not to_currency or not rate:
@@ -82,7 +136,14 @@ class Controller:
         except Exception as e:
             raise APIError()
 
-    def get_exchange_rate(self, from_currency, to_currency):
+    def get_exchange_rate(self, from_currency: str, to_currency: str) -> dict:
+        """
+        Просмотр курса обмена.
+
+        :param from_currency: Код базовой валюты.
+        :param to_currency: Код целевой валюты.
+        :return: Словарь с информацией о курсе обмена.
+        """
         logger.info("Просмотр курса обмена")
         if not from_currency or not to_currency:
             raise MissingRequiredFieldsError()
@@ -103,7 +164,15 @@ class Controller:
         except Exception as e:
             raise APIError()
 
-    def update_exchange_rate(self, from_currency, to_currency, rate):
+    def update_exchange_rate(self, from_currency: str, to_currency: str, rate: float) -> dict:
+        """
+        Обновление курса обмена.
+
+        :param from_currency: Код базовой валюты.
+        :param to_currency: Код целевой валюты.
+        :param rate: Новый курс обмена.
+        :return: Словарь с информацией об обновленном курсе обмена.
+        """
         logger.info("Обновление курса обмена")
         if not from_currency or not to_currency:
             raise MissingRequiredFieldsError()
@@ -121,24 +190,15 @@ class Controller:
         except Exception as e:
             raise APIError()
 
-    # def update_exchange_rate_by_pair(self, dto):
-    #     logger.info("Обновление курса обмена по валютной паре")
-    #     pair = dto.query_params.get('pair')
-    #     rate = dto.body.get('rate')
+    def convert_currency(self, from_currency: str, to_currency: str, amount: float) -> dict:
+        """
+        Конвертация валюты.
 
-    #     if not pair or not rate:
-    #         raise MissingRequiredFieldsError()
-
-    #     try:
-    #         from_currency, to_currency = pair[:3], pair[3:]
-    #         self.model.patch_exchange_rate(from_currency, to_currency, float(rate))
-    #         self.get_exchange_rate(dto)
-    #     except ExchangeRateNotFoundError as e:
-    #         raise e
-    #     except Exception as e:
-    #         raise APIError()
-
-    def convert_currency(self, from_currency, to_currency, amount):
+        :param from_currency: Код базовой валюты.
+        :param to_currency: Код целевой валюты.
+        :param amount: Сумма для конвертации.
+        :return: Словарь с информацией о конвертации валюты.
+        """
         logger.info(f"Конвертация валюты: {amount} {from_currency} -> {to_currency}")
 
         if not from_currency or not to_currency or amount is None:
@@ -174,13 +234,15 @@ class Controller:
             logger.exception("Ошибка при конвертации валюты")
             raise APIError()
 
+    def handle_html_page(self) -> str:
+        """
+        Обработка HTML-страницы.
 
-
-    def handle_html_page(self):
+        :return: Содержимое HTML-страницы.
+        """
         logger.info("Обработка HTML-страницы")
         try:
             with open('index.html', 'r', encoding='utf-8') as file:
-
                 return file.read()
         except FileNotFoundError:
             raise APIError()

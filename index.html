@@ -8,6 +8,7 @@
 <body>
     <h1>Currency Management</h1>
 
+    <!-- Форма для добавления новой валюты -->
     <h2>Add Currency</h2>
     <form action="/currencies" method="post">
         <label for="code">Currency Code:</label>
@@ -17,11 +18,13 @@
         <button type="submit">Add Currency</button>
     </form>
 
+    <!-- Форма для загрузки списка валют -->
     <h2>View Currencies</h2>
     <form action="/currencies" method="get">
         <button type="submit">Load Currencies</button>
     </form>
 
+    <!-- Форма для просмотра деталей валюты -->
     <h2>View Currency Details</h2>
     <form action="/currency" method="get">
         <label for="currency-code">Currency Code:</label>
@@ -29,6 +32,7 @@
         <button type="submit">Get Details</button>
     </form>
 
+    <!-- Форма для добавления нового курса обмена -->
     <h2>Add Exchange Rate</h2>
     <form action="/exchangeRates" method="post">
         <label for="from">From Currency:</label>
@@ -40,6 +44,7 @@
         <button type="submit">Add Rate</button>
     </form>
 
+    <!-- Форма для получения курса обмена -->
     <h2>Get Exchange Rate</h2>
     <form action="/exchangeRate" method="get">
         <label for="from-get">From Currency:</label>
@@ -49,6 +54,7 @@
         <button type="submit">Get Rate</button>
     </form>
 
+    <!-- Форма для обновления курса валют -->
     <h2>Обновление курса валют</h2>
 
     <form id="updateForm">
@@ -92,11 +98,13 @@
       });
     </script>
 
+    <!-- Форма для загрузки списка курсов обмена -->
     <h2>View Exchange Rates</h2>
     <form action="/exchangeRates" method="get">
         <button type="submit">Load Exchange Rates</button>
     </form>
 
+    <!-- Форма для конвертации валюты -->
     <h2>Convert Currency</h2>
     <form action="/convert" method="get">
         <label for="from-currency">From Currency:</label>

@@ -74,8 +74,9 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_PATCH(self):
         logger.info("Обработка PATCH-запроса")
         try:
-            result, status_code= self.router.handle_request(self)
-            self.send_response_content(status_code, result)
+            dto = self.router.handle_request(self)
+            status_code = dto.status_code or 200
+            self.send_response_content(status_code, dto.response)
         except APIError as e:
             logger.warning(f"APIError: {e.message}")
             self.send_response_content(e.status_code, e.to_dict())

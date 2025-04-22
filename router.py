@@ -84,14 +84,10 @@ class Router:
 
     def _safe_call(self, handler, dto: requestDTO, args: list) -> requestDTO:
         try:
-            # Извлекаем аргументы из dto (query + body с приоритетом у body)
-            all_params = {**dto.query_params, **dto.body}
-            logger.debug(f"Все параметры: {all_params}")
-            func_args = [all_params.get(arg) for arg in args]
-            logger.debug(f"Вызов обработчика: {handler.__name__}, аргументы: {func_args}")
-            dto.response = handler(*func_args)
-            dto.status_code = 200
-
+            logger.debug(f"Все параметры: {dto.query_params | dto.body}")
+            logger.debug(f"Вызов обработчика: {handler.__name__}, аргументы: {args}")
+            handler(dto)
+            dto.status_code = dto.status_code or 200
         except APIError as e:
             logger.error(f"API ошибка: {e.message}")
             dto.response = e.to_dict()
@@ -100,6 +96,7 @@ class Router:
             logger.exception("Необработанная ошибка в контроллере")
             raise APIError()
         return (dto.response, dto.status_code)
+
         
 
     def match_dynamic_route(self, route, url, dto):
