@@ -1,9 +1,10 @@
+
 import logging
 import json
 from urllib.parse import urlparse, parse_qs
 from controller import Controller
-from dto import requestDTO
-from errors import APIError
+from errors import APIError, RouteNotFoundError, InvalidPairError
+from http.server import BaseHTTPRequestHandler # необходим для типизации данных
 
 logger = logging.getLogger(__name__)
 
@@ -19,13 +20,15 @@ class Router:
 
         # Обработчики контроллера
         get_currency = (controller.get_currency_by_code, ['code'])
-        add_currency = (controller.add_currency, ['code'])
+        add_currency = (controller.add_currency, ['code', 'name'])
         get_exchange_rate = (controller.get_exchange_rate, ['from', 'to'])
         add_exchange_rate = (controller.add_exchange_rate, ['from', 'to', 'rate'])
         convert_currency = (controller.convert_currency, ['from', 'to', 'amount'])
         get_exchange_rates = (controller.get_exchange_rates, [])
         handle_html = (controller.handle_html_page, [])
+        return_icon = (controller.return_icon, [])
         update_exchange_rate = (controller.update_exchange_rate, ['from', 'to', 'rate'])
+        delete_all_currencies = (controller.delete_all_currencies, [])
 
         # Статические маршруты
         self.static_routes[('GET', '/currencies')] = (controller.get_currencies, [])
@@ -35,111 +38,87 @@ class Router:
         self.static_routes[('POST', '/exchangeRates')] = add_exchange_rate
         self.static_routes[('GET', '/exchangeRates')] = get_exchange_rates
         self.static_routes[('GET', '/convert')] = convert_currency
+        self.static_routes[('GET', '/favicon.ico')] = return_icon
         self.static_routes[('GET', '/')] = handle_html
         self.static_routes[('PATCH', '/exchangeRate')] = update_exchange_rate
-
-        # Динамические маршруты → используют те же обработчики, что и статические
+        self.static_routes[('POST', '/currencies/delete_all')] =  delete_all_currencies
+        # Динамические маршруты
         self.dynamic_routes.append(('GET', '/currency/:code', get_currency))
-        self.dynamic_routes.append(('GET', '/exchangeRate/:pair', get_exchange_rate))  # pair будет парситься в from/to заранее
+        self.dynamic_routes.append(('GET', '/exchangeRate/:pair', get_exchange_rate))
         self.dynamic_routes.append(('PATCH', '/exchangeRate/:pair', update_exchange_rate))
 
+    def handle_request(self, handler):
+        logger.info(f"Обработка запроса: {handler.command} {handler.path}")
+        parsed_path = urlparse(handler.path)
+        query_params = {k: v[0] for k, v in parse_qs(parsed_path.query).items()}
+        body = self._parse_body(handler)
+        url = parsed_path.path
+        method = handler.command
+        params = {**query_params, **body} # Объединяем параметры запроса и тела запроса в один словарь
 
+        return self._resolve(method, url, params)
 
+    def _resolve(self, method: str, url: str, params: dict) -> tuple:
+        logger.debug(f"Маршрутизация запроса: {method} {url}")
 
-        logger.debug(f"Статические маршруты: {self.static_routes.keys()}")
-        logger.debug(f"Динамические маршруты: {[r[1] for r in self.dynamic_routes]}")
-
-    def resolve(self, dto: requestDTO) -> (str, int): # Маршрутизация запроса Возвращает ответ и статус код
-        logger.debug(f"Маршрутизация запроса: {dto.method} {dto.url}")
-
-        route = self.static_routes.get((dto.method, dto.url))
+        # Проверка на статический маршрут
+        route = self.static_routes.get((method, url))
         if route:
-            logger.info(f"Найден статический маршрут: {dto.method} {dto.url}")
-            handler, args = route
-            return self._safe_call(handler, dto, args)
+            handler_controller, args = route
+            func_args = [params.get(arg) for arg in args]
+            return self._safe_call(handler_controller, func_args)
 
-        for method, route, route_info in self.dynamic_routes:
-            if method == dto.method and self.match_dynamic_route(route, dto.url, dto):
-                logger.info(f"Найден динамический маршрут: {dto.method} {dto.url}")
-                handler, args = route_info
-                logger.debug(f"Динамический маршрут: {route} с параметрами: {handler.__name__}, {args}, {dto.query_params}")
+        # Проверка на динамические маршруты
+        for m, route_pattern, route_info in self.dynamic_routes:
+            if m == method and self.match_dynamic_route(route_pattern, url, params):
+                handler_controller, args = route_info
 
-                # Разбор pair → from / to, если нужно
-                if 'pair' in dto.query_params and set(args) >= {'from', 'to'}:
-                    pair = dto.query_params['pair']
+                # Разбор пары валют вида /exchangeRate/USDJPY → from=USD, to=JPY
+                if 'pair' in params and set(args) >= {'from', 'to'}:
+                    pair = params['pair']
                     if isinstance(pair, str) and len(pair) == 6:
-                        dto.body['from'] = pair[:3].upper()
-                        dto.body['to'] = pair[3:].upper()
-                        logger.debug(f"Разобранная пара: from={dto.body['from']}, to={dto.body['to']}")
+                        params['from'] = pair[:3].upper()
+                        params['to'] = pair[3:].upper()
+                        logger.debug(f"Разобранная пара: from={params['from']}, to={params['to']}")
                     else:
                         logger.warning(f"Некорректный формат pair: '{pair}'")
+                        raise InvalidPairError()
+                        return 
+                func_args = [params.get(arg) for arg in args]
+                return self._safe_call(handler_controller, func_args)
 
-                return self._safe_call(handler, dto, args)
-
-
-        logger.warning(f"Маршрут не найден: {dto.method} {dto.url}")
+        logger.warning(f"Маршрут не найден: {method} {url}")
         raise RouteNotFoundError()
-        return dto 
 
 
-    def _safe_call(self, handler, dto: requestDTO, args: list) -> requestDTO:
+    def _safe_call(self, handler_controller: callable, func_args: list) -> tuple:  # Возвращает результат обработчика и статус-код ответа
         try:
-            logger.debug(f"Все параметры: {dto.query_params | dto.body}")
-            logger.debug(f"Вызов обработчика: {handler.__name__}, аргументы: {args}")
-            handler(dto)
-            dto.status_code = dto.status_code or 200
+            logger.debug(f"Вызов обработчика: {handler_controller.__name__} с аргументами: {func_args}")
+            response = handler_controller(*func_args) if func_args else handler_controller()
+            return response, 200
         except APIError as e:
             logger.error(f"API ошибка: {e.message}")
-            dto.response = e.to_dict()
-            dto.status_code = e.status_code
-        except Exception as e:
+            return e.to_dict(), e.status_code
+        except Exception:
             logger.exception("Необработанная ошибка в контроллере")
-            raise APIError()
-        return (dto.response, dto.status_code)
+            return {"error": "Internal Server Error"}, 500
 
-        
-
-    def match_dynamic_route(self, route, url, dto):
-        logger.debug(f"Сопоставление динамического маршрута: {route} с {url}")
-        dto.query_params = {}
-        route_parts = route.split('/')
-        url_parts = url.split('/')
+    def match_dynamic_route(self, route : str, url, query_params: dict) -> bool: # Сопоставляет динамический маршрут с текущим URL
+        route_parts = route.strip('/').split('/')
+        url_parts = url.strip('/').split('/')
 
         if len(route_parts) != len(url_parts):
-            logger.debug("Длина частей маршрута и URL не совпадает")
             return False
 
         for route_part, url_part in zip(route_parts, url_parts):
             if route_part.startswith(':'):
-                param_name = route_part[1:]
-                dto.query_params[param_name] = url_part
-                logger.debug(f"Динамический параметр: {param_name} = {url_part}")
+                query_params[route_part[1:]] = url_part
             elif route_part != url_part:
-                logger.debug(f"Статическая часть не совпадает: {route_part} != {url_part}")
                 return False
 
-        logger.info(f"Динамический маршрут успешно сопоставлен: {route} с {url}")
         return True
 
-    def handle_request(self, handler):
-        logger.info(f"Обработка запроса:  {handler.command} {handler.path}")
-        parsed_path = urlparse(handler.path)
-        logger.debug(f"Парсинг пути запроса: {parsed_path}")
-        query_params = {k: v[0] for k, v in parse_qs(parsed_path.query).items()}
-        body=self._parse_body(handler)
-        logger.debug(f"Путь запроса: {parsed_path.path}, параметры: {query_params}, тело: {body}")
-
-        dto = requestDTO(
-            method=handler.command,
-            url=parsed_path.path,
-            body= body,
-            query_params = query_params,)
-        
-        logger.debug(f"DTO создан: {dto}")
-
-        return self.resolve(dto) # Сопоставление запроса с маршрутом и вызов обработчика Возвращает ответ и статус код
-
-    def _parse_body(self, handler):
+    def _parse_body(self, handler: BaseHTTPRequestHandler) -> dict  : #Парсит тело запроса в зависимости от типа контента
         logger.info("Парсинг тела запроса")
         content_length = int(handler.headers.get('Content-Length', 0))
 
@@ -148,26 +127,16 @@ class Router:
             body = body_bytes.decode('utf-8')
             content_type = handler.headers.get('Content-Type', '').split(';')[0].strip()
 
-            logger.debug(f"Тело запроса (сырое): {body}, тип: {type(body)}, content-type: {content_type}")
-
             if content_type == 'application/json':
                 try:
-                    parsed = json.loads(body)
-                    logger.debug(f"JSON тело запроса (обработанное): {parsed}")
-                    return parsed
+                    return json.loads(body)
                 except json.JSONDecodeError:
                     logger.error("Ошибка декодирования JSON")
-                    return {"error": "Invalid JSON"}
-
+                    return {}
             elif content_type == 'application/x-www-form-urlencoded':
-                parsed = {k: v[0] for k, v in parse_qs(body).items()}
-                logger.debug(f"Form тело запроса (обработанное): {parsed}")
-                return parsed
-
+                return {k: v[0] for k, v in parse_qs(body).items()}
             else:
                 logger.warning(f"Неподдерживаемый Content-Type: {content_type}")
-                return {"error": "Unsupported Content-Type"}
+                return {}
 
-        logger.debug("Тело запроса пустое")
         return {}
-

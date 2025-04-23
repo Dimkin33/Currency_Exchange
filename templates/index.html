@@ -12,10 +12,16 @@
     <h2>Add Currency</h2>
     <form action="/currencies" method="post">
         <label for="code">Currency Code:</label>
-        <input type="text" id="code" name="code" required><br>
+        <input type="text" id="code" name="code" placeholder="required" required><br>
         <label for="name">Currency Name:</label>
-        <input type="text" id="name" name="name" required><br>
+        <input type="text" id="name" name="name" placeholder="Optional"><br>
         <button type="submit">Add Currency</button>
+    </form>
+
+    <!-- Форма для удаления всех валют -->
+    <form action="/currencies/delete_all" method="post"
+      onsubmit="return confirm('Are you sure?');">
+      <button type="submit" style="color: red;">Delete All Currencies</button>
     </form>
 
     <!-- Форма для загрузки списка валют -->
@@ -36,11 +42,11 @@
     <h2>Add Exchange Rate</h2>
     <form action="/exchangeRates" method="post">
         <label for="from">From Currency:</label>
-        <input type="text" id="from" name="from" required><br>
+        <input type="text" id="from" name="from"><br>
         <label for="to">To Currency:</label>
-        <input type="text" id="to" name="to" required><br>
+        <input type="text" id="to" name="to"><br>
         <label for="rate">Rate:</label>
-        <input type="number" id="rate" name="rate" step="0.01" required><br>
+        <input type="number" id="rate" name="rate" step="0.01"><br>
         <button type="submit">Add Rate</button>
     </form>
 
@@ -48,9 +54,9 @@
     <h2>Get Exchange Rate</h2>
     <form action="/exchangeRate" method="get">
         <label for="from-get">From Currency:</label>
-        <input type="text" id="from-get" name="from" required><br>
+        <input type="text" id="from-get" name="from"><br>
         <label for="to-get">To Currency:</label>
-        <input type="text" id="to-get" name="to" required><br>
+        <input type="text" id="to-get" name="to"><br>
         <button type="submit">Get Rate</button>
     </form>
 
@@ -60,12 +66,12 @@
     <form id="updateForm">
       <label>
         Валютная пара (6 символов, например USDRUB):
-        <input type="text" name="pair" required pattern="[A-Za-z]{6}" />
+        <input type="text" name="pair"  />
       </label><br><br>
   
       <label>
         Новый курс:
-        <input type="number" name="rate" step="0.01" required />
+        <input type="text" name="rate"  />
       </label><br><br>
   
       <button type="submit">Обновить</button>

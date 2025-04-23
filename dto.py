@@ -1,35 +1,12 @@
-from dataclasses import dataclass, field
-from typing import Dict, Any
+from dataclasses import dataclass
 
 @dataclass
-class requestDTO:
-    method: str
-    url: str
-    headers: Dict[str, Any] = field(default_factory=dict)
-    body: Dict[str, Any] = field(default_factory=dict)
-    query_params: Dict[str, Any] = field(default_factory=dict)
-    response: Any = None
-    status_code: int = None
-    
-    def to_dict(self):
-        return {
-            "method": self.method,
-            "url": self.url,
-            "headers": self.headers,
-            "body": self.body,
-            "query_params": self.query_params,
-            "response": self.response,
-            "status_code": self.status_code
-        }
-    
-    
-@dataclass
 class currencyDTO:
-    id: int = None
-    code: str = None
-    name: str = None
-    sign: str = None
-    
+    id: int
+    code: str
+    name: str
+    sign: str
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -38,19 +15,31 @@ class currencyDTO:
             "sign": self.sign
         }
 
-
-@dataclass    
+@dataclass
 class currencyExchangeDTO:
-    id: int = None
-    from_currency: str = None
-    to_currency: str = None
-    rate: float = None
-
+    id: int
+    from_currency: dict
+    to_currency: dict
+    rate: float
+    amount: float = None
+    convertedAmount: float = None
+    method: str = None
+    
     def to_dict(self):
         return {
             "id": self.id,
-            "from_currency": self.from_currency,
-            "to_currency": self.to_currency,
+            "baseCurrency": self.from_currency,
+            "targetCurrency": self.to_currency,
             "rate": self.rate
         }
 
+       
+    def to_converted_dict(self):
+        return {
+            "baseCurrency": self.from_currency,
+            "targetCurrency": self.to_currency,
+            "rate": self.rate,
+            "amount": self.amount,
+            "convertedAmount": self.convertedAmount,
+            "method": self.method
+        }

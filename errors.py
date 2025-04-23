@@ -1,153 +1,53 @@
-from dataclasses import dataclass, field
-
-import logging
-
-
-logger = logging.getLogger(__name__)
-
-
-# === Базовая ошибка API ===
-
-@dataclass
 class APIError(Exception):
+    def __init__(self, message="Internal Server Error", status_code=500):
+        super().__init__(message)
+        self.message = message
+        self.status_code = status_code
 
-    message: str = field(init=False)
-    status_code: int = field(init=False)
-
-    def __post_init__(self):
-        self.message = "Internal server error"
-        self.status_code = 500
-    
     def to_dict(self):
-
         return {"error": self.message}
 
-    def __str__(self):
 
-        return self.message
-
-
-# === Универсальный шаблон ошибок ===
-
-@dataclass
-class TemplateAPIError(APIError):
-    template: str = field(init=False, repr=False)
-    status: int = field(init=False, repr=False)
-
-    def __post_init__(self):
-
-        self.message = self.template.format(**self.__dict__)
-
-        self.status_code = self.status
+class RouteNotFoundError(APIError):
+    def __init__(self):
+        super().__init__("Route not found", status_code=404)
 
 
-# ==== Ошибки валют ====
-@dataclass
-class RouteNotFoundError(TemplateAPIError):
-    status: int = field(init=False, default=404)
-    template: str = field(init=False, default="Route not found")
+class CurrencyNotFoundError(APIError):
+    def __init__(self, *missing_codes: str):
+        if not missing_codes:
+            message = "Currency not found"
+        elif len(missing_codes) == 1:
+            message = f"Currency '{missing_codes[0]}' not found"
+        else:
+            missing = "', '".join(missing_codes)
+            message = f"Currencies not found: '{missing}'"
+        super().__init__(message, status_code=404)
 
-@dataclass
+class CurrencyAlreadyExistsError(APIError):
+    def __init__(self, code: str):
+        super().__init__(f"Currency '{code}' already exists", status_code=409)
+
+class InvalidPairError(APIError):
+    def __init__(self):
+        super().__init__("Invalid pair format", status_code=400)
+
+class ExchangeRateNotFoundError(APIError):
+    def __init__(self, from_currency: str, to_currency: str):
+        super().__init__(f"Exchange rate {from_currency} → {to_currency} not found", status_code=404)
+
 class ExchangeRateAlreadyExistsError(APIError):
-    status: int = field(init=False, default=409, repr=False)
-    template: str = field(
-        init=False, default="Exchange rate already exists", repr=False)
+    def __init__(self, from_currency: str, to_currency: str):
+        super().__init__(f"Exchange rate {from_currency} → {to_currency} already exists", status_code=409)
 
-@dataclass
-class MissingRequiredFieldsError(TemplateAPIError):
+class InvalidAmountFormatError(APIError):
+    def __init__(self):
+        super().__init__("Invalid amount format", status_code=400)
+        
+class MissingFormFieldError(APIError):
+    def __init__(self):
+        super().__init__("Missing required form field", status_code=400)
 
-    status: int = field(init=False, default=400, repr=False)
-
-    template: str = field(
-        init=False, default="Отсутствует нужное поле формы: {fields}", repr=False)
-
-
-@dataclass
-class MissingCurrencyCodeError(TemplateAPIError):
-    status: int = field(init=False, default=400, repr=False)
-    template: str = field(
-        init=False, default="Currency code is required", repr=False)
-
-
-@dataclass
-class CurrencyNotFoundError(TemplateAPIError):
-
-    logger.error("CurrencyNotFoundError")
-    code: str
-    status: int = field(init=False, default=404, repr=False)
-    template: str = field(
-        init=False, default="Currency '{code}' not found", repr=False)
-
-
-@dataclass
-class CurrencyAlreadyExistsError(TemplateAPIError):
-    code: str
-    status: int = field(init=False, default=409, repr=False)
-    template: str = field(
-        init=False, default="Currency '{code}' already exists", repr=False)
-
-
-# ==== Ошибки курсов обмена ====
-
-
-@dataclass
-class ExchangeRateNotFoundError(TemplateAPIError):
-
-    from_currency: str
-    to_currency: str
-    status: int = field(init=False, default=404, repr=False)
-    template: str = field(
-        init=False, default="Exchange rate {from_currency} → {to_currency} not found", repr=False)
-
-
-@dataclass
-class ExchangeRateAlreadyExistsError(TemplateAPIError):
-
-    from_currency: str
-    to_currency: str
-    status: int = field(init=False, default=409, repr=False)
-    template: str = field(
-        init=False, default="Exchange rate {from_currency} → {to_currency} already exists", repr=False)
-
-
-# ==== Ошибки запроса ====
-
-
-@dataclass
-class InvalidCurrencyPairError(TemplateAPIError):
-    pair: str
-
-    status: int = field(init=False, default=400, repr=False)
-
-    template: str = field(
-        init=False, default="Invalid currency pair format: '{pair}'", repr=False)
-
-
-@dataclass
-class MissingRateFieldError(TemplateAPIError):
-
-    status: int = field(init=False, default=400, repr=False)
-
-    template: str = field(
-        init=False, default="Missing required form field: 'rate'", repr=False)
-
-
-@dataclass
-class InvalidRateFormatError(TemplateAPIError):
-
-    rate_value: str
-
-    status: int = field(init=False, default=400, repr=False)
-
-    template: str = field(
-        init=False, default="Invalid rate format: '{rate_value}' (expected a number)", repr=False)
-
-@dataclass 
-class InvalidAmountFormatError(TemplateAPIError):
-
-    amount_value: str
-
-    status: int = field(init=False, default=400, repr=False)
-
-    template: str = field(
-        init=False, default="Invalid amount format: '{amount_value}' (expected a number)", repr=False)
+class UnknownCurrencyCodeError(APIError):
+    def __init__(self, code: str):
+        super().__init__(f"Unknown currency code: {code}", status_code=400)

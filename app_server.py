@@ -34,55 +34,27 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(response_body.encode('utf-8'))
 
 
-    def do_GET(self):
-        if self.path == '/favicon.ico':
-            self.send_response(200)
-            self.send_header('Content-Type', 'image/x-icon')
-            self.end_headers()
-            try:
-                with open('favicon.ico', 'rb') as f:
-                    self.wfile.write(f.read())
-            except FileNotFoundError:
-                self.send_response(404)
-                self.end_headers()
-            return
-
-        logger.info("Обработка GET-запроса")
-
+    def handle_method(self) -> None:
+        logger.info(f"Обработка {self.command}-запроса")
         try:
-            result, status_code = self.router.handle_request(self) # обработка запроса
+            result, status_code = self.router.handle_request(self)
             self.send_response_content(status_code, result)
         except APIError as e:
             logger.warning(f"APIError: {e.message}")
             self.send_response_content(e.status_code, e.to_dict())
-        except Exception as e:
+        except Exception:
             logger.exception("Неизвестная ошибка")
             self.send_response_content(500, {"error": "Internal Server Error"})
+
+    def do_GET(self):
+        self.handle_method()
 
     def do_POST(self):
-        logger.info("Обработка POST-запроса")
-        try:
-            result, status_code= self.router.handle_request(self)
-            self.send_response_content(status_code, result)
-        except APIError as e:
-            logger.warning(f"APIError: {e.message}")
-            self.send_response_content(e.status_code, e.to_dict())
-        except Exception as e:
-            logger.exception("Неизвестная ошибка")
-            self.send_response_content(500, {"error": "Internal Server Error"})
+        self.handle_method()
 
     def do_PATCH(self):
-        logger.info("Обработка PATCH-запроса")
-        try:
-            dto = self.router.handle_request(self)
-            status_code = dto.status_code or 200
-            self.send_response_content(status_code, dto.response)
-        except APIError as e:
-            logger.warning(f"APIError: {e.message}")
-            self.send_response_content(e.status_code, e.to_dict())
-        except Exception as e:
-            logger.exception("Неизвестная ошибка")
-            self.send_response_content(500, {"error": "Internal Server Error"})
+        self.handle_method()
+
 
 
 def start_server():
