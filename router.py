@@ -47,7 +47,7 @@ class Router:
         self.dynamic_routes.append(('GET', '/exchangeRate/:pair', get_exchange_rate))
         self.dynamic_routes.append(('PATCH', '/exchangeRate/:pair', update_exchange_rate))
 
-    def handle_request(self, handler):
+    def handle_request(self, handler: BaseHTTPRequestHandler) -> tuple:
         logger.info(f"Обработка запроса: {handler.command} {handler.path}")
         parsed_path = urlparse(handler.path)
         query_params = {k: v[0] for k, v in parse_qs(parsed_path.query).items()}

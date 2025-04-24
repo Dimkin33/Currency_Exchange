@@ -1,3 +1,6 @@
+from model import CurrencyModel
+from app_server import start_server
+import threading
 import logging
 
 # Настройка логирования
@@ -10,18 +13,12 @@ logging.basicConfig(
     ]
 )
 
-# Импорт других модулей
-from model import CurrencyModel
-from app_server import start_server
-
-import threading
 
 def run_server():
     start_server()
 
 if __name__ == '__main__':
     logger = logging.getLogger(__name__)
-    logger.debug("Тестовое сообщение уровня DEBUG")
     logger.info("Инициализация базы данных")
     model = CurrencyModel()
     model.init_db()
