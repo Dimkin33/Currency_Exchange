@@ -1,4 +1,3 @@
-from model import CurrencyModel
 from app_server import start_server
 import threading
 import logging
@@ -19,9 +18,9 @@ def run_server():
 
 if __name__ == '__main__':
     logger = logging.getLogger(__name__)
-    logger.info("Инициализация базы данных")
-    model = CurrencyModel()
-    model.init_db()
+    # logger.info("Инициализация базы данных")
+    # model = CurrencyModel()
+    # model.init_db()
 
     logger.info("Запуск сервера в отдельном потоке")
     server_thread = threading.Thread(target=run_server)

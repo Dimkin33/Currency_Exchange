@@ -1,0 +1,11 @@
+{
+    "explorer.sortOrder": "filesFirst",
+    "explorer.autoRevealExclude": {
+        "**/.": true
+    },
+    "python.testing.pytestArgs": [
+        "__pycache__"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}

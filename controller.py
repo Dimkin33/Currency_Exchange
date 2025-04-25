@@ -6,8 +6,8 @@ from errors import MissingFormFieldError, UnknownCurrencyCodeError, InvalidAmoun
 logger = logging.getLogger(__name__)
 
 class Controller:
-    def __init__(self):
-        self.model = CurrencyModel()
+    def __init__(self, connector):
+        self.model = CurrencyModel(connector = connector)
 
     def get_currency_by_code(self, code: str) -> dict:
         if not code:

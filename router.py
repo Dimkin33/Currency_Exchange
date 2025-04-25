@@ -9,14 +9,15 @@ from http.server import BaseHTTPRequestHandler # необходим для ти�
 logger = logging.getLogger(__name__)
 
 class Router:
-    def __init__(self):
+    def __init__(self, connector):
+        self.connector = connector
         logger.info("Инициализация Router")
         self.static_routes = {}
         self.dynamic_routes = []
         self._register_routes()
 
     def _register_routes(self):
-        controller = Controller()
+        controller = Controller(self.connector)
 
         # Обработчики контроллера
         get_currency = (controller.get_currency_by_code, ['code'])

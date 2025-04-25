@@ -1,7 +1,10 @@
+from dotenv import load_dotenv
+import os
+
 import logging
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from router import Router
-
+import sqlite3
 from errors import APIError
 import json
 
@@ -10,7 +13,11 @@ logger = logging.getLogger(__name__)
 
 class RequestHandler(BaseHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        self.router = Router()
+        # Загрузка переменных окружения
+        load_dotenv()
+        db_path = os.getenv('DB_PATH', 'currency.db')  # Путь к базе данных из переменной окружения
+        connector = sqlite3.connect(db_path, uri=True)  # Подключение к базе данных
+        self.router = Router(connector)
 
         logger.info("Инициализация RequestHandler")
         super().__init__(*args, **kwargs)

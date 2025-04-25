@@ -12,18 +12,18 @@ logger = logging.getLogger(__name__)
 
 
 class CurrencyModel:
-    def __init__(self, db_path='currency.db'):
+    def __init__(self, db_path : str ='currency.db', connector: sqlite3 = None):
         self.db_path = db_path
         self._use_uri = db_path.startswith("file:")
+        self.connector = connector 
         
     def _get_connection_and_cursor(self):
-        conn = sqlite3.connect(self.db_path, uri = self._use_uri)
+        conn = self.connector or sqlite3.connect(self.db_path, uri = self._use_uri)
         return conn, conn.cursor()
 
     def init_db(self):
         logger.info("Инициализация базы данных")
         conn, cursor = self._get_connection_and_cursor()
-        print(conn)
         try:
             cursor.execute('''CREATE TABLE IF NOT EXISTS currencies (
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
