@@ -4,20 +4,19 @@ import json
 from urllib.parse import urlparse, parse_qs
 from controller import Controller
 from errors import APIError, RouteNotFoundError, InvalidPairError
-from http.server import BaseHTTPRequestHandler # необходим для типизации данных
+from http.server import BaseHTTPRequestHandler 
 
 logger = logging.getLogger(__name__)
 
 class Router:
-    def __init__(self, connector):
-        self.connector = connector
+    def __init__(self, db_path: str = None):
         logger.info("Инициализация Router")
         self.static_routes = {}
         self.dynamic_routes = []
-        self._register_routes()
+        self._register_routes(db_path)
 
-    def _register_routes(self):
-        controller = Controller(self.connector)
+    def _register_routes(self,  db_path: str = None) -> None:
+        controller = Controller(db_path)
 
         # Обработчики контроллера
         get_currency = (controller.get_currency_by_code, ['code'])
@@ -95,8 +94,8 @@ class Router:
     def _safe_call(self, handler_controller: callable, func_args: list) -> tuple:  # Возвращает результат обработчика и статус-код ответа
         try:
             logger.debug(f"Вызов обработчика: {handler_controller.__name__} с аргументами: {func_args}")
-            response = handler_controller(*func_args) if func_args else handler_controller()
-            return response, 200
+            response, code = handler_controller(*func_args) if func_args else handler_controller()
+            return response, code
         except APIError as e:
             logger.error(f"API ошибка: {e.message}")
             return e.to_dict(), e.status_code

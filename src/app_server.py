@@ -1,25 +1,18 @@
-from dotenv import load_dotenv
-import os
-
 import logging
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from router import Router
-import sqlite3
 from errors import APIError
 import json
+import os
+from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
 
 
 class RequestHandler(BaseHTTPRequestHandler):
-    def __init__(self, *args, **kwargs):
-        # Загрузка переменных окружения
-        load_dotenv()
-        db_path = os.getenv('DB_PATH', 'currency.db')  # Путь к базе данных из переменной окружения
-        connector = sqlite3.connect(db_path, uri=True)  # Подключение к базе данных
-        self.router = Router(connector)
-
+    def __init__(self, *args, db_path = None, **kwargs):
         logger.info("Инициализация RequestHandler")
+        self.router = Router(db_path)
         super().__init__(*args, **kwargs)
 
     def send_response_content(self, status_code : int, data : any, content_type : str = None) -> None:# функция отправки ответа на запрос
@@ -64,7 +57,19 @@ class RequestHandler(BaseHTTPRequestHandler):
 
 
 
-def start_server():
-    logger.info("Запуск HTTP-сервера на http://localhost:8000")
-    server = HTTPServer(('localhost', 8000), RequestHandler)
+def start_server(db_path: str = None) -> None:
+    """Запуск HTTP-сервера"""
+    logger.info("Запуск сервера")
+    
+    # Загрузка переменных окружения
+    load_dotenv()
+    host = os.getenv('HOST', 'localhost')  # Хост из переменной окружения
+    port = int(os.getenv('PORT', 8000))  # Порт из переменной окружения
+    logger.info("Запуск HTTP-сервера на %s:%d", host, port)
+    
+    # Создание и запуск HTTP-сервера с передачей db_path в RequestHandler через lambda
+    server = HTTPServer(
+        (host, port),
+        lambda *args, **kwargs: RequestHandler(*args, db_path=db_path, **kwargs)  # Передаем db_path в RequestHandler
+    )
     server.serve_forever()

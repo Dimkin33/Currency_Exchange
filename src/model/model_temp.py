@@ -12,37 +12,14 @@ logger = logging.getLogger(__name__)
 
 
 class CurrencyModel:
-    def __init__(self, db_path : str ='currency.db', connector: sqlite3 = None):
-        self.db_path = db_path
-        self._use_uri = db_path.startswith("file:")
+    def __init__(self, connector: sqlite3 = None):
         self.connector = connector 
+        logger.info(f"Инициализация CurrencyModel с коннектором {self.connector}")
         
     def _get_connection_and_cursor(self):
-        conn = self.connector or sqlite3.connect(self.db_path, uri = self._use_uri)
-        return conn, conn.cursor()
-
-    def init_db(self):
-        logger.info("Инициализация базы данных")
-        conn, cursor = self._get_connection_and_cursor()
-        try:
-            cursor.execute('''CREATE TABLE IF NOT EXISTS currencies (
-                                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                code TEXT UNIQUE,
-                                name TEXT,
-                                sign TEXT)''')
-
-            cursor.execute('''CREATE TABLE IF NOT EXISTS exchange_rates (
-                                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                from_currency TEXT,
-                                to_currency TEXT,
-                                rate REAL,
-                                UNIQUE(from_currency, to_currency))''')
-            conn.commit()
-        finally:
-            conn.close()
+        return self.connector, self.connector.cursor()
 
     def get_currency_by_code(self, code: str) -> dict:
-        code = code.upper()
         conn, cursor = self._get_connection_and_cursor()
         try:
             cursor.execute("SELECT id, code, name, sign FROM currencies WHERE code = ?", (code,))
@@ -50,8 +27,9 @@ class CurrencyModel:
             if not row:
                 raise CurrencyNotFoundError(code)
             return currencyDTO(*row).to_dict()
-        finally:
-            conn.close()
+        except Exception:
+            raise
+
             
     def delete_all_currencies(self):
         conn, cursor = self._get_connection_and_cursor()
@@ -64,8 +42,8 @@ class CurrencyModel:
             """)
             conn.commit()
             return {"message": "All currencies and exchange rates deleted, ids reset"}
-        finally:
-            conn.close()
+        except Exception:
+            raise
     
     def get_currencies(self) -> list[dict]:
         conn, cursor = self._get_connection_and_cursor()
@@ -73,8 +51,8 @@ class CurrencyModel:
             cursor.execute("SELECT id, code, name, sign FROM currencies")
             rows = cursor.fetchall()
             return [currencyDTO(*row).to_dict() for row in rows]
-        finally:
-            conn.close()
+        except Exception:
+            raise
 
     def add_currency(self, code: str, name: str, sign: str) -> dict:
         code = code.upper()
@@ -89,8 +67,8 @@ class CurrencyModel:
             return currencyDTO(currency_id, code, name, sign).to_dict()
         except sqlite3.IntegrityError:
             raise CurrencyAlreadyExistsError(code)
-        finally:
-            conn.close()
+        except Exception:
+            raise
 
     def get_exchange_rate(self, from_currency: str, to_currency: str) -> dict:
         conn, cursor = self._get_connection_and_cursor()
@@ -124,8 +102,8 @@ class CurrencyModel:
             return currencyExchangeDTO(ex_id, base_currency, target_currency, rate).to_dict()
 
 
-        finally:
-            conn.close()
+        except Exception:
+            raise
             
     def get_exchange_rates(self) -> list[dict]:
             conn, cursor = self._get_connection_and_cursor()
@@ -158,8 +136,8 @@ class CurrencyModel:
                     result.append(exchange_dto.to_dict())
 
                 return result
-            finally:
-                conn.close()
+            except Exception:
+                raise
             
     def get_conversion_info(self, from_currency: str, to_currency: str, amount: float) -> dict:
             conn, cursor = self._get_connection_and_cursor()
@@ -194,8 +172,8 @@ class CurrencyModel:
                     "amount": amount,
                     "convertedAmount": converted_amount
                 }
-            finally:
-                conn.close()
+            except Exception:
+                raise
 
 
     def add_exchange_rate(self, from_currency: str, to_currency: str, rate: float):
@@ -245,8 +223,8 @@ class CurrencyModel:
         except sqlite3.IntegrityError:
             raise ExchangeRateAlreadyExistsError(from_currency, to_currency)
 
-        finally:
-            conn.close()
+        except Exception:
+            raise
 
 
 
