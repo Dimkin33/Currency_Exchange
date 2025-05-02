@@ -1,10 +1,11 @@
-import logging
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from router import Router
-from errors import APIError
 import json
+import logging
 import os
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
 from dotenv import load_dotenv
+from errors import APIError
+from router import Router
 
 logger = logging.getLogger(__name__)
 
@@ -46,13 +47,13 @@ class RequestHandler(BaseHTTPRequestHandler):
             logger.exception("Неизвестная ошибка")
             self.send_response_content(500, {"error": "Internal Server Error"})
 
-    def do_GET(self):
+    def do_GET(self):  # noqa: N802
         self.handle_method()
 
-    def do_POST(self):
+    def do_POST(self):  # noqa: N802
         self.handle_method()
 
-    def do_PATCH(self):
+    def do_PATCH(self):  # noqa: N802
         self.handle_method()
 
 
@@ -60,13 +61,13 @@ class RequestHandler(BaseHTTPRequestHandler):
 def start_server(db_path: str = None) -> None:
     """Запуск HTTP-сервера"""
     logger.info("Запуск сервера")
-    
+
     # Загрузка переменных окружения
     load_dotenv()
     host = os.getenv('HOST', 'localhost')  # Хост из переменной окружения
     port = int(os.getenv('PORT', 8000))  # Порт из переменной окружения
     logger.info("Запуск HTTP-сервера на %s:%d", host, port)
-    
+
     # Создание и запуск HTTP-сервера с передачей db_path в RequestHandler через lambda
     server = HTTPServer(
         (host, port),

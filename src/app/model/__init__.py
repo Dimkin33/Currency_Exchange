@@ -1,6 +1,6 @@
+from .conversion import ConversionModel
 from .currencies import CurrencyModel
 from .exchange_rates import ExchangeRateModel
-from .conversion import ConversionModel
 
 # This file can be used to initialize the `model` package.
 # You can import necessary modules or define package-level variables here.

@@ -1,7 +1,10 @@
-from .base import BaseModel
-from errors import ExchangeRateNotFoundError
-from dto import currencyExchangeDTO, currencyDTO
 import logging
+
+from dto import currencyDTO, currencyExchangeDTO
+from errors import ExchangeRateNotFoundError
+
+from .base import BaseModel
+
 logger = logging.getLogger(__name__)
 
 
@@ -61,11 +64,11 @@ class ConversionModel(BaseModel):
         row = cursor.fetchone()
         if not row:
             raise ExchangeRateNotFoundError(from_currency, to_currency)
-        
+
         source = row[0]  # 'direct', 'reverse' или 'via_usd'
 
         logger.info(f"Метод определения источника курса: {source}")
-        
+
         (
             ex_id,
             base_id, base_code, base_name, base_sign,

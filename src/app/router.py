@@ -1,10 +1,11 @@
 
-import logging
 import json
-from urllib.parse import urlparse, parse_qs
+import logging
+from http.server import BaseHTTPRequestHandler
+from urllib.parse import parse_qs, urlparse
+
 from controller import Controller
-from errors import APIError, RouteNotFoundError, InvalidPairError
-from http.server import BaseHTTPRequestHandler 
+from errors import APIError, InvalidPairError, RouteNotFoundError
 
 logger = logging.getLogger(__name__)
 
@@ -83,7 +84,7 @@ class Router:
                     else:
                         logger.warning(f"Некорректный формат pair: '{pair}'")
                         raise InvalidPairError()
-                        return 
+                        return
                 func_args = [params.get(arg) for arg in args]
                 return self._safe_call(handler_controller, func_args)
 

@@ -1,5 +1,6 @@
-from dotenv import load_dotenv, find_dotenv
 import os
+
+from dotenv import find_dotenv, load_dotenv
 
 if not load_dotenv(find_dotenv()):
     raise RuntimeError(".env file not found! Please create it.")

@@ -1,5 +1,6 @@
-import sqlite3
 import os
+import sqlite3
+
 from dotenv import load_dotenv
 
 # Загрузка переменных окружения из файла .env
@@ -9,7 +10,7 @@ def init_db(connector: sqlite3):
     """Инициализация базы данных.    
     Важно: функция не закрывает переданное подключение,
     это остается ответственностью вызывающего кода."""
-    
+
     cursor = connector.cursor()
     with connector:
         cursor.execute('''
@@ -32,7 +33,7 @@ def init_db(connector: sqlite3):
                 FOREIGN KEY(to_currency) REFERENCES currencies(code) ON DELETE CASCADE
             )
         ''')
-            
+
 
 def main():
     # Получаем путь к базе данных из переменной окружения

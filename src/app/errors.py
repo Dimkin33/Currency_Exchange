@@ -43,7 +43,7 @@ class ExchangeRateAlreadyExistsError(APIError):
 class InvalidAmountFormatError(APIError):
     def __init__(self):
         super().__init__("Invalid amount format", status_code=400)
-        
+
 class MissingFormFieldError(APIError):
     def __init__(self):
         super().__init__("Missing required form field", status_code=400)

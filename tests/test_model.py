@@ -1,8 +1,10 @@
+import sqlite3
+
 import pytest
-from model import CurrencyModel
 from db_initializer import init_db
 from errors import CurrencyAlreadyExistsError
-import sqlite3
+from model import CurrencyModel
+
 
 @pytest.fixture()
 def model():

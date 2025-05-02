@@ -1,11 +1,16 @@
 import logging
-from model import CurrencyModel, ExchangeRateModel, ConversionModel
-from sign_code import currency_sign
-from errors import MissingFormFieldError, UnknownCurrencyCodeError, InvalidAmountFormatError
-from dotenv import load_dotenv, dotenv_values
 import sqlite3
 from pathlib import Path
+
 from db_initializer import init_db
+from dotenv import dotenv_values, load_dotenv
+from errors import (
+    InvalidAmountFormatError,
+    MissingFormFieldError,
+    UnknownCurrencyCodeError,
+)
+from model import ConversionModel, CurrencyModel, ExchangeRateModel
+from sign_code import currency_sign
 
 logger = logging.getLogger(__name__)
 
@@ -21,26 +26,26 @@ class Controller:
 
         self.connector = sqlite3.connect(db_path, uri=True)  # Подключение к базе данных
         init_db(self.connector)
-        
+
         # if db_path == ":memory:":
         #     logger.info("Используется in-memory база данных")
         #     # В in-memory базе данных данные не сохраняются после закрытия соединения
         #     # поэтому сохраняем коннектор в атрибуте класса
         #     self.connector2 = self.connector
-            
-            
+
+
         # else:
         #     logger.info(f"Используется база данных по пути: {db_path}")
         #     # Проверяем, существует ли файл базы данных
         #     if not Path(db_path).exists():
         #         raise FileNotFoundError(f"Файл базы данных не найден: {db_path}")
-                    
+
         # Инициализация моделей
         self.currency_model = CurrencyModel(connector=self.connector)
         self.exchange_rate_model = ExchangeRateModel(connector=self.connector)
         self.conversion_model = ConversionModel(connector=self.connector)
         logger.info(f"Инициализация моделей с коннектором {self.connector}, путь к БД: {db_path}")
-        
+
     def __del__(self):  # Закрытие соединения с БД
         logger.info("Закрытие соединения с БД")
         try:
@@ -109,7 +114,7 @@ class Controller:
     def handle_html_page(self) -> str:
         """Возвращает HTML-страницу"""
         # Проверяем, существует ли файл index.html
-        template_path = Path(__file__).parent.parent / "templates" / "index.html"
+        template_path = Path(__file__).parent.parent.parent / "templates" / "index.html"
         logger.info(f"Путь к шаблону: {template_path}")
         if not Path(template_path).exists():
             raise FileNotFoundError("HTML-шаблон не найден")
@@ -117,7 +122,7 @@ class Controller:
         return template_path.read_text(encoding="utf-8"), 200
 
     def return_icon(self) -> bytes:
-        template_path = Path(__file__).parent.parent / "templates" / "favicon.ico"
+        template_path = Path(__file__).parent.parent.parent / "templates" / "favicon.ico"
         if not Path(template_path).exists():
             raise FileNotFoundError("favicon.ico не найден")
         with open(template_path, "rb") as f:

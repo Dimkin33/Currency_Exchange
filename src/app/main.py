@@ -1,6 +1,7 @@
-from app_server import start_server
-import threading
 import logging
+import threading
+
+from app_server import start_server
 
 # Настройка логирования
 logging.basicConfig(

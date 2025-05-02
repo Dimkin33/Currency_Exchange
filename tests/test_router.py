@@ -1,7 +1,8 @@
-import threading
-import sqlite3
-import time
 import socket
+import sqlite3
+import threading
+import time
+
 import pytest
 import requests
 from app_server import start_server

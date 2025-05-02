@@ -1,7 +1,10 @@
-from .base import BaseModel
-from dto import currencyDTO
-from errors import CurrencyNotFoundError, CurrencyAlreadyExistsError
 import sqlite3
+
+from dto import currencyDTO
+from errors import CurrencyAlreadyExistsError, CurrencyNotFoundError
+
+from .base import BaseModel
+
 
 class CurrencyModel(BaseModel):
     def get_currency_by_code(self, code: str) -> dict:

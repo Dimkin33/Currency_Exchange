@@ -1,11 +1,12 @@
-import sqlite3
 import logging
+import sqlite3
+
 from dto import currencyDTO, currencyExchangeDTO
 from errors import (
-    CurrencyNotFoundError,
     CurrencyAlreadyExistsError,
-    ExchangeRateNotFoundError,
+    CurrencyNotFoundError,
     ExchangeRateAlreadyExistsError,
+    ExchangeRateNotFoundError,
 )
 
 logger = logging.getLogger(__name__)
@@ -13,9 +14,9 @@ logger = logging.getLogger(__name__)
 
 class CurrencyModel:
     def __init__(self, connector: sqlite3 = None):
-        self.connector = connector 
+        self.connector = connector
         logger.info(f"Инициализация CurrencyModel с коннектором {self.connector}")
-        
+
     def _get_connection_and_cursor(self):
         return self.connector, self.connector.cursor()
 
@@ -30,7 +31,7 @@ class CurrencyModel:
         except Exception:
             raise
 
-            
+
     def delete_all_currencies(self):
         conn, cursor = self._get_connection_and_cursor()
         try:
@@ -44,7 +45,7 @@ class CurrencyModel:
             return {"message": "All currencies and exchange rates deleted, ids reset"}
         except Exception:
             raise
-    
+
     def get_currencies(self) -> list[dict]:
         conn, cursor = self._get_connection_and_cursor()
         try:
@@ -104,7 +105,7 @@ class CurrencyModel:
 
         except Exception:
             raise
-            
+
     def get_exchange_rates(self) -> list[dict]:
             conn, cursor = self._get_connection_and_cursor()
             try:
@@ -138,7 +139,7 @@ class CurrencyModel:
                 return result
             except Exception:
                 raise
-            
+
     def get_conversion_info(self, from_currency: str, to_currency: str, amount: float) -> dict:
             conn, cursor = self._get_connection_and_cursor()
             try:
@@ -297,11 +298,11 @@ class CurrencyModel:
             row = cursor.fetchone()
             if not row:
                 raise ExchangeRateNotFoundError(from_currency, to_currency)
-            
+
             source = row[0]  # 'direct', 'reverse' или 'via_usd'
 
             logger.info(f"Метод определения источника курса: {source}")
-            
+
             (
                 ex_id,
                 base_id, base_code, base_name, base_sign,

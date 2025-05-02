@@ -1,7 +1,10 @@
-from .base import BaseModel
-from dto import currencyDTO, currencyExchangeDTO
-from errors import ExchangeRateNotFoundError, ExchangeRateAlreadyExistsError
 import sqlite3
+
+from dto import currencyDTO, currencyExchangeDTO
+from errors import ExchangeRateAlreadyExistsError, ExchangeRateNotFoundError
+
+from .base import BaseModel
+
 
 class ExchangeRateModel(BaseModel):
     def get_exchange_rate(self, from_currency: str, to_currency: str) -> dict:
@@ -50,7 +53,7 @@ class ExchangeRateModel(BaseModel):
         except sqlite3.IntegrityError:
             raise ExchangeRateAlreadyExistsError(from_currency, to_currency)
 
-            
+
     def patch_exchange_rate(self, from_currency: str, to_currency: str, rate: float) -> dict:
         conn, cursor = self._get_connection_and_cursor()
 

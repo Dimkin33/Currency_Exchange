@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class currencyDTO:
     id: int
@@ -24,7 +25,7 @@ class currencyExchangeDTO:
     amount: float = None
     convertedAmount: float = None
     method: str = None
-    
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -33,7 +34,7 @@ class currencyExchangeDTO:
             "rate": self.rate
         }
 
-       
+
     def to_converted_dict(self):
         return {
             "baseCurrency": self.from_currency,

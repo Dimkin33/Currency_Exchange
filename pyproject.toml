@@ -1,0 +1,77 @@
+[project]
+name = "currencyconverter"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "Dmitry", email = "dimkin3@gmail.com" }
+]
+dependencies = [
+    "requests>=2.32.3",
+    "dotenv>=0.9.9",
+]
+readme = "README.md"
+requires-python = ">= 3.12"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "pytest-dotenv>=0.5.2",
+    "ruff>=0.11.7",
+    "pytest>=8.3.5",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/test"]
+
+[tool.pytest.ini_options]
+env_files = [".env", ".env.test"]
+
+[tool.rye.scripts]
+lint = "ruff check ."
+format = "ruff format ."
+
+
+[tool.ruff]
+# Что проверяем
+select = [
+  "E",  # ошибки (pycodestyle)
+  "F",  # ошибки (pyflakes)
+  "W",  # предупреждения
+  "I",  # порядок импортов (isort)
+  "N",  # имена (pep8-naming)
+]
+
+# Что игнорируем
+ignore = [
+  "E501",  # не проверять длину строки (если используешь black, это не нужно)
+]
+
+# Максимальная длина строки
+line-length = 88  # как у black
+
+# Файлы и папки, которые нужно игнорировать
+exclude = [
+  ".git",
+  ".venv",
+  "__pycache__",
+  "build",
+  "dist",
+]
+
+
+# Файлы, которые считаем Python-файлами
+include = ["*.py", "*.pyi", "**/pyproject.toml"]
+
+# Автоисправление при необходимости (если захочешь через команду)
+fixable = ["ALL"]
+unfixable = []
+
+# На каких версиях Python проверять
+target-version = "py311"  # например, Python 3.11
