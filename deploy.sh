@@ -3,7 +3,7 @@
 # Переменные
 APP_DIR="/proect_currency"  # Путь к директории развертывания
 BRANCH="main"  # Ветка для деплоя
-REPO_URL="git@github.com:your-username/your-repo.git"  # URL вашего репозитория
+REPO_URL="https://github.com/Dimkin33/test.git"  # URL вашего репозитория
 
 # Функция для вывода сообщений
 log() {
