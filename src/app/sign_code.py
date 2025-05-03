@@ -1,5 +1,7 @@
+from typing import Dict, Tuple
+
 # Словарь всех валют, формат: 'Код': ('Название', 'Символ')
-currency_sign = {
+currency_sign: Dict[str, Tuple[str, str]] = {
     'USD': ('Доллар США', '$'),
     'EUR': ('Евро', '€'),
     'RUB': ('Российский рубль', '₽'),

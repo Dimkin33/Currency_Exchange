@@ -1,0 +1,22 @@
+# Включить все файлы из папки src
+include src/*
+
+# Включить все файлы из папки templates
+include src/templates/*
+
+# Включить все файлы из папки tests
+include tests/*
+
+# Включить файл README.md
+include README.md
+
+# Исключить временные файлы
+exclude *.pyc
+exclude *.pyo
+
+# Исключить файлы с расширением .log
+exclude *.log   
+
+# Исключить файлы с расширением .tmp
+exclude *.tmp   
+
