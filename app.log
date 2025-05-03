@@ -3378,3 +3378,53 @@ FileNotFoundError: favicon.ico не найден
 2025-04-28 11:01:51,376 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: text/plain; charset=utf-8, тип содержимого: bytes
 2025-04-28 11:01:51,453 - controller  -__del__               - INFO     - Закрытие соединения с БД
 2025-04-28 11:02:07,559 - __main__    -<module>              - INFO     - Завершение работы сервера
+2025-05-03 22:15:29,786 - __main__    -<module>              - INFO     - Запуск сервера в отдельном потоке
+2025-05-03 22:15:29,787 - app_server  -start_server          - INFO     - Запуск сервера
+2025-05-03 22:15:29,787 - __main__    -<module>              - INFO     - Сервер запущен. Ожидание запросов.
+2025-05-03 22:15:29,931 - app_server  -start_server          - INFO     - Запуск HTTP-сервера на localhost:8000
+2025-05-03 22:15:39,390 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 22:15:39,421 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 22:15:39,450 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 22:15:39,991 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x000001CBD338D3F0>, путь к БД: :memory:
+2025-05-03 22:15:40,036 - app_server  -handle_method         - INFO     - Обработка GET-запроса
+2025-05-03 22:15:40,066 - router      -handle_request        - INFO     - Обработка запроса: GET /currencies
+2025-05-03 22:15:40,096 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-03 22:15:40,126 - router      -_resolve              - DEBUG    - Маршрутизация запроса: GET /currencies
+2025-05-03 22:15:40,156 - router      -_safe_call            - DEBUG    - Вызов обработчика: get_currencies с аргументами: []
+2025-05-03 22:15:40,201 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: application/json; charset=utf-8, тип содержимого: list
+2025-05-03 22:15:40,276 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 22:15:40,366 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 22:15:40,396 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 22:15:40,426 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 22:15:40,936 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x000001CBD338D3F0>, путь к БД: :memory:
+2025-05-03 22:15:41,146 - app_server  -handle_method         - INFO     - Обработка GET-запроса
+2025-05-03 22:15:41,176 - router      -handle_request        - INFO     - Обработка запроса: GET /favicon.ico
+2025-05-03 22:15:41,206 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-03 22:15:41,236 - router      -_resolve              - DEBUG    - Маршрутизация запроса: GET /favicon.ico
+2025-05-03 22:15:41,266 - router      -_safe_call            - DEBUG    - Вызов обработчика: return_icon с аргументами: []
+2025-05-03 22:15:41,402 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: text/plain; charset=utf-8, тип содержимого: bytes
+2025-05-03 22:15:41,477 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 22:15:48,248 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 22:15:48,278 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 22:15:48,308 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 22:15:48,833 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x000001CBD338D4E0>, путь к БД: :memory:
+2025-05-03 22:15:48,878 - app_server  -handle_method         - INFO     - Обработка GET-запроса
+2025-05-03 22:15:48,908 - router      -handle_request        - INFO     - Обработка запроса: GET /
+2025-05-03 22:15:48,938 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-03 22:15:48,968 - router      -_resolve              - DEBUG    - Маршрутизация запроса: GET /
+2025-05-03 22:15:48,998 - router      -_safe_call            - DEBUG    - Вызов обработчика: handle_html_page с аргументами: []
+2025-05-03 22:15:49,028 - controller  -handle_html_page      - INFO     - Путь к шаблону: C:\Users\dimki\PycharmProjects\currency_proect\test\src\templates\index.html
+2025-05-03 22:15:49,163 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: text/html; charset=utf-8, тип содержимого: str
+2025-05-03 22:15:49,239 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 22:15:49,344 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 22:15:49,359 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 22:15:49,389 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 22:15:49,884 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x000001CBD338D6C0>, путь к БД: :memory:
+2025-05-03 22:15:49,929 - app_server  -handle_method         - INFO     - Обработка GET-запроса
+2025-05-03 22:15:49,959 - router      -handle_request        - INFO     - Обработка запроса: GET /favicon.ico
+2025-05-03 22:15:49,989 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-03 22:15:50,019 - router      -_resolve              - DEBUG    - Маршрутизация запроса: GET /favicon.ico
+2025-05-03 22:15:50,049 - router      -_safe_call            - DEBUG    - Вызов обработчика: return_icon с аргументами: []
+2025-05-03 22:15:50,199 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: text/plain; charset=utf-8, тип содержимого: bytes
+2025-05-03 22:15:50,274 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 22:15:57,883 - __main__    -<module>              - INFO     - Завершение работы сервера
