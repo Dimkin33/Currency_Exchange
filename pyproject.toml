@@ -27,15 +27,11 @@ dev-dependencies = [
 [tool.hatch.metadata]
 allow-direct-references = true
 
-
-[tool.pytest.ini_options]
-env_files = ".env.test"
-
 [tool.rye.scripts]
 lint = "ruff check ."  # Проверка кода
 format = "ruff format ."  # Форматирование кода
 start = "python src/app/main.py"  # Запуск приложения
-test = "pytest -v --tb=short"  # Запуск тестов
+test = {cmd = "pytest -v --tb=short", env-file = '.env.test'}  # Запуск тестов
 init-db = "python src/app/db_initializer.py"  # Инициализация базы данных
 
 [tool.ruff]
