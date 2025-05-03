@@ -114,7 +114,7 @@ class Controller:
     def handle_html_page(self) -> str:
         """Возвращает HTML-страницу"""
         # Проверяем, существует ли файл index.html
-        template_path = Path(__file__).parent.parent.parent / "templates" / "index.html"
+        template_path = Path(__file__).parent.parent / "templates" / "index.html"
         logger.info(f"Путь к шаблону: {template_path}")
         if not Path(template_path).exists():
             raise FileNotFoundError("HTML-шаблон не найден")
@@ -122,7 +122,7 @@ class Controller:
         return template_path.read_text(encoding="utf-8"), 200
 
     def return_icon(self) -> bytes:
-        template_path = Path(__file__).parent.parent.parent / "templates" / "favicon.ico"
+        template_path = Path(__file__).parent.parent / "templates" / "favicon.ico"
         if not Path(template_path).exists():
             raise FileNotFoundError("favicon.ico не найден")
         with open(template_path, "rb") as f:
