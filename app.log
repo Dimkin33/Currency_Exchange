@@ -3428,3 +3428,147 @@ FileNotFoundError: favicon.ico не найден
 2025-05-03 22:15:50,199 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: text/plain; charset=utf-8, тип содержимого: bytes
 2025-05-03 22:15:50,274 - controller  -__del__               - INFO     - Закрытие соединения с БД
 2025-05-03 22:15:57,883 - __main__    -<module>              - INFO     - Завершение работы сервера
+2025-05-03 23:29:02,112 - __main__    -<module>              - INFO     - Запуск сервера в отдельном потоке
+2025-05-03 23:29:02,112 - app_server  -start_server          - INFO     - Запуск сервера
+2025-05-03 23:29:02,112 - __main__    -<module>              - INFO     - Сервер запущен. Ожидание запросов.
+2025-05-03 23:29:02,283 - app_server  -start_server          - INFO     - Запуск HTTP-сервера на localhost:8000
+2025-05-03 23:29:09,234 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 23:29:09,264 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 23:29:09,294 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 23:29:10,452 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 23:29:10,512 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 23:29:10,542 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 23:29:10,572 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 23:29:11,306 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 23:29:11,801 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 23:29:11,831 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 23:29:11,861 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 23:29:12,598 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 23:29:12,658 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 23:29:12,688 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 23:29:12,718 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 23:29:13,423 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 23:29:17,939 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 23:29:17,969 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 23:29:17,999 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 23:29:18,765 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 23:29:18,825 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 23:29:18,855 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 23:29:18,885 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 23:29:19,205 - __main__    -<module>              - INFO     - Завершение работы сервера
+2025-05-03 23:44:06,756 - __main__    -<module>              - INFO     - Запуск сервера в отдельном потоке
+2025-05-03 23:44:06,757 - app_server  -start_server          - INFO     - Запуск сервера
+2025-05-03 23:44:06,757 - __main__    -<module>              - INFO     - Сервер запущен. Ожидание запросов.
+2025-05-03 23:44:06,919 - app_server  -start_server          - INFO     - Запуск HTTP-сервера на localhost:8000
+2025-05-03 23:44:12,127 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 23:44:12,157 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 23:44:12,187 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 23:44:12,682 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x0000017681B215D0>, путь к БД: db/currency.db
+2025-05-03 23:44:12,727 - app_server  -handle_method         - INFO     - Обработка GET-запроса
+2025-05-03 23:44:12,757 - router      -handle_request        - INFO     - Обработка запроса: GET /currencies?
+2025-05-03 23:44:12,787 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-03 23:44:12,817 - router      -_resolve              - DEBUG    - Маршрутизация запроса: GET /currencies
+2025-05-03 23:44:12,847 - router      -_safe_call            - DEBUG    - Вызов обработчика: get_currencies с аргументами: []
+2025-05-03 23:44:12,907 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: application/json; charset=utf-8, тип содержимого: list
+2025-05-03 23:44:12,967 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 23:44:13,102 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 23:44:13,133 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 23:44:13,163 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 23:44:13,674 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x0000017681B215D0>, путь к БД: db/currency.db
+2025-05-03 23:44:13,824 - app_server  -handle_method         - INFO     - Обработка GET-запроса
+2025-05-03 23:44:13,854 - router      -handle_request        - INFO     - Обработка запроса: GET /favicon.ico
+2025-05-03 23:44:13,884 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-03 23:44:13,914 - router      -_resolve              - DEBUG    - Маршрутизация запроса: GET /favicon.ico
+2025-05-03 23:44:13,944 - router      -_safe_call            - DEBUG    - Вызов обработчика: return_icon с аргументами: []
+2025-05-03 23:44:14,079 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: text/plain; charset=utf-8, тип содержимого: bytes
+2025-05-03 23:44:14,154 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 23:44:21,976 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 23:44:22,006 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 23:44:22,036 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 23:44:22,530 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x0000017681B216C0>, путь к БД: db/currency.db
+2025-05-03 23:44:22,575 - app_server  -handle_method         - INFO     - Обработка GET-запроса
+2025-05-03 23:44:22,605 - router      -handle_request        - INFO     - Обработка запроса: GET /
+2025-05-03 23:44:22,636 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-03 23:44:22,666 - router      -_resolve              - DEBUG    - Маршрутизация запроса: GET /
+2025-05-03 23:44:22,696 - router      -_safe_call            - DEBUG    - Вызов обработчика: handle_html_page с аргументами: []
+2025-05-03 23:44:22,726 - controller  -handle_html_page      - INFO     - Путь к шаблону: C:\Users\dimki\PycharmProjects\currency_proect\test\src\templates\index.html
+2025-05-03 23:44:22,847 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: text/html; charset=utf-8, тип содержимого: str
+2025-05-03 23:44:22,922 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 23:44:23,027 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 23:44:23,057 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 23:44:23,087 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 23:44:23,583 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x0000017681B218A0>, путь к БД: db/currency.db
+2025-05-03 23:44:23,643 - app_server  -handle_method         - INFO     - Обработка GET-запроса
+2025-05-03 23:44:23,673 - router      -handle_request        - INFO     - Обработка запроса: GET /favicon.ico
+2025-05-03 23:44:23,704 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-03 23:44:23,734 - router      -_resolve              - DEBUG    - Маршрутизация запроса: GET /favicon.ico
+2025-05-03 23:44:23,764 - router      -_safe_call            - DEBUG    - Вызов обработчика: return_icon с аргументами: []
+2025-05-03 23:44:23,899 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: text/plain; charset=utf-8, тип содержимого: bytes
+2025-05-03 23:44:23,974 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 23:44:29,109 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 23:44:29,139 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 23:44:29,169 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 23:44:29,649 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x0000017681B21B70>, путь к БД: db/currency.db
+2025-05-03 23:44:29,694 - app_server  -handle_method         - INFO     - Обработка POST-запроса
+2025-05-03 23:44:29,709 - router      -handle_request        - INFO     - Обработка запроса: POST /currencies
+2025-05-03 23:44:29,739 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-03 23:44:29,769 - router      -_resolve              - DEBUG    - Маршрутизация запроса: POST /currencies
+2025-05-03 23:44:29,799 - router      -_safe_call            - DEBUG    - Вызов обработчика: add_currency с аргументами: ['USD', None]
+2025-05-03 23:44:29,889 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 201: с типом: application/json; charset=utf-8, тип содержимого: dict
+2025-05-03 23:44:29,964 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 23:44:30,069 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 23:44:30,099 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 23:44:30,129 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 23:44:30,369 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x0000017681B216C0>, путь к БД: db/currency.db
+2025-05-03 23:44:30,414 - app_server  -handle_method         - INFO     - Обработка GET-запроса
+2025-05-03 23:44:30,444 - router      -handle_request        - INFO     - Обработка запроса: GET /favicon.ico
+2025-05-03 23:44:30,474 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-03 23:44:30,504 - router      -_resolve              - DEBUG    - Маршрутизация запроса: GET /favicon.ico
+2025-05-03 23:44:30,534 - router      -_safe_call            - DEBUG    - Вызов обработчика: return_icon с аргументами: []
+2025-05-03 23:44:30,669 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: text/plain; charset=utf-8, тип содержимого: bytes
+2025-05-03 23:44:30,744 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 23:44:32,230 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 23:44:32,260 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 23:44:32,290 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 23:44:32,741 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x0000017681B216C0>, путь к БД: db/currency.db
+2025-05-03 23:44:32,771 - app_server  -handle_method         - INFO     - Обработка GET-запроса
+2025-05-03 23:44:32,801 - router      -handle_request        - INFO     - Обработка запроса: GET /favicon.ico
+2025-05-03 23:44:32,831 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-03 23:44:32,861 - router      -_resolve              - DEBUG    - Маршрутизация запроса: GET /favicon.ico
+2025-05-03 23:44:32,891 - router      -_safe_call            - DEBUG    - Вызов обработчика: return_icon с аргументами: []
+2025-05-03 23:44:33,012 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: text/plain; charset=utf-8, тип содержимого: bytes
+2025-05-03 23:44:33,087 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 23:44:33,222 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 23:44:33,252 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 23:44:33,282 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 23:44:33,810 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x0000017681B216C0>, путь к БД: db/currency.db
+2025-05-03 23:44:33,855 - app_server  -handle_method         - INFO     - Обработка GET-запроса
+2025-05-03 23:44:33,885 - router      -handle_request        - INFO     - Обработка запроса: GET /currencies?
+2025-05-03 23:44:33,915 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-03 23:44:33,945 - router      -_resolve              - DEBUG    - Маршрутизация запроса: GET /currencies
+2025-05-03 23:44:33,975 - router      -_safe_call            - DEBUG    - Вызов обработчика: get_currencies с аргументами: []
+2025-05-03 23:44:34,081 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: application/json; charset=utf-8, тип содержимого: list
+2025-05-03 23:44:34,156 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 23:44:34,922 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 23:44:34,952 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 23:44:34,982 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 23:44:35,388 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x0000017681B216C0>, путь к БД: db/currency.db
+2025-05-03 23:44:35,433 - app_server  -handle_method         - INFO     - Обработка GET-запроса
+2025-05-03 23:44:35,463 - router      -handle_request        - INFO     - Обработка запроса: GET /favicon.ico
+2025-05-03 23:44:35,493 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-03 23:44:35,523 - router      -_resolve              - DEBUG    - Маршрутизация запроса: GET /favicon.ico
+2025-05-03 23:44:35,553 - router      -_safe_call            - DEBUG    - Вызов обработчика: return_icon с аргументами: []
+2025-05-03 23:44:35,688 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: text/plain; charset=utf-8, тип содержимого: bytes
+2025-05-03 23:44:35,763 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 23:44:35,898 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-03 23:44:35,928 - router      -__init__              - INFO     - Инициализация Router
+2025-05-03 23:44:35,958 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-03 23:44:36,378 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x0000017681B216C0>, путь к БД: db/currency.db
+2025-05-03 23:44:36,739 - app_server  -handle_method         - INFO     - Обработка GET-запроса
+2025-05-03 23:44:36,769 - router      -handle_request        - INFO     - Обработка запроса: GET /favicon.ico
+2025-05-03 23:44:36,799 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-03 23:44:36,829 - router      -_resolve              - DEBUG    - Маршрутизация запроса: GET /favicon.ico
+2025-05-03 23:44:36,859 - router      -_safe_call            - DEBUG    - Вызов обработчика: return_icon с аргументами: []
+2025-05-03 23:44:36,994 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: text/plain; charset=utf-8, тип содержимого: bytes
+2025-05-03 23:44:37,069 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-03 23:47:37,531 - __main__    -<module>              - INFO     - Завершение работы сервера

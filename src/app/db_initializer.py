@@ -1,13 +1,12 @@
 import os
 import sqlite3
+from pathlib import Path
 
 from dotenv import load_dotenv
 
-# Загрузка переменных окружения из файла .env
-load_dotenv( override=True)
 
 def init_db(connector: sqlite3):
-    """Инициализация базы данных.    
+    """Инициализация базы данных.
     Важно: функция не закрывает переданное подключение,
     это остается ответственностью вызывающего кода."""
 
@@ -36,17 +35,14 @@ def init_db(connector: sqlite3):
 
 
 def main():
-    # Получаем путь к базе данных из переменной окружения
-    db_path = os.getenv('DB_PATH', 'currency.db')  # Если переменная не установлена, будет использован 'currency.db'
+    load_dotenv()
+    db_path = os.getenv("DB_PATH", "db/currency.db")
+    db_path = Path(db_path)
+    db_path.parent.mkdir(parents=True, exist_ok=True)  # создаём папки, если не существуют
 
-    # Устанавливаем соединение с БД
     conn = sqlite3.connect(db_path, uri=True)
-
-    # Инициализируем БД
     init_db(conn)
     print(f"База данных успешно инициализирована по пути: {db_path}")
-
-    # Закрываем соединение
     conn.close()
 
 if __name__ == "__main__":

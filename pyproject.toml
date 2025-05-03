@@ -27,13 +27,9 @@ dev-dependencies = [
 [tool.hatch.metadata]
 allow-direct-references = true
 
-# This is the default build backend for Python projects.
-[tool.hatch.build.targets.wheel]
-packages = ["src/app"]
-
 
 [tool.pytest.ini_options]
-env_files = [".env", ".env.test"]
+env_files = ".env.test"
 
 [tool.rye.scripts]
 lint = "ruff check ."  # Проверка кода
@@ -78,4 +74,4 @@ fixable = ["ALL"]
 unfixable = []
 
 # На каких версиях Python проверять
-target-version = "py311"  # например, Python 3.11
+target-version = "py312"  # например, Python 3.12
