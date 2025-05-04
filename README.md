@@ -1,4 +1,5 @@
 # Currency Exchange
+🇷🇺 [Читать на русском](README.ru.md)
 
 **Currency Exchange** is an application for working with currency exchange rates. It provides functionality for retrieving current exchange rates, converting currencies, and managing a database.
 
