@@ -30,7 +30,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             content_type = content_type or 'text/plain; charset=utf-8'
 
         logger.debug(
-            f'Отправка ответа c кодом состояния: {status_code}: с типом: {content_type}, тип содержимого: {type(data).__name__}'
+            f'Отправка ответа c к одом состояния: {status_code}: с типом: {content_type}, тип содержимого: {type(data).__name__}'
         )
         self.send_response(status_code)  # устанавливаем код состояния ответа
         self.send_header('Content-Type', content_type)
