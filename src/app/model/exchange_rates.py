@@ -9,7 +9,8 @@ from .base import BaseModel
 class ExchangeRateModel(BaseModel):
     def get_exchange_rate(self, from_currency: str, to_currency: str) -> dict:
         conn, cursor = self._get_connection_and_cursor()
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT
                 er.id,
                 base.id, base.code, base.name, base.sign,
@@ -19,7 +20,9 @@ class ExchangeRateModel(BaseModel):
             JOIN currencies base ON er.from_currency = base.code
             JOIN currencies target ON er.to_currency = target.code
             WHERE er.from_currency = ? AND er.to_currency = ?
-        """, (from_currency.upper(), to_currency.upper()))
+        """,
+            (from_currency.upper(), to_currency.upper()),
+        )
         row = cursor.fetchone()
 
         if not row:
@@ -27,16 +30,25 @@ class ExchangeRateModel(BaseModel):
 
         (
             ex_id,
-            base_id, base_code, base_name, base_sign,
-            target_id, target_code, target_name, target_sign,
-            rate
+            base_id,
+            base_code,
+            base_name,
+            base_sign,
+            target_id,
+            target_code,
+            target_name,
+            target_sign,
+            rate,
         ) = row
 
         base_currency = currencyDTO(base_id, base_code, base_name, base_sign).to_dict()
-        target_currency = currencyDTO(target_id, target_code, target_name, target_sign).to_dict()
+        target_currency = currencyDTO(
+            target_id, target_code, target_name, target_sign
+        ).to_dict()
 
-        return currencyExchangeDTO(ex_id, base_currency, target_currency, rate).to_dict()
-
+        return currencyExchangeDTO(
+            ex_id, base_currency, target_currency, rate
+        ).to_dict()
 
     def add_exchange_rate(self, from_currency: str, to_currency: str, rate: float):
         from_currency = from_currency.upper()
@@ -44,21 +56,29 @@ class ExchangeRateModel(BaseModel):
         conn, cursor = self._get_connection_and_cursor()
         try:
             cursor.execute(
-                "INSERT INTO exchange_rates (from_currency, to_currency, rate) VALUES (?, ?, ?)",
-                (from_currency, to_currency, rate)
+                'INSERT INTO exchange_rates (from_currency, to_currency, rate) VALUES (?, ?, ?)',
+                (from_currency, to_currency, rate),
             )
             conn.commit()
             exchange_id = cursor.lastrowid
-            return {"id": exchange_id, "from_currency": from_currency, "to_currency": to_currency, "rate": rate}
-        except sqlite3.IntegrityError:
-            raise ExchangeRateAlreadyExistsError(from_currency, to_currency)
+            return {
+                'id': exchange_id,
+                'from_currency': from_currency,
+                'to_currency': to_currency,
+                'rate': rate,
+            }
+        except sqlite3.IntegrityError as e:
+            raise ExchangeRateAlreadyExistsError(from_currency, to_currency) from e
 
-
-    def patch_exchange_rate(self, from_currency: str, to_currency: str, rate: float) -> dict:
+    def patch_exchange_rate(
+        self, from_currency: str, to_currency: str, rate: float
+    ) -> dict:
         conn, cursor = self._get_connection_and_cursor()
 
-        cursor.execute("UPDATE exchange_rates SET rate = ? WHERE from_currency = ? AND to_currency = ?",
-                        (rate, from_currency.upper(), to_currency.upper()))
+        cursor.execute(
+            'UPDATE exchange_rates SET rate = ? WHERE from_currency = ? AND to_currency = ?',
+            (rate, from_currency.upper(), to_currency.upper()),
+        )
         if cursor.rowcount == 0:
             raise ExchangeRateNotFoundError(from_currency, to_currency)
         conn.commit()
@@ -83,15 +103,27 @@ class ExchangeRateModel(BaseModel):
         for row in rows:
             (
                 ex_id,
-                base_id, base_code, base_name, base_sign,
-                target_id, target_code, target_name, target_sign,
-                rate
+                base_id,
+                base_code,
+                base_name,
+                base_sign,
+                target_id,
+                target_code,
+                target_name,
+                target_sign,
+                rate,
             ) = row
 
-            base_currency = currencyDTO(base_id, base_code, base_name, base_sign).to_dict()
-            target_currency = currencyDTO(target_id, target_code, target_name, target_sign).to_dict()
+            base_currency = currencyDTO(
+                base_id, base_code, base_name, base_sign
+            ).to_dict()
+            target_currency = currencyDTO(
+                target_id, target_code, target_name, target_sign
+            ).to_dict()
 
-            exchange_dto = currencyExchangeDTO(ex_id, base_currency, target_currency, rate)
+            exchange_dto = currencyExchangeDTO(
+                ex_id, base_currency, target_currency, rate
+            )
             result.append(exchange_dto.to_dict())
 
         return result

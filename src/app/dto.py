@@ -9,12 +9,8 @@ class currencyDTO:
     sign: str
 
     def to_dict(self):
-        return {
-            "id": self.id,
-            "code": self.code,
-            "name": self.name,
-            "sign": self.sign
-        }
+        return {'id': self.id, 'code': self.code, 'name': self.name, 'sign': self.sign}
+
 
 @dataclass
 class currencyExchangeDTO:
@@ -28,19 +24,18 @@ class currencyExchangeDTO:
 
     def to_dict(self):
         return {
-            "id": self.id,
-            "baseCurrency": self.from_currency,
-            "targetCurrency": self.to_currency,
-            "rate": self.rate
+            'id': self.id,
+            'baseCurrency': self.from_currency,
+            'targetCurrency': self.to_currency,
+            'rate': self.rate,
         }
-
 
     def to_converted_dict(self):
         return {
-            "baseCurrency": self.from_currency,
-            "targetCurrency": self.to_currency,
-            "rate": self.rate,
-            "amount": self.amount,
-            "convertedAmount": self.convertedAmount,
-            "method": self.method
+            'baseCurrency': self.from_currency,
+            'targetCurrency': self.to_currency,
+            'rate': self.rate,
+            'amount': self.amount,
+            'convertedAmount': self.convertedAmount,
+            'method': self.method,
         }

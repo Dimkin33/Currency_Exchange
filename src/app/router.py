@@ -1,4 +1,3 @@
-
 import json
 import logging
 from http.server import BaseHTTPRequestHandler
@@ -9,14 +8,15 @@ from errors import APIError, InvalidPairError, RouteNotFoundError
 
 logger = logging.getLogger(__name__)
 
+
 class Router:
     def __init__(self, db_path: str = None):
-        logger.info("Инициализация Router")
+        logger.info('Инициализация Router')
         self.static_routes = {}
         self.dynamic_routes = []
         self._register_routes(db_path)
 
-    def _register_routes(self,  db_path: str = None) -> None:
+    def _register_routes(self, db_path: str = None) -> None:
         controller = Controller(db_path)
 
         # Обработчики контроллера
@@ -42,25 +42,30 @@ class Router:
         self.static_routes[('GET', '/favicon.ico')] = return_icon
         self.static_routes[('GET', '/')] = handle_html
         self.static_routes[('PATCH', '/exchangeRate')] = update_exchange_rate
-        self.static_routes[('POST', '/currencies/delete_all')] =  delete_all_currencies
+        self.static_routes[('POST', '/currencies/delete_all')] = delete_all_currencies
         # Динамические маршруты
         self.dynamic_routes.append(('GET', '/currency/:code', get_currency))
         self.dynamic_routes.append(('GET', '/exchangeRate/:pair', get_exchange_rate))
-        self.dynamic_routes.append(('PATCH', '/exchangeRate/:pair', update_exchange_rate))
+        self.dynamic_routes.append(
+            ('PATCH', '/exchangeRate/:pair', update_exchange_rate)
+        )
 
     def handle_request(self, handler: BaseHTTPRequestHandler) -> tuple:
-        logger.info(f"Обработка запроса: {handler.command} {handler.path}")
+        logger.info(f'Обработка запроса: {handler.command} {handler.path}')
         parsed_path = urlparse(handler.path)
         query_params = {k: v[0] for k, v in parse_qs(parsed_path.query).items()}
         body = self._parse_body(handler)
         url = parsed_path.path
         method = handler.command
-        params = {**query_params, **body} # Объединяем параметры запроса и тела запроса в один словарь
+        params = {
+            **query_params,
+            **body,
+        }  # Объединяем параметры запроса и тела запроса в один словарь
 
         return self._resolve(method, url, params)
 
     def _resolve(self, method: str, url: str, params: dict) -> tuple:
-        logger.debug(f"Маршрутизация запроса: {method} {url}")
+        logger.debug(f'Маршрутизация запроса: {method} {url}')
 
         # Проверка на статический маршрут
         route = self.static_routes.get((method, url))
@@ -80,7 +85,9 @@ class Router:
                     if isinstance(pair, str) and len(pair) == 6:
                         params['from'] = pair[:3].upper()
                         params['to'] = pair[3:].upper()
-                        logger.debug(f"Разобранная пара: from={params['from']}, to={params['to']}")
+                        logger.debug(
+                            f'Разобранная пара: from={params["from"]}, to={params["to"]}'
+                        )
                     else:
                         logger.warning(f"Некорректный формат pair: '{pair}'")
                         raise InvalidPairError()
@@ -88,30 +95,37 @@ class Router:
                 func_args = [params.get(arg) for arg in args]
                 return self._safe_call(handler_controller, func_args)
 
-        logger.warning(f"Маршрут не найден: {method} {url}")
+        logger.warning(f'Маршрут не найден: {method} {url}')
         raise RouteNotFoundError()
 
-
-    def _safe_call(self, handler_controller: callable, func_args: list) -> tuple:  # Возвращает результат обработчика и статус-код ответа
+    def _safe_call(
+        self, handler_controller: callable, func_args: list
+    ) -> tuple:  # Возвращает результат обработчика и статус-код ответа
         try:
-            logger.debug(f"Вызов обработчика: {handler_controller.__name__} с аргументами: {func_args}")
-            response, code = handler_controller(*func_args) if func_args else handler_controller()
+            logger.debug(
+                f'Вызов обработчика: {handler_controller.__name__} с аргументами: {func_args}'
+            )
+            response, code = (
+                handler_controller(*func_args) if func_args else handler_controller()
+            )
             return response, code
         except APIError as e:
-            logger.error(f"API ошибка: {e.message}")
+            logger.error(f'API ошибка: {e.message}')
             return e.to_dict(), e.status_code
         except Exception:
-            logger.exception("Необработанная ошибка в контроллере")
-            return {"error": "Internal Server Error"}, 500
+            logger.exception('Необработанная ошибка в контроллере')
+            return {'error': 'Internal Server Error'}, 500
 
-    def match_dynamic_route(self, route : str, url, query_params: dict) -> bool: # Сопоставляет динамический маршрут с текущим URL
+    def match_dynamic_route(
+        self, route: str, url, query_params: dict
+    ) -> bool:  # Сопоставляет динамический маршрут с текущим URL
         route_parts = route.strip('/').split('/')
         url_parts = url.strip('/').split('/')
 
         if len(route_parts) != len(url_parts):
             return False
 
-        for route_part, url_part in zip(route_parts, url_parts):
+        for route_part, url_part in zip(route_parts, url_parts, strict=True):
             if route_part.startswith(':'):
                 query_params[route_part[1:]] = url_part
             elif route_part != url_part:
@@ -119,8 +133,10 @@ class Router:
 
         return True
 
-    def _parse_body(self, handler: BaseHTTPRequestHandler) -> dict  : #Парсит тело запроса в зависимости от типа контента
-        logger.info("Парсинг тела запроса")
+    def _parse_body(
+        self, handler: BaseHTTPRequestHandler
+    ) -> dict:  # Парсит тело запроса в зависимости от типа контента
+        logger.info('Парсинг тела запроса')
         content_length = int(handler.headers.get('Content-Length', 0))
 
         if content_length > 0:
@@ -132,12 +148,12 @@ class Router:
                 try:
                     return json.loads(body)
                 except json.JSONDecodeError:
-                    logger.error("Ошибка декодирования JSON")
+                    logger.error('Ошибка декодирования JSON')
                     return {}
             elif content_type == 'application/x-www-form-urlencoded':
                 return {k: v[0] for k, v in parse_qs(body).items()}
             else:
-                logger.warning(f"Неподдерживаемый Content-Type: {content_type}")
+                logger.warning(f'Неподдерживаемый Content-Type: {content_type}')
                 return {}
 
         return {}

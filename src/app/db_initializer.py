@@ -12,16 +12,16 @@ def init_db(connector: sqlite3):
 
     cursor = connector.cursor()
     with connector:
-        cursor.execute('''
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS currencies (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 code TEXT UNIQUE NOT NULL,
                 name TEXT NOT NULL,
                 sign TEXT
             )
-        ''')
+        """)
 
-        cursor.execute('''
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS exchange_rates (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 from_currency TEXT NOT NULL,
@@ -31,17 +31,18 @@ def init_db(connector: sqlite3):
                 FOREIGN KEY(from_currency) REFERENCES currencies(code) ON DELETE CASCADE,
                 FOREIGN KEY(to_currency) REFERENCES currencies(code) ON DELETE CASCADE
             )
-        ''')
+        """)
 
 
 def main():
     load_dotenv()
-    db_path = os.getenv("TEST_DB_PATH", "db/currency.db")
+    db_path = os.getenv('TEST_DB_PATH', 'db/currency.db')
     db_path = Path(db_path)
     conn = sqlite3.connect(db_path, uri=True)
     init_db(conn)
-    print(f"База данных успешно инициализирована по пути: {db_path}")
+    print(f'База данных успешно инициализирована по пути: {db_path}')
     conn.close()
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     main()
