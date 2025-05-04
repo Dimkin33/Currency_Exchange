@@ -1,91 +1,139 @@
 # Currency Exchange
 
-**Currency Exchange** — это приложение для работы с обменными курсами валют. Оно предоставляет функционал для получения актуальных курсов валют, их конвертации и управления базой данных.
+**Currency Exchange** is an application for working with currency exchange rates. It provides functionality for retrieving current exchange rates, converting currencies, and managing a database.
 
 ---
 
-## Содержание
+## Table of Contents
 
-* [Описание](#описание)
-* [Требования](#требования)
-* [Установка](#установка)
-* [Скрипты](#скрипты)
-* [Запуск](#запуск)
-* [Тестирование](#тестирование)
-* [Структура проекта](#структура-проекта)
-* [Примечания](#примечания)
-
----
-
-## Описание
-
-Приложение **Currency Exchange** разработано для автоматизации работы с валютами. Основные возможности:
-
-* Получение актуальных курсов валют через API.
-* Конвертация валют.
-* Управление базой данных для хранения информации о курсах.
-* Поддержка модульного тестирования.
-
-> **Задание:** [Currency Exchange Project](https://zhukovsd.github.io/python-backend-learning-course/projects/currency-exchange/)
+- [Description](#description)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Scripts](#scripts)
+- [Running the Application](#running-the-application)
+- [Testing](#testing)
+- [Project Structure](#project-structure)
+- [Notes](#notes)
 
 ---
 
-## Требования
+## Description
 
-Перед началом работы убедитесь, что у вас установлен **Git** для работы с репозиторием, а также имеется доступ к интернету для установки зависимостей.
-
-
-> **Примечание:** Python и зависимости будут установлены автоматически с помощью [Rye](https://github.com/astral-sh/rye).
+The **Currency Exchange** application is designed to automate currency-related tasks. Key features include:
+- Retrieving current exchange rates via API.
+- Currency conversion.
+- Managing a database to store exchange rate information.
+- Support for modular testing.
 
 ---
 
-## Установка
+## Requirements
 
-1. Склонируйте репозиторий:
+Before starting, ensure you have the following components installed:
 
+- **Git** for repository management.
+- Internet access for dependency installation.
+
+> **Note:** Python and dependencies will be automatically installed using [Rye](https://rye-up.com/).
+
+---
+
+## Installation
+
+1. Clone the repository:
    ```bash
    git clone https://github.com/Dimkin33/Currency_Exchange.git
    cd Currency_Exchange
    ```
 
-2. Убедитесь, что файл `.env` существует в корневой директории. Если его нет, создайте его на основе файла `.env.example`.
+2. Ensure the `.env` file exists in the root directory. If it does not, create it based on the `.env.example` file.
 
-3. Запустите основной скрипт:
-
+3. Run the main script:
    ```bash
    bash script/start.sh
    ```
 
-Скрипт автоматически выполнит следующие действия:
-
-* Проверит наличие файла `.env`.
-* Установит \[Rye], если он отсутствует.
-* Обновит репозиторий до последней версии ветки `main`.
-* Установит зависимости.
-* Инициализирует базу данных.
-* Запустит сервер.
+The script will automatically:
+- Check for the `.env` file.
+- Install [Rye](https://rye-up.com/) if it is not already installed.
+- Update the repository to the latest version of the `main` branch.
+- Install dependencies.
+- Initialize the database.
+- Start the server.
 
 ---
 
-## Скрипты
+## Scripts
 
-В директории `script/` находятся следующие скрипты:
+The `script/` directory contains the following scripts:
 
 ### `start.sh`
-Основной скрипт запуска проекта. Выполняет следующие действия:
-1. Проверяет наличие файла `.env`.
-2. Устанавливает `rye`, если он отсутствует.
-3. Обновляет репозиторий до последней версии ветки `main`.
-4. Устанавливает зависимости через `rye`.
-5. Инициализирует базу данных.
-6. Запускает сервер.
+
+The main script for starting the project. It performs the following steps:
+1. Checks for the `.env` file.
+2. Installs `rye` if it is not already installed.
+3. Updates the repository to the latest version of the `main` branch.
+4. Installs dependencies using `rye`.
+5. Initializes the database.
+6. Starts the server.
 
 ### `start_background.sh`
-Запускает сервер в фоновом режиме. Логи сохраняются в файл `app.log`.
+
+Starts the server in the background. Logs are written to the `app.log` file.
 
 ### `build.sh`
-Скрипт для сборки проекта с помощью `rye build`. Используется для подготовки к релизу.
+
+A script for building the project. It performs:
+- Repository update.
+- Dependency installation.
+- Project build using `rye build`.
 
 ### `test.sh`
-Запускает модульные тесты с использованием `rye run test`. 
 
+A script for running tests. It performs:
+- Dependency installation.
+- Test execution using `rye run test`.
+
+---
+
+## Running the Application
+
+To run the application, execute the following command:
+
+```bash
+bash script/start.sh
+```
+
+To run the application in the background, use:
+
+```bash
+bash script/start_background.sh
+```
+
+---
+
+## Testing
+
+To run tests, execute:
+
+```bash
+bash script/test.sh
+```
+
+---
+
+## Project Structure
+
+- `src/` — Application source code.
+- `tests/` — Unit tests.
+- `script/` — Auxiliary scripts.
+- `.env` and `.env.example` — Environment configuration files.
+- `pyproject.toml` — Project configuration, including dependencies and commands.
+
+---
+
+## Notes
+
+- Ensure you have access to the `main` branch in the remote repository.
+- Server logs are displayed in the console. To write logs to a file, use background execution.
+- If the script fails, check the log output for diagnostics.
