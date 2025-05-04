@@ -4,7 +4,7 @@ cd "$SCRIPT_DIR/.."
 
 # === Конфигурация ===
 BRANCH="main"
-REPO_URL="https://github.com/Dimkin33/test.git"
+REPO_URL="https://github.com/Dimkin33/Currency_Exchange.git"
 
 # === Функция логирования ===
 log() {
