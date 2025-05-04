@@ -36,10 +36,8 @@ def init_db(connector: sqlite3):
 
 def main():
     load_dotenv()
-    db_path = os.getenv("DB_PATH", "db/currency.db")
+    db_path = os.getenv("TEST_DB_PATH", "db/currency.db")
     db_path = Path(db_path)
-    db_path.parent.mkdir(parents=True, exist_ok=True)  # создаём папки, если не существуют
-
     conn = sqlite3.connect(db_path, uri=True)
     init_db(conn)
     print(f"База данных успешно инициализирована по пути: {db_path}")
