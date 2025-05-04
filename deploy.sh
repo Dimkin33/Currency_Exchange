@@ -16,7 +16,7 @@ log "Начало деплоя"
 if ! command -v rye &> /dev/null; then
     log "Установка rye..."
     curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION=--yes bash
-    #    export PATH="$HOME/.rye/bin:$PATH"  # Добавляем rye в PATH
+    export PATH="$HOME/.rye/bin:$PATH"  # Добавляем rye в PATH
     echo 'source "$HOME/.rye/env"' >> ~/.profile
     source "$HOME/.rye/env"
 

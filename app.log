@@ -3572,3 +3572,45 @@ FileNotFoundError: favicon.ico не найден
 2025-05-03 23:44:36,994 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: text/plain; charset=utf-8, тип содержимого: bytes
 2025-05-03 23:44:37,069 - controller  -__del__               - INFO     - Закрытие соединения с БД
 2025-05-03 23:47:37,531 - __main__    -<module>              - INFO     - Завершение работы сервера
+2025-05-04 10:18:08,791 - __main__    -<module>              - INFO     - Запуск сервера в отдельном потоке
+2025-05-04 10:18:08,792 - app_server  -start_server          - INFO     - Запуск сервера
+2025-05-04 10:18:08,792 - __main__    -<module>              - INFO     - Сервер запущен. Ожидание запросов.
+2025-05-04 10:18:08,983 - app_server  -start_server          - INFO     - Запуск HTTP-сервера на localhost:8000
+2025-05-04 10:18:16,860 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-04 10:18:16,891 - router      -__init__              - INFO     - Инициализация Router
+2025-05-04 10:18:16,923 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-04 10:18:17,458 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x00000203F3AC15D0>, путь к БД: db/currency.db
+2025-05-04 10:18:17,506 - app_server  -handle_method         - INFO     - Обработка GET-запроса
+2025-05-04 10:18:17,537 - router      -handle_request        - INFO     - Обработка запроса: GET /currencies?
+2025-05-04 10:18:17,569 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-04 10:18:17,600 - router      -_resolve              - DEBUG    - Маршрутизация запроса: GET /currencies
+2025-05-04 10:18:17,632 - router      -_safe_call            - DEBUG    - Вызов обработчика: get_currencies с аргументами: []
+2025-05-04 10:18:17,724 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: application/json; charset=utf-8, тип содержимого: list
+2025-05-04 10:18:17,800 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-04 10:18:17,938 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-04 10:18:17,969 - router      -__init__              - INFO     - Инициализация Router
+2025-05-04 10:18:17,999 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-04 10:18:18,462 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x00000203F3AC15D0>, путь к БД: db/currency.db
+2025-05-04 10:18:18,636 - app_server  -handle_method         - INFO     - Обработка GET-запроса
+2025-05-04 10:18:18,668 - router      -handle_request        - INFO     - Обработка запроса: GET /favicon.ico
+2025-05-04 10:18:18,699 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-04 10:18:18,731 - router      -_resolve              - DEBUG    - Маршрутизация запроса: GET /favicon.ico
+2025-05-04 10:18:18,762 - router      -_safe_call            - DEBUG    - Вызов обработчика: return_icon с аргументами: []
+2025-05-04 10:18:18,904 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: text/plain; charset=utf-8, тип содержимого: bytes
+2025-05-04 10:18:18,998 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-04 10:18:20,605 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-04 10:18:20,637 - router      -__init__              - INFO     - Инициализация Router
+2025-05-04 10:18:20,669 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-04 10:18:21,204 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x00000203F3AC16C0>, путь к БД: db/currency.db
+2025-05-04 10:18:21,250 - app_server  -handle_method         - INFO     - Обработка GET-запроса
+2025-05-04 10:18:21,281 - router      -handle_request        - INFO     - Обработка запроса: GET /favicon.ico
+2025-05-04 10:18:21,311 - router      -_parse_body           - INFO     - Парсинг тела запроса
+2025-05-04 10:18:21,342 - router      -_resolve              - DEBUG    - Маршрутизация запроса: GET /favicon.ico
+2025-05-04 10:18:21,372 - router      -_safe_call            - DEBUG    - Вызов обработчика: return_icon с аргументами: []
+2025-05-04 10:18:21,508 - app_server  -send_response_content - DEBUG    - Отправка ответа c кодом состояния: 200: с типом: text/plain; charset=utf-8, тип содержимого: bytes
+2025-05-04 10:18:21,585 - controller  -__del__               - INFO     - Закрытие соединения с БД
+2025-05-04 10:18:21,710 - app_server  -__init__              - INFO     - Инициализация RequestHandler
+2025-05-04 10:18:21,740 - router      -__init__              - INFO     - Инициализация Router
+2025-05-04 10:18:21,771 - controller  -__init__              - INFO     - Инициализация контроллера
+2025-05-04 10:18:22,292 - controller  -__init__              - INFO     - Инициализация моделей с коннектором <sqlite3.Connection object at 0x00000203F3AC18A0>, путь к БД: db/currency.db
+2025-05-04 10:18:24,738 - __main__    -<module>              - INFO     - Завершение работы сервера
