@@ -37,7 +37,7 @@ allow-direct-references = true
 lint = "ruff check ."  # Проверка кода
 format = "ruff format ."  # Форматирование кода
 start = "python src/app/main.py"  # Запуск приложения
-test = {cmd = "pytest -v --tb=short", env-file = '.env.test'}  # Запуск тестов
+test = {cmd = "pytest -v --tb=short", env-file = '.env'}  # Запуск тестов
 init-db = "python src/app/db_initializer.py"  # Инициализация базы данных
 
 [tool.ruff]
