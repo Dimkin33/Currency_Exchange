@@ -29,19 +29,6 @@ class Controller:
         self.connector = sqlite3.connect(db_path, uri=True)  # Подключение к базе данных
         init_db(self.connector)
 
-        # if db_path == ":memory:":
-        #     logger.info("Используется in-memory база данных")
-        #     # В in-memory базе данных данные не сохраняются после закрытия соединения
-        #     # поэтому сохраняем коннектор в атрибуте класса
-        #     self.connector2 = self.connector
-
-
-        # else:
-        #     logger.info(f"Используется база данных по пути: {db_path}")
-        #     # Проверяем, существует ли файл базы данных
-        #     if not Path(db_path).exists():
-        #         raise FileNotFoundError(f"Файл базы данных не найден: {db_path}")
-
         # Инициализация моделей
         self.currency_model = CurrencyModel(connector=self.connector)
         self.exchange_rate_model = ExchangeRateModel(connector=self.connector)
