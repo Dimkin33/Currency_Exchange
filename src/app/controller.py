@@ -17,6 +17,8 @@ logger = logging.getLogger(__name__)
 
 
 class Controller:
+    """Контроллер для обработки запросов и взаимодействия с моделями."""
+
     def __init__(self, db_path: str = None):
         logger.info('Инициализация контроллера')
         # Загрузка переменных окружения
@@ -72,6 +74,7 @@ class Controller:
         return self.currency_model.add_currency(code, name, sign), 201
 
     def get_exchange_rate(self, from_currency: str, to_currency: str) -> dict:
+        """Получает курс обмена валюты"""
         if not from_currency or not to_currency:
             raise MissingFormFieldError()
         return self.exchange_rate_model.get_exchange_rate(

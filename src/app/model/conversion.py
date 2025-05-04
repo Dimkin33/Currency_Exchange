@@ -1,6 +1,6 @@
 import logging
 
-from dto import currencyDTO, currencyExchangeDTO
+from dto import CurrencyDTO, CurrencyExchangeDTO
 from errors import ExchangeRateNotFoundError
 
 from .base import BaseModel
@@ -91,12 +91,12 @@ class ConversionModel(BaseModel):
             rate,
         ) = row[1:]  # Получение значений из кортежа row, начиная с индекса 1
 
-        base_currency = currencyDTO(base_id, base_code, base_name, base_sign).to_dict()
-        target_currency = currencyDTO(
+        base_currency = CurrencyDTO(base_id, base_code, base_name, base_sign).to_dict()
+        target_currency = CurrencyDTO(
             target_id, target_code, target_name, target_sign
         ).to_dict()
 
-        return currencyExchangeDTO(
+        return CurrencyExchangeDTO(
             ex_id,
             base_currency,
             target_currency,
@@ -144,10 +144,10 @@ class ConversionModel(BaseModel):
             converted_amount = round(rate * amount, 2)
 
             return {
-                'baseCurrency': currencyDTO(
+                'baseCurrency': CurrencyDTO(
                     base_id, base_code, base_name, base_sign
                 ).to_dict(),
-                'targetCurrency': currencyDTO(
+                'targetCurrency': CurrencyDTO(
                     target_id, target_code, target_name, target_sign
                 ).to_dict(),
                 'rate': rate,

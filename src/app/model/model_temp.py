@@ -1,7 +1,7 @@
 import logging
 import sqlite3
 
-from dto import currencyDTO, currencyExchangeDTO
+from dto import CurrencyDTO, CurrencyExchangeDTO
 from errors import (
     CurrencyAlreadyExistsError,
     CurrencyNotFoundError,
@@ -29,7 +29,7 @@ class CurrencyModel:
             row = cursor.fetchone()
             if not row:
                 raise CurrencyNotFoundError(code)
-            return currencyDTO(*row).to_dict()
+            return CurrencyDTO(*row).to_dict()
         except Exception:
             raise
 
@@ -52,7 +52,7 @@ class CurrencyModel:
         try:
             cursor.execute('SELECT id, code, name, sign FROM currencies')
             rows = cursor.fetchall()
-            return [currencyDTO(*row).to_dict() for row in rows]
+            return [CurrencyDTO(*row).to_dict() for row in rows]
         except Exception:
             raise
 
@@ -66,7 +66,7 @@ class CurrencyModel:
             )
             conn.commit()
             currency_id = cursor.lastrowid
-            return currencyDTO(currency_id, code, name, sign).to_dict()
+            return CurrencyDTO(currency_id, code, name, sign).to_dict()
         except sqlite3.IntegrityError:
             raise CurrencyAlreadyExistsError(code)
         except Exception:
@@ -107,14 +107,14 @@ class CurrencyModel:
                 rate,
             ) = row
 
-            base_currency = currencyDTO(
+            base_currency = CurrencyDTO(
                 base_id, base_code, base_name, base_sign
             ).to_dict()
-            target_currency = currencyDTO(
+            target_currency = CurrencyDTO(
                 target_id, target_code, target_name, target_sign
             ).to_dict()
 
-            return currencyExchangeDTO(
+            return CurrencyExchangeDTO(
                 ex_id, base_currency, target_currency, rate
             ).to_dict()
 
@@ -151,14 +151,14 @@ class CurrencyModel:
                     rate,
                 ) = row
 
-                base_currency = currencyDTO(
+                base_currency = CurrencyDTO(
                     base_id, base_code, base_name, base_sign
                 ).to_dict()
-                target_currency = currencyDTO(
+                target_currency = CurrencyDTO(
                     target_id, target_code, target_name, target_sign
                 ).to_dict()
 
-                exchange_dto = currencyExchangeDTO(
+                exchange_dto = CurrencyExchangeDTO(
                     ex_id, base_currency, target_currency, rate
                 )
                 result.append(exchange_dto.to_dict())
@@ -205,10 +205,10 @@ class CurrencyModel:
             converted_amount = round(rate * amount, 2)
 
             return {
-                'baseCurrency': currencyDTO(
+                'baseCurrency': CurrencyDTO(
                     base_id, base_code, base_name, base_sign
                 ).to_dict(),
-                'targetCurrency': currencyDTO(
+                'targetCurrency': CurrencyDTO(
                     target_id, target_code, target_name, target_sign
                 ).to_dict(),
                 'rate': rate,
@@ -250,8 +250,8 @@ class CurrencyModel:
             )
 
             row = cursor.fetchone()
-            base_currency = currencyDTO(row[0], row[1], row[2], row[3]).to_dict()
-            target_currency = currencyDTO(row[4], row[5], row[6], row[7]).to_dict()
+            base_currency = CurrencyDTO(row[0], row[1], row[2], row[3]).to_dict()
+            target_currency = CurrencyDTO(row[4], row[5], row[6], row[7]).to_dict()
 
             # 💾 Вставка курса
             cursor.execute(
@@ -262,12 +262,12 @@ class CurrencyModel:
             exchange_id = cursor.lastrowid
 
             # 📤 Возврат в виде DTO
-            return currencyExchangeDTO(
+            return CurrencyExchangeDTO(
                 exchange_id, base_currency, target_currency, rate
             ).to_dict()
 
-        except sqlite3.IntegrityError:
-            raise ExchangeRateAlreadyExistsError(from_currency, to_currency)
+        except sqlite3.IntegrityError as e:
+            raise ExchangeRateAlreadyExistsError(from_currency, to_currency) from e
 
         except Exception:
             raise
@@ -282,7 +282,7 @@ class CurrencyModel:
                 (rate, from_currency.upper(), to_currency.upper()),
             )
             if cursor.rowcount == 0:
-                raise ExchangeRateNotFoundError(from_currency, to_currency)
+                raise ExchangeRateNotFoundError(from_currency, to_currency)  #
             conn.commit()
             return self.get_exchange_rate(from_currency, to_currency)
         finally:
@@ -371,14 +371,14 @@ class CurrencyModel:
                 rate,
             ) = row[1:]  # Получение значений из кортежа row, начиная с индекса 1
 
-            base_currency = currencyDTO(
+            base_currency = CurrencyDTO(
                 base_id, base_code, base_name, base_sign
             ).to_dict()
-            target_currency = currencyDTO(
+            target_currency = CurrencyDTO(
                 target_id, target_code, target_name, target_sign
             ).to_dict()
 
-            return currencyExchangeDTO(
+            return CurrencyExchangeDTO(
                 ex_id,
                 base_currency,
                 target_currency,

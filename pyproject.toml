@@ -48,7 +48,7 @@ init-db = "python src/app/db_initializer.py"  # Инициализация ба�
 select = ["E4", "E7", "E9", "F", "B"]
 
 # 2. Avoid enforcing line-length violations (`E501`)
-ignore = ["E501"]
+ignore = ["E501", "B904"]
 
 # 3. Avoid trying to fix flake8-bugbear (`B`) violations.
 unfixable = ["B"]

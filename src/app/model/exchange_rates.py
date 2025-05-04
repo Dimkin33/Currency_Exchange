@@ -1,6 +1,6 @@
 import sqlite3
 
-from dto import currencyDTO, currencyExchangeDTO
+from dto import CurrencyDTO, CurrencyExchangeDTO
 from errors import ExchangeRateAlreadyExistsError, ExchangeRateNotFoundError
 
 from .base import BaseModel
@@ -41,12 +41,12 @@ class ExchangeRateModel(BaseModel):
             rate,
         ) = row
 
-        base_currency = currencyDTO(base_id, base_code, base_name, base_sign).to_dict()
-        target_currency = currencyDTO(
+        base_currency = CurrencyDTO(base_id, base_code, base_name, base_sign).to_dict()
+        target_currency = CurrencyDTO(
             target_id, target_code, target_name, target_sign
         ).to_dict()
 
-        return currencyExchangeDTO(
+        return CurrencyExchangeDTO(
             ex_id, base_currency, target_currency, rate
         ).to_dict()
 
@@ -114,14 +114,14 @@ class ExchangeRateModel(BaseModel):
                 rate,
             ) = row
 
-            base_currency = currencyDTO(
+            base_currency = CurrencyDTO(
                 base_id, base_code, base_name, base_sign
             ).to_dict()
-            target_currency = currencyDTO(
+            target_currency = CurrencyDTO(
                 target_id, target_code, target_name, target_sign
             ).to_dict()
 
-            exchange_dto = currencyExchangeDTO(
+            exchange_dto = CurrencyExchangeDTO(
                 ex_id, base_currency, target_currency, rate
             )
             result.append(exchange_dto.to_dict())

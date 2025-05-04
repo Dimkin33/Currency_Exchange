@@ -11,6 +11,8 @@ logger = logging.getLogger(__name__)
 
 
 class RequestHandler(BaseHTTPRequestHandler):
+    """Обработчик HTTP-запросов."""
+
     def __init__(self, *args, db_path=None, **kwargs):
         logger.info('Инициализация RequestHandler')
         self.router = Router(db_path)

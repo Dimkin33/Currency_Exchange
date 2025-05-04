@@ -1,12 +1,14 @@
 import sqlite3
 
-from dto import currencyDTO
+from dto import CurrencyDTO
 from errors import CurrencyAlreadyExistsError, CurrencyNotFoundError
 
 from .base import BaseModel
 
 
 class CurrencyModel(BaseModel):
+    """Модель для работы с валютами в базе данных."""
+
     def get_currency_by_code(self, code: str) -> dict:
         conn, cursor = self._get_connection_and_cursor()
         cursor.execute(
@@ -15,14 +17,14 @@ class CurrencyModel(BaseModel):
         row = cursor.fetchone()
         if not row:
             raise CurrencyNotFoundError(code)
-        return currencyDTO(*row).to_dict()
+        return CurrencyDTO(*row).to_dict()
 
     def get_currencies(self) -> list[dict]:
         conn, cursor = self._get_connection_and_cursor()
 
         cursor.execute('SELECT id, code, name, sign FROM currencies')
         rows = cursor.fetchall()
-        return [currencyDTO(*row).to_dict() for row in rows]
+        return [CurrencyDTO(*row).to_dict() for row in rows]
 
     def add_currency(self, code: str, name: str, sign: str) -> dict:
         code = code.upper()
@@ -34,7 +36,7 @@ class CurrencyModel(BaseModel):
             )
             conn.commit()
             currency_id = cursor.lastrowid
-            return currencyDTO(currency_id, code, name, sign).to_dict()
+            return CurrencyDTO(currency_id, code, name, sign).to_dict()
         except sqlite3.IntegrityError as e:
             raise CurrencyAlreadyExistsError(code) from e
 
