@@ -27,6 +27,8 @@
 * Поддержка модульного тестирования.
 
 > **Задание:** [Currency Exchange Project](https://zhukovsd.github.io/python-backend-learning-course/projects/currency-exchange/)
+Если вы используете Windows, установка Python и зависимостей через Rye может потребовать ручной настройки. Убедитесь, что Python установлен и добавлен в PATH.
+
 
 ---
 

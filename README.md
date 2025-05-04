@@ -35,7 +35,8 @@ Before starting, ensure you have the following components installed:
 - **Git** for repository management.
 - Internet access for dependency installation.
 
-> **Note:** Python and dependencies will be automatically installed using [Rye](https://rye-up.com/).
+> **Note:** Python and dependencies will be automatically installed using [Rye](https://github.com/astral-sh/rye).
+If you are using Windows, installing Python and dependencies via Rye may require manual setup. Ensure that Python is installed and added to the PATH.
 
 ---
 
