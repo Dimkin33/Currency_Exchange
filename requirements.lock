@@ -15,12 +15,12 @@ certifi==2025.4.26
 charset-normalizer==3.4.1
     # via requests
 dotenv==0.9.9
-    # via currencyconverter
+    # via currency-exchange
 idna==3.10
     # via requests
 python-dotenv==1.1.0
     # via dotenv
 requests==2.32.3
-    # via currencyconverter
+    # via currency-exchange
 urllib3==2.4.0
     # via requests
