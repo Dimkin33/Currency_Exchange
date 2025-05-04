@@ -1,9 +1,10 @@
 import logging
+import os
 import sqlite3
 from pathlib import Path
 
 from db_initializer import init_db
-from dotenv import dotenv_values, load_dotenv
+from dotenv import load_dotenv
 from errors import (
     InvalidAmountFormatError,
     MissingFormFieldError,
@@ -18,10 +19,11 @@ class Controller:
     def __init__(self, db_path: str = None):
         logger.info("Инициализация контроллера")
         # Загрузка переменных окружения
-        load_dotenv(override=True)
+        load_dotenv()
         if db_path is None:
             # Если путь к БД не передан, берем его из переменной окружения
-            db_path = dotenv_values().get('DB_PATH', 'currency.db')
+            db_path = os.getenv("DB_PATH", "currency.db")
+
         # Если переменная окружения не задана, используем значение по умолчанию
 
         self.connector = sqlite3.connect(db_path, uri=True)  # Подключение к базе данных
