@@ -1,10 +1,29 @@
-.env 
-__pycache__/
-.venv/
-*.pyc
-.ruff_cache/
-.pytest_cache/
+# Игнорировать папку .vscode
 .vscode/
-*.log
+
+# Игнорировать Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# файлы баз данных
 *.db
-db/
+/db
+
+
+# Игнорировать .env
+.env
+
+# Игнорировать другие временные файлы
+*.log
+*.pid
+*.seed
+*.gz
+*.zip
