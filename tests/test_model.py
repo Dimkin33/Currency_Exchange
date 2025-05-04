@@ -1,16 +1,21 @@
+import os
 import sqlite3
 
 import pytest
 from db_initializer import init_db
+from dotenv import load_dotenv
 from errors import CurrencyAlreadyExistsError
 from model import CurrencyModel
 
+# Загрузка переменных окружения из .env.test
+load_dotenv(".env.test")
 
 @pytest.fixture()
 def model():
     """Создает ин-мемори базу данных и модель для тестов"""
-    conn = sqlite3.connect(":memory:")
-    init_db(conn)  # 🔥 Инициализация схемы через твой db_initializer
+    db_path = os.getenv("DB_PATH", ":memory:")  # Получаем путь к базе из .env.test
+    conn = sqlite3.connect(db_path, uri=True)  # Создаем подключение к базе данных
+    init_db(conn)  # 🔥 Инициализация схемы через db_initializer
     yield CurrencyModel(conn)
     conn.close()
 
