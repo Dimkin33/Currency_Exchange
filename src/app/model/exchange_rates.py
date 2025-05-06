@@ -1,9 +1,11 @@
 import sqlite3
-
+import logging
 from dto import CurrencyDTO, CurrencyExchangeDTO
-from errors import ExchangeRateAlreadyExistsError, ExchangeRateNotFoundError
+from errors import ExchangeRateAlreadyExistsError, ExchangeRateNotFoundError, CurrencyNotFoundError
 
 from .base import BaseModel
+
+logger = logging.getLogger(__name__)
 
 
 class ExchangeRateModel(BaseModel):
@@ -54,21 +56,55 @@ class ExchangeRateModel(BaseModel):
         from_currency = from_currency.upper()
         to_currency = to_currency.upper()
         conn, cursor = self._get_connection_and_cursor()
+
+        logger.info(f'Adding exchange rate: {from_currency} -> {to_currency} = {rate}')
+
         try:
+            # 🔍 Проверка существования валют
+            cursor.execute(
+                'SELECT code FROM currencies WHERE code IN (?, ?)',
+                (from_currency, to_currency),
+            )
+            found_codes = {row[0] for row in cursor.fetchall()}
+            missing_codes = {from_currency, to_currency} - found_codes
+            if missing_codes:
+                raise CurrencyNotFoundError(*missing_codes)
+
+            # 📦 Получение информации о валютах через JOIN
+            cursor.execute(
+                """
+                SELECT 
+                    base.id, base.code, base.name, base.sign,
+                    target.id, target.code, target.name, target.sign
+                FROM currencies base
+                JOIN currencies target ON target.code = ?
+                WHERE base.code = ?
+            """,
+                (to_currency, from_currency),
+            )
+
+            row = cursor.fetchone()
+            base_currency = CurrencyDTO(row[0], row[1], row[2], row[3]).to_dict()
+            target_currency = CurrencyDTO(row[4], row[5], row[6], row[7]).to_dict()
+
+            # 💾 Вставка курса
             cursor.execute(
                 'INSERT INTO exchange_rates (from_currency, to_currency, rate) VALUES (?, ?, ?)',
                 (from_currency, to_currency, rate),
             )
             conn.commit()
             exchange_id = cursor.lastrowid
-            return {
-                'id': exchange_id,
-                'from_currency': from_currency,
-                'to_currency': to_currency,
-                'rate': rate,
-            }
+
+            # 📤 Возврат в виде DTO
+            return CurrencyExchangeDTO(
+                exchange_id, base_currency, target_currency, rate
+            ).to_dict()
+
         except sqlite3.IntegrityError as e:
             raise ExchangeRateAlreadyExistsError(from_currency, to_currency) from e
+
+        except Exception:
+            raise
 
     def patch_exchange_rate(
         self, from_currency: str, to_currency: str, rate: float
