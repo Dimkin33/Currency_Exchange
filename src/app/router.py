@@ -47,7 +47,7 @@ class Router:
         self.dynamic_routes.append(('GET', '/currency/:code', get_currency))
         self.dynamic_routes.append(('GET', '/exchangeRate/:pair', get_exchange_rate))
         self.dynamic_routes.append(
-            ('PATCH', '/exchangeRate/:pair', update_exchange_rate)
+            ('PATCH', '/0.0.0.0/exchangeRate/:pair', update_exchange_rate)
         )
 
     def handle_request(self, handler: BaseHTTPRequestHandler) -> tuple:
