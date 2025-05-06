@@ -91,7 +91,7 @@
   
         const body = new URLSearchParams({ rate });
   
-        const response = await fetch(`http://localhost:8000/exchangeRate/${pair}`, {
+        const response = await fetch(`0.0.0.0/exchangeRate/${pair}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
