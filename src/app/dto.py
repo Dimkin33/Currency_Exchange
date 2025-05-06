@@ -20,8 +20,8 @@ class CurrencyExchangeDTO:
     """Exchange rate data transfer object"""
 
     id: int
-    from_currency: dict
-    to_currency: dict
+    from_currency: CurrencyDTO
+    to_currency: CurrencyDTO
     rate: float
     amount: float = None
     convertedAmount: float = None
