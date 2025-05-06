@@ -9,7 +9,6 @@ from router import Router
 
 logger = logging.getLogger(__name__)
 
-
 class RequestHandler(BaseHTTPRequestHandler):
     """Обработчик HTTP-запросов."""
 
@@ -20,7 +19,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
     def send_response_content(
         self, status_code: int, data: any, content_type: str = None
-    ) -> None:  # функция отправки ответа на запрос
+    ) -> None:
         if isinstance(data, dict) or isinstance(data, list):
             response_body = json.dumps(data, indent=4, ensure_ascii=False)
             content_type = content_type or 'application/json; charset=utf-8'
@@ -34,10 +33,23 @@ class RequestHandler(BaseHTTPRequestHandler):
         logger.debug(
             f'Отправка ответа c кодом состояния: {status_code}: с типом: {content_type}, тип содержимого: {type(data).__name__}'
         )
-        self.send_response(status_code)  # устанавливаем код состояния ответа
+        self.send_response(status_code)
         self.send_header('Content-Type', content_type)
+        self.send_cors_headers()  # Добавляем CORS-заголовки
         self.end_headers()
         self.wfile.write(response_body.encode('utf-8'))
+
+    def send_cors_headers(self):
+        """Добавление заголовков CORS."""
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+
+    def do_OPTIONS(self):
+        """Обработка OPTIONS-запросов для CORS."""
+        self.send_response(204)  # No Content
+        self.send_cors_headers()
+        self.end_headers()
 
     def handle_method(self) -> None:
         logger.info(f'Обработка {self.command}-запроса')
