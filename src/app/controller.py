@@ -6,10 +6,12 @@ from pathlib import Path
 from db_initializer import init_db
 from dotenv import load_dotenv
 from errors import (
+    CurrencyNotFoundError,
     InvalidAmountFormatError,
     MissingFormFieldError,
     UnknownCurrencyCodeError,
 )
+from market_rates import FrankfurterClient
 from model import ConversionModel, CurrencyModel, ExchangeRateModel
 from sign_code import currency_sign
 
@@ -21,18 +23,13 @@ class Controller:
 
     def __init__(self, db_path: str = None):
         logger.info('Инициализация контроллера')
-        # Загрузка переменных окружения
         load_dotenv()
         if db_path is None:
-            # Если путь к БД не передан, берем его из переменной окружения
             db_path = os.getenv('DB_PATH', 'currency.db')
 
-        # Если переменная окружения не задана, используем значение по умолчанию
-
-        self.connector = sqlite3.connect(db_path, uri=True)  # Подключение к базе данных
+        self.connector = sqlite3.connect(db_path, uri=True)
         init_db(self.connector)
 
-        # Инициализация моделей
         self.currency_model = CurrencyModel(connector=self.connector)
         self.exchange_rate_model = ExchangeRateModel(connector=self.connector)
         self.conversion_model = ConversionModel(connector=self.connector)
@@ -40,12 +37,27 @@ class Controller:
             f'Инициализация моделей с коннектором {self.connector}, путь к БД: {db_path}'
         )
 
-    def __del__(self):  # Закрытие соединения с БД
-        logger.info('Закрытие соединения с БД')
+    def close(self) -> None:
+        connector = getattr(self, 'connector', None)
+        if connector is not None:
+            try:
+                connector.close()
+            finally:
+                self.connector = None
+
+    def __del__(self):
         try:
-            self.currency_model.connector.close()
+            self.close()
         except Exception:
             pass
+
+    def health(self) -> dict:
+        return {
+            'status': 'ok',
+            'marketProvider': 'Frankfurter',
+            'autoRefresh': os.getenv('MARKET_AUTO_REFRESH', 'true').lower()
+            in {'1', 'true', 'yes', 'on'},
+        }, 200
 
     def get_currency_by_code(self, code: str) -> dict:
         if not code:
@@ -73,8 +85,19 @@ class Controller:
 
         return self.currency_model.add_currency(code, name, sign), 201
 
+    def _ensure_currency(self, code: str) -> dict:
+        code = code.upper()
+        currency = currency_sign.get(code)
+        if not currency:
+            raise UnknownCurrencyCodeError(code)
+
+        try:
+            return self.currency_model.get_currency_by_code(code)
+        except CurrencyNotFoundError:
+            name, sign = currency
+            return self.currency_model.add_currency(code, name, sign)
+
     def get_exchange_rate(self, from_currency: str, to_currency: str) -> dict:
-        """Получает курс обмена валюты"""
         if not from_currency or not to_currency:
             raise MissingFormFieldError()
         return self.exchange_rate_model.get_exchange_rate(
@@ -86,7 +109,7 @@ class Controller:
     ) -> dict:
         try:
             rate = float(rate)
-        except ValueError as e:
+        except (TypeError, ValueError) as e:
             raise InvalidAmountFormatError() from e
         if not from_currency or not to_currency or not rate:
             raise MissingFormFieldError()
@@ -99,12 +122,67 @@ class Controller:
     ) -> dict:
         if not from_currency or not to_currency or not rate:
             raise MissingFormFieldError()
+        try:
+            rate = float(rate)
+        except (TypeError, ValueError) as e:
+            raise InvalidAmountFormatError() from e
         return self.exchange_rate_model.patch_exchange_rate(
             from_currency, to_currency, rate
         ), 200
 
     def get_exchange_rates(self) -> list[dict]:
         return self.exchange_rate_model.get_exchange_rates(), 200
+
+    def sync_market_rates(self, base: str = None, quotes: str = None) -> dict:
+        base = (base or os.getenv('MARKET_BASE_CURRENCY', 'EUR')).strip().upper()
+
+        raw_quotes = quotes or os.getenv(
+            'MARKET_QUOTES', 'USD,GBP,RUB,JPY,CHF,CNY'
+        )
+        quote_codes = [
+            item.strip().upper()
+            for item in raw_quotes.split(',')
+            if item.strip()
+        ]
+        quote_codes = list(dict.fromkeys(quote_codes))
+        quote_codes = [code for code in quote_codes if code != base]
+
+        if not quote_codes:
+            raise MissingFormFieldError()
+
+        if base not in currency_sign:
+            raise UnknownCurrencyCodeError(base)
+        for code in quote_codes:
+            if code not in currency_sign:
+                raise UnknownCurrencyCodeError(code)
+
+        client = FrankfurterClient()
+
+        fetched = [client.get_rate(base, quote) for quote in quote_codes]
+
+        self._ensure_currency(base)
+        for code in quote_codes:
+            self._ensure_currency(code)
+
+        updated_rates = []
+        provider_dates = []
+        for item in fetched:
+            updated_rates.append(
+                self.exchange_rate_model.upsert_exchange_rate(
+                    item['base'], item['quote'], item['rate']
+                )
+            )
+            if item.get('date'):
+                provider_dates.append(item['date'])
+
+        return {
+            'provider': client.provider_name,
+            'base': base,
+            'quotes': quote_codes,
+            'asOf': max(provider_dates) if provider_dates else None,
+            'updated': len(updated_rates),
+            'rates': updated_rates,
+        }, 200
 
     def convert_currency(
         self, from_currency: str, to_currency: str, amount: float
@@ -113,7 +191,7 @@ class Controller:
             raise MissingFormFieldError()
         try:
             amount = float(amount)
-        except ValueError as e:
+        except (TypeError, ValueError) as e:
             raise InvalidAmountFormatError() from e
 
         return self.conversion_model.get_converted_currency(
@@ -121,13 +199,10 @@ class Controller:
         ), 200
 
     def handle_html_page(self) -> str:
-        """Возвращает HTML-страницу"""
-        # Проверяем, существует ли файл index.html
         template_path = Path(__file__).parent.parent / 'templates' / 'index.html'
         logger.info(f'Путь к шаблону: {template_path}')
         if not Path(template_path).exists():
             raise FileNotFoundError('HTML-шаблон не найден')
-        # Читаем содержимое файла index.html
         return template_path.read_text(encoding='utf-8'), 200
 
     def return_icon(self) -> bytes:
