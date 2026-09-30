@@ -1,7 +1,12 @@
-import sqlite3
 import logging
+import sqlite3
+
 from dto import CurrencyDTO, CurrencyExchangeDTO
-from errors import ExchangeRateAlreadyExistsError, ExchangeRateNotFoundError, CurrencyNotFoundError
+from errors import (
+    CurrencyNotFoundError,
+    ExchangeRateAlreadyExistsError,
+    ExchangeRateNotFoundError,
+)
 
 from .base import BaseModel
 
@@ -52,59 +57,55 @@ class ExchangeRateModel(BaseModel):
             ex_id, base_currency, target_currency, rate
         ).to_dict()
 
+    def _validate_currencies(self, from_currency: str, to_currency: str) -> None:
+        conn, cursor = self._get_connection_and_cursor()
+        cursor.execute(
+            'SELECT code FROM currencies WHERE code IN (?, ?)',
+            (from_currency, to_currency),
+        )
+        found_codes = {row[0] for row in cursor.fetchall()}
+        missing_codes = {from_currency, to_currency} - found_codes
+        if missing_codes:
+            raise CurrencyNotFoundError(*missing_codes)
+
     def add_exchange_rate(self, from_currency: str, to_currency: str, rate: float):
         from_currency = from_currency.upper()
         to_currency = to_currency.upper()
         conn, cursor = self._get_connection_and_cursor()
 
         logger.info(f'Adding exchange rate: {from_currency} -> {to_currency} = {rate}')
+        self._validate_currencies(from_currency, to_currency)
 
         try:
-            # 🔍 Проверка существования валют
-            cursor.execute(
-                'SELECT code FROM currencies WHERE code IN (?, ?)',
-                (from_currency, to_currency),
-            )
-            found_codes = {row[0] for row in cursor.fetchall()}
-            missing_codes = {from_currency, to_currency} - found_codes
-            if missing_codes:
-                raise CurrencyNotFoundError(*missing_codes)
-
-            # 📦 Получение информации о валютах через JOIN
-            cursor.execute(
-                """
-                SELECT 
-                    base.id, base.code, base.name, base.sign,
-                    target.id, target.code, target.name, target.sign
-                FROM currencies base
-                JOIN currencies target ON target.code = ?
-                WHERE base.code = ?
-            """,
-                (to_currency, from_currency),
-            )
-
-            row = cursor.fetchone()
-            base_currency = CurrencyDTO(row[0], row[1], row[2], row[3]).to_dict()
-            target_currency = CurrencyDTO(row[4], row[5], row[6], row[7]).to_dict()
-
-            # 💾 Вставка курса
             cursor.execute(
                 'INSERT INTO exchange_rates (from_currency, to_currency, rate) VALUES (?, ?, ?)',
                 (from_currency, to_currency, rate),
             )
             conn.commit()
-            exchange_id = cursor.lastrowid
-
-            # 📤 Возврат в виде DTO
-            return CurrencyExchangeDTO(
-                exchange_id, base_currency, target_currency, rate
-            ).to_dict()
-
         except sqlite3.IntegrityError as e:
             raise ExchangeRateAlreadyExistsError(from_currency, to_currency) from e
 
-        except Exception:
-            raise
+        return self.get_exchange_rate(from_currency, to_currency)
+
+    def upsert_exchange_rate(
+        self, from_currency: str, to_currency: str, rate: float
+    ) -> dict:
+        from_currency = from_currency.upper()
+        to_currency = to_currency.upper()
+        self._validate_currencies(from_currency, to_currency)
+
+        conn, cursor = self._get_connection_and_cursor()
+        cursor.execute(
+            """
+            INSERT INTO exchange_rates (from_currency, to_currency, rate)
+            VALUES (?, ?, ?)
+            ON CONFLICT(from_currency, to_currency)
+            DO UPDATE SET rate = excluded.rate
+            """,
+            (from_currency, to_currency, float(rate)),
+        )
+        conn.commit()
+        return self.get_exchange_rate(from_currency, to_currency)
 
     def patch_exchange_rate(
         self, from_currency: str, to_currency: str, rate: float

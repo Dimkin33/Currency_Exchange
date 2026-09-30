@@ -19,31 +19,32 @@ class Router:
     def _register_routes(self, db_path: str = None) -> None:
         controller = Controller(db_path)
 
-        # Обработчики контроллера
         get_currency = (controller.get_currency_by_code, ['code'])
         add_currency = (controller.add_currency, ['code', 'name'])
         get_exchange_rate = (controller.get_exchange_rate, ['from', 'to'])
         add_exchange_rate = (controller.add_exchange_rate, ['from', 'to', 'rate'])
         convert_currency = (controller.convert_currency, ['from', 'to', 'amount'])
         get_exchange_rates = (controller.get_exchange_rates, [])
+        sync_market_rates = (controller.sync_market_rates, ['base', 'quotes'])
         handle_html = (controller.handle_html_page, [])
         return_icon = (controller.return_icon, [])
         update_exchange_rate = (controller.update_exchange_rate, ['from', 'to', 'rate'])
         delete_all_currencies = (controller.delete_all_currencies, [])
 
-        # Статические маршруты
+        self.static_routes[('GET', '/health')] = (controller.health, [])
         self.static_routes[('GET', '/currencies')] = (controller.get_currencies, [])
         self.static_routes[('GET', '/currency')] = get_currency
         self.static_routes[('POST', '/currencies')] = add_currency
         self.static_routes[('GET', '/exchangeRate')] = get_exchange_rate
         self.static_routes[('POST', '/exchangeRates')] = add_exchange_rate
         self.static_routes[('GET', '/exchangeRates')] = get_exchange_rates
+        self.static_routes[('POST', '/exchangeRates/sync')] = sync_market_rates
         self.static_routes[('GET', '/convert')] = convert_currency
         self.static_routes[('GET', '/favicon.ico')] = return_icon
         self.static_routes[('GET', '/')] = handle_html
         self.static_routes[('PATCH', '/exchangeRate')] = update_exchange_rate
         self.static_routes[('POST', '/currencies/delete_all')] = delete_all_currencies
-        # Динамические маршруты
+
         self.dynamic_routes.append(('GET', '/currency/:code', get_currency))
         self.dynamic_routes.append(('GET', '/exchangeRate/:pair', get_exchange_rate))
         self.dynamic_routes.append(
@@ -60,26 +61,23 @@ class Router:
         params = {
             **query_params,
             **body,
-        }  # Объединяем параметры запроса и тела запроса в один словарь
+        }
 
         return self._resolve(method, url, params)
 
     def _resolve(self, method: str, url: str, params: dict) -> tuple:
         logger.debug(f'Маршрутизация запроса: {method} {url}')
 
-        # Проверка на статический маршрут
         route = self.static_routes.get((method, url))
         if route:
             handler_controller, args = route
             func_args = [params.get(arg) for arg in args]
             return self._safe_call(handler_controller, func_args)
 
-        # Проверка на динамические маршруты
         for m, route_pattern, route_info in self.dynamic_routes:
             if m == method and self.match_dynamic_route(route_pattern, url, params):
                 handler_controller, args = route_info
 
-                # Разбор пары валют вида /exchangeRate/USDJPY → from=USD, to=JPY
                 if 'pair' in params and set(args) >= {'from', 'to'}:
                     pair = params['pair']
                     if isinstance(pair, str) and len(pair) == 6:
@@ -91,7 +89,7 @@ class Router:
                     else:
                         logger.warning(f"Некорректный формат pair: '{pair}'")
                         raise InvalidPairError()
-                        return
+
                 func_args = [params.get(arg) for arg in args]
                 return self._safe_call(handler_controller, func_args)
 
@@ -100,7 +98,7 @@ class Router:
 
     def _safe_call(
         self, handler_controller: callable, func_args: list
-    ) -> tuple:  # Возвращает результат обработчика и статус-код ответа
+    ) -> tuple:
         try:
             logger.debug(
                 f'Вызов обработчика: {handler_controller.__name__} с аргументами: {func_args}'
@@ -118,7 +116,7 @@ class Router:
 
     def match_dynamic_route(
         self, route: str, url, query_params: dict
-    ) -> bool:  # Сопоставляет динамический маршрут с текущим URL
+    ) -> bool:
         route_parts = route.strip('/').split('/')
         url_parts = url.strip('/').split('/')
 
@@ -135,7 +133,7 @@ class Router:
 
     def _parse_body(
         self, handler: BaseHTTPRequestHandler
-    ) -> dict:  # Парсит тело запроса в зависимости от типа контента
+    ) -> dict:
         logger.info('Парсинг тела запроса')
         content_length = int(handler.headers.get('Content-Length', 0))
 

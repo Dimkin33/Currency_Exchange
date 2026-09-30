@@ -63,3 +63,8 @@ class MissingFormFieldError(APIError):
 class UnknownCurrencyCodeError(APIError):
     def __init__(self, code: str):
         super().__init__(f'Unknown currency code: {code}', status_code=400)
+
+
+class MarketRateProviderError(APIError):
+    def __init__(self, message: str):
+        super().__init__(message, status_code=502)
