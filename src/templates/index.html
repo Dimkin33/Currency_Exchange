@@ -66,39 +66,39 @@
     <form id="updateForm">
       <label>
         Валютная пара (6 символов, например USDRUB):
-        <input type="text" name="pair"  />
+        <input type="text" name="pair" />
       </label><br><br>
-  
+
       <label>
         Новый курс:
-        <input type="text" name="rate"  />
+        <input type="text" name="rate" />
       </label><br><br>
-  
+
       <button type="submit">Обновить</button>
     </form>
-  
+
     <pre id="result"></pre>
-  
+
     <script>
       const form = document.getElementById("updateForm");
       const result = document.getElementById("result");
-  
+
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
-  
+
         const pair = form.pair.value.toUpperCase();
         const rate = form.rate.value;
-  
+
         const body = new URLSearchParams({ rate });
-  
-        const response = await fetch(`exchangeRate/${pair}`, {
+
+        const response = await fetch("/exchangeRate/" + pair, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
           body: body.toString(),
         });
-  
+
         const data = await response.json();
         result.textContent = JSON.stringify(data, null, 2);
       });

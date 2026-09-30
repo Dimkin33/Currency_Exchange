@@ -97,8 +97,8 @@ class TestRouter:
         assert response.status_code == 201
         json_data = response.json()
         assert 'id' in json_data
-        assert json_data['from_currency'] == 'USD'
-        assert json_data['to_currency'] == 'EUR'
+        assert json_data['baseCurrency']['code'] == 'USD'
+        assert json_data['targetCurrency']['code'] == 'EUR'
         assert json_data['rate'] == 0.85
 
     def test_get_exchange_rate(self):
