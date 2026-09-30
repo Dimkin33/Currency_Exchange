@@ -134,10 +134,10 @@ class Controller:
         return self.exchange_rate_model.get_exchange_rates(), 200
 
     def sync_market_rates(self, base: str = None, quotes: str = None) -> dict:
-        base = (base or os.getenv('MARKET_BASE_CURRENCY', 'EUR')).strip().upper()
+        base = (base or os.getenv('MARKET_BASE_CURRENCY', 'USD')).strip().upper()
 
         raw_quotes = quotes or os.getenv(
-            'MARKET_QUOTES', 'USD,GBP,RUB,JPY,CHF,CNY'
+            'MARKET_QUOTES', 'EUR,GBP,RUB,JPY,CHF,CNY'
         )
         quote_codes = [
             item.strip().upper()
